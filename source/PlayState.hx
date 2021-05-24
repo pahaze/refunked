@@ -125,9 +125,11 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
+	var refunkedWatermark:FlxText;
+	var storyDifficultyText:String = "";
+
 	#if desktop
 	// Discord RPC variables
-	var storyDifficultyText:String = "";
 	var iconRPC:String = "";
 	var songLength:Float = 0;
 	var detailsText:String = "";
@@ -184,9 +186,7 @@ class PlayState extends MusicBeatState
 			case 'thorns':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
 		}
-
-		#if desktop
-		// Making difficulty text for Discord Rich Presence.
+		
 		switch (storyDifficulty)
 		{
 			case 0:
@@ -197,6 +197,7 @@ class PlayState extends MusicBeatState
 				storyDifficultyText = "Hard";
 		}
 
+		#if desktop
 		iconRPC = SONG.player2;
 
 		// To avoid having duplicate images in Discord assets
@@ -733,8 +734,13 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
+		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, SONG.song + " " + storyDifficultyText + " - ReFunked Engine", 16);
+		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		refunkedWatermark.scrollFactor.set();
+		add(refunkedWatermark);
+
 		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
@@ -746,6 +752,7 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
+		refunkedWatermark.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -945,7 +952,12 @@ class PlayState extends MusicBeatState
 
 			{
 				case 0:
-					FlxG.sound.play(Paths.sound('intro3'), 0.6);
+					switch (curStage) {
+						case 'school' | 'schoolEvil':
+							FlxG.sound.play(Paths.sound('intro3-pixel'), 0.6);
+						default:
+							FlxG.sound.play(Paths.sound('intro3'), 0.6);
+					}
 				case 1:
 					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
 					ready.scrollFactor.set();
@@ -963,7 +975,12 @@ class PlayState extends MusicBeatState
 							ready.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('intro2'), 0.6);
+					switch (curStage) {
+						case 'school' | 'schoolEvil':
+							FlxG.sound.play(Paths.sound('intro2-pixel'), 0.6);
+						default:
+							FlxG.sound.play(Paths.sound('intro2'), 0.6);
+					}
 				case 2:
 					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 					set.scrollFactor.set();
@@ -980,7 +997,12 @@ class PlayState extends MusicBeatState
 							set.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('intro1'), 0.6);
+					switch (curStage) {
+						case 'school' | 'schoolEvil':
+							FlxG.sound.play(Paths.sound('intro1-pixel'), 0.6);
+						default:
+							FlxG.sound.play(Paths.sound('intro1'), 0.6);
+					}
 				case 3:
 					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
 					go.scrollFactor.set();
@@ -999,7 +1021,12 @@ class PlayState extends MusicBeatState
 							go.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('introGo'), 0.6);
+					switch (curStage) {
+						case 'school' | 'schoolEvil':
+							FlxG.sound.play(Paths.sound('introGo-pixel'), 0.6);
+						default:
+							FlxG.sound.play(Paths.sound('introGo'), 0.6);
+					}
 				case 4:
 			}
 
@@ -1397,6 +1424,12 @@ class PlayState extends MusicBeatState
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
+
+		if(refunkedWatermark.x < -300) {
+			refunkedWatermark.x = FlxG.width + 300;
+		} else {
+				refunkedWatermark.x = refunkedWatermark.x - (SONG.bpm / 67.5);
+		}
 
 		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
 		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
