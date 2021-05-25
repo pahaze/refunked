@@ -1,4 +1,71 @@
-# Friday Night Funkin
+# Friday Night Funkin ReFunked
+
+This is the repository for the "refunked" engine of Friday Night Funkin, an open source rhythm game. The engine was created to attempt to stomp out bugs and make the open source game better as much as possible. Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
+
+## Credits
+
+- [pahaze (me)](https://github.com/pahaze) - Programmer
+- [CryptoCANINE](https://github.com/CryptoCANINE) - Programmer
+- OG devs (ninjamuffin99, PhantomArcade3K, evilsk8r, and Kawai Sprite)
+
+\- and any other contributors
+
+## Build instuctions (Linux/HTML5)
+
+First things first, you need to install Haxe. Be sure Linux is up to date. Fore experienced users, just be sure you're up to date on each Haxe library and Haxe itself. If not, continue reading on. For this example, we'll be using Pop!_OS 20.04 LTS (Ubuntu based distribution). 
+
+First, the repository needs to be added and Haxe be installed. (We're using an external repository instead of the one already in apt due to it being outdated.)
+
+```
+sudo add-apt-repository ppa:haxe/releases
+sudo apt-get update
+sudo apt-get install haxe
+mkdir ~/haxelib
+haxelib setup ~/haxelib
+```
+
+This sets up Haxe for us to now install things we need, next thing being HaxeFlixel. Before you can install HaxeFlixel, you need `lime`, `openfl`, and finally `flixel` itself
+
+```
+haxelib install lime
+haxelib install openfl
+haxelib install flixel
+```
+
+After those three install, run this:
+
+```
+haxelib run lime setup flixel
+```
+
+This allows us to easily get addons, ui, demos, templates, tools, or whatever Flixel would ever need. Now, just for convenience, run this:
+
+```
+haxelib run lime setup
+```
+
+It'll install lime as it's own separate command. You don't HAVE to do this, but it does make things easier in the long run. Now that that's out of the way, there's only a couple more libraries we need to install.
+
+```
+haxelib install hscript
+haxelib install newgrounds
+haxelib git polymod https://github.com/larsiusprime/polymod.git
+haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+```
+
+After this, you'll be ready to compile the game! In the root of the source code (where Project.xml and such are), you can test for HTML5 (web) or Linux.
+
+For Linux, all you have to do is run `lime test linux`. For HTML, it's almost the same. `lime test html5`. Super easy stuff.
+
+## Contributing
+
+If you would like to contribute, then please do not hesitate! Give pull requests and we'll look at them as soon as possible. If one doesn't get pulled in, we'll explain why.
+
+## Mods
+
+As per the original game's README, you may NOT be allowed to have mods close-sourced. You MUST open source any mods you create with this engine or the original.
+
+# Original README
 
 This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
 
