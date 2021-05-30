@@ -1425,10 +1425,10 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		if(refunkedWatermark.x < -300) {
-			refunkedWatermark.x = FlxG.width + 300;
+		if(refunkedWatermark.x < -600) {
+			refunkedWatermark.x = FlxG.width + 5;
 		} else {
-				refunkedWatermark.x = refunkedWatermark.x - (SONG.bpm / 67.5);
+				refunkedWatermark.x = refunkedWatermark.x - (SONG.bpm / 45);
 		}
 
 		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
