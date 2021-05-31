@@ -115,6 +115,11 @@ class PlayState extends MusicBeatState
 	var talking:Bool = true;
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
+	var notesRating:String;
+	var goods:Int = 0;
+	var bads:Int = 0;
+	var awfuls:Int = 0;
+	var misses:Int = 0;
 
 	public static var campaignScore:Int = 0;
 
@@ -739,7 +744,7 @@ class PlayState extends MusicBeatState
 		refunkedWatermark.scrollFactor.set();
 		add(refunkedWatermark);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+		scoreTxt = new FlxText(healthBar.x + (healthBar.width * (FlxMath.remapToRange(90, 0, 100, 100, 0) * 0.01) - 26), healthBarBG.y - 90, 0, "", 20);
 		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
@@ -1391,7 +1396,30 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		scoreTxt.text = "Score:" + songScore;
+		switch(misses) {
+			case 0:
+				if(goods < 1 && bads < 1 && awfuls < 1) {
+					notesRating = "MFC";
+				} else if(goods > 0 && bads < 1 && awfuls < 1) {
+					notesRating = "GFC";
+				} else if(goods > 0 && bads > 0 && awfuls < 1) {
+					notesRating = "FC";
+				}
+			default:
+				if(misses < 10 && misses > 0) {
+					notesRating = "SDCB";
+				} else if(misses > 10) {
+					notesRating = "Clear";
+				}
+		}
+
+		var min = Math.floor(((FlxG.sound.music.length - Conductor.songPosition) % 3600000) / 60000);
+		var sec = Math.floor(((FlxG.sound.music.length - Conductor.songPosition) % 60000) / 1000);
+
+		var m = '$min'.lpad("0", 2);
+  		var s = '$sec'.lpad("0", 2);
+
+		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Rating: " + notesRating + "; Time left: " + '$m:$s';
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
@@ -1712,6 +1740,7 @@ class PlayState extends MusicBeatState
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
 						health -= 0.0475;
+						misses++;
 						vocals.volume = 0;
 					}
 
@@ -1834,25 +1863,34 @@ class PlayState extends MusicBeatState
 
 		var daRating:String = "sick";
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.9)
+		if (noteDiff > Conductor.safeZoneOffset * 0.8)
 		{
 			daRating = 'shit';
-			score = 50;
+			score -= 50;
+			awfuls++;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
+		else if (noteDiff > Conductor.safeZoneOffset * 0.65)
 		{
 			daRating = 'bad';
 			score = 100;
+			bads++;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
+		else if (noteDiff > Conductor.safeZoneOffset * 0.45)
 		{
 			daRating = 'good';
 			score = 200;
+			goods++;
+		}
+
+		// PREVENT SCORE FROM GOING INTO NEGATIVE VALUES !!!!!!
+		if(score < 0) {
+			score = 0;
 		}
 
 		songScore += score;
 
-		/* if (combo > 60)
+		/* 
+			if (combo > 60)
 				daRating = 'sick';
 			else if (combo > 12)
 				daRating = 'good'
@@ -2174,6 +2212,8 @@ class PlayState extends MusicBeatState
 				gf.playAnim('sad');
 			}
 			combo = 0;
+
+			misses++;
 
 			songScore -= 10;
 
