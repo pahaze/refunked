@@ -1419,6 +1419,13 @@ class PlayState extends MusicBeatState
 		var m = '$min'.lpad("0", 2);
   		var s = '$sec'.lpad("0", 2);
 
+		if(Std.parseInt(m) <= 0) {
+			m = "00";
+		}
+		if(Std.parseInt(s) <= 0) {
+			s = "00";
+		}
+
 		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Rating: " + notesRating + "; Time left: " + '$m:$s';
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
