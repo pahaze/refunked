@@ -104,7 +104,26 @@ class TitleState extends MusicBeatState
 	}
 
 	var logoBl:FlxSprite;
-	var gfDance:FlxSprite;
+	var titleCharDance:FlxSprite;
+	var CharNames:Array<String> = [
+		"gf",
+		"bf",
+		"dad",
+		"spooky_kids",
+		"monster",
+		"pico",
+		"mom",
+		"bf_christmas",
+		"gf_christmas",
+		"mom_dad_christmas",
+		"monster_christmas",
+		"bf_pixel",
+		"gf_pixel",
+		"senpai",
+		"angry_senpai",
+		"spirit_senpai"
+	];
+	var charUse:String;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 
@@ -155,13 +174,132 @@ class TitleState extends MusicBeatState
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
+		charUse = CharNames[Std.random(16)];
+		switch(charUse) {
+			case "gf":
+				titleCharDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+				titleCharDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
+				titleCharDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				titleCharDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+				titleCharDance.antialiasing = true;
+			case "bf":
+				titleCharDance = new FlxSprite(FlxG.width * 0.575, 200);
+				titleCharDance.frames = Paths.getSparrowAtlas('BOYFRIEND');
+				titleCharDance.animation.addByPrefix('idle', 'BF idle dance', 24, true);
+				titleCharDance.antialiasing = true;
+			case "dad":
+				titleCharDance = new FlxSprite(FlxG.width * 0.6, -20);
+				titleCharDance.scale.set(0.9, 0.9);
+				titleCharDance.frames = Paths.getSparrowAtlas('DADDY_DEAREST');
+				titleCharDance.animation.addByPrefix('idle', 'Dad idle dance', 24, true);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "spooky_kids":
+				titleCharDance = new FlxSprite(FlxG.width * 0.55, FlxG.height * 0.07);
+				titleCharDance.frames = Paths.getSparrowAtlas('spooky_kids_assets');
+				titleCharDance.animation.addByIndices('danceLeft', 'spooky dance idle', [0, 2, 6], "", 12, false);
+				titleCharDance.animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "monster":
+				titleCharDance = new FlxSprite(FlxG.width * 0.6, FlxG.height * 0.04);
+				titleCharDance.frames = Paths.getSparrowAtlas('Monster_Assets');
+				titleCharDance.animation.addByPrefix('idle', 'monster idle', 24, true);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "pico":
+				titleCharDance = new FlxSprite(FlxG.width * 0.575, 160);
+				titleCharDance.frames = Paths.getSparrowAtlas('Pico_FNF_assetss');
+				titleCharDance.animation.addByPrefix('idle', "Pico Idle Dance", 24, true);
+				titleCharDance.antialiasing = true;
+			case "mom":
+				titleCharDance = new FlxSprite(FlxG.width * 0.6, -30);
+				titleCharDance.scale.set(0.85, 0.85);
+				titleCharDance.frames = Paths.getSparrowAtlas('Mom_Assets');
+				titleCharDance.animation.addByPrefix('idle', "Mom Idle", 24, true);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "bf_christmas":
+				titleCharDance = new FlxSprite(FlxG.width * 0.575, 200);
+				titleCharDance.frames = Paths.getSparrowAtlas('bfChristmas');
+				titleCharDance.animation.addByPrefix('idle', 'BF idle dance', 24, true);
+				titleCharDance.antialiasing = true;
+			case "gf_christmas":
+				titleCharDance = new FlxSprite(FlxG.width * 0.375, FlxG.height * 0.07);
+				titleCharDance.frames = Paths.getSparrowAtlas('gfChristmas');
+				titleCharDance.animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				titleCharDance.animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+				titleCharDance.antialiasing = true;
+			case "mom_dad_christmas":
+				titleCharDance = new FlxSprite(FlxG.width * 0.415, -30);
+				titleCharDance.frames = Paths.getSparrowAtlas('mom_dad_christmas_assets');
+				titleCharDance.scale.set(0.7, 0.7);
+				titleCharDance.animation.addByPrefix('idle', "Parent Christmas Idle", 24, true);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "monster_christmas":
+				titleCharDance = new FlxSprite(FlxG.width * 0.6, FlxG.height * 0.02);
+				titleCharDance.frames = Paths.getSparrowAtlas('monsterChristmas');
+				titleCharDance.scale.set(0.9, 0.9);
+				titleCharDance.animation.addByPrefix('idle', 'monster idle', 24, true);
+				titleCharDance.antialiasing = true;
+				titleCharDance.flipX = true;
+			case "bf_pixel":
+				titleCharDance = new FlxSprite(FlxG.width * 0.55, FlxG.height * 0.07);
+				titleCharDance.frames = Paths.getSparrowAtlas('bfPixel');
+				titleCharDance.setGraphicSize(Std.int(titleCharDance.width * 8));
+				titleCharDance.updateHitbox();
+				titleCharDance.animation.addByPrefix('idle', 'BF IDLE', 24, true);
+				titleCharDance.antialiasing = false;
+			case "gf_pixel":
+				titleCharDance = new FlxSprite(FlxG.width * 0.45, FlxG.height * 0.03);
+				titleCharDance.frames = Paths.getSparrowAtlas('gfPixel');
+				titleCharDance.setGraphicSize(Std.int(titleCharDance.width * PlayState.daPixelZoom));
+				titleCharDance.updateHitbox();
+				titleCharDance.animation.addByIndices('danceLeft', 'GF IDLE', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				titleCharDance.animation.addByIndices('danceRight', 'GF IDLE', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+				titleCharDance.antialiasing = false;
+			case "senpai":
+				titleCharDance = new FlxSprite(FlxG.width * 0.45, -170);
+				titleCharDance.frames = Paths.getSparrowAtlas('senpai');
+				titleCharDance.setGraphicSize(Std.int(titleCharDance.width * 6));
+				titleCharDance.updateHitbox();
+				titleCharDance.animation.addByPrefix('idle', 'Senpai Idle', 24, true);
+				titleCharDance.antialiasing = false;
+			case "angry_senpai":
+				titleCharDance = new FlxSprite(FlxG.width * 0.45, -170);
+				titleCharDance.frames = Paths.getSparrowAtlas('senpai');
+				titleCharDance.setGraphicSize(Std.int(titleCharDance.width * 6));
+				titleCharDance.updateHitbox();
+				titleCharDance.animation.addByPrefix('idle', 'Angry Senpai Idle', 24, true);
+				titleCharDance.antialiasing = false;
+				titleCharDance.flipX = true;
+			case 'spirit_senpai':
+				titleCharDance = new FlxSprite(FlxG.width * 0.45, -50);
+				titleCharDance.frames = Paths.getPackerAtlas('spirit');
+				titleCharDance.setGraphicSize(Std.int(titleCharDance.width * 6));
+				titleCharDance.updateHitbox();
+				titleCharDance.animation.addByPrefix('idle', "idle spirit_", 24, true);
+				titleCharDance.antialiasing = false;
+				titleCharDance.flipX = true;
+			default:
+				titleCharDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+				titleCharDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
+				titleCharDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				titleCharDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+				titleCharDance.antialiasing = true;
+		}
+		add(titleCharDance);
+		add(logoBl);
+
+		/*
 		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		gfDance.antialiasing = true;
 		add(gfDance);
-		add(logoBl);
+		*/
 
 		titleText = new FlxSprite(100, FlxG.height * 0.8);
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
@@ -337,12 +475,18 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		logoBl.animation.play('bump');
-		danceLeft = !danceLeft;
+		
+		switch(charUse) {
+			case 'gf' | 'gf_christmas' | 'gf_pixel' | 'spooky_kids':
+				danceLeft = !danceLeft;
 
-		if (danceLeft)
-			gfDance.animation.play('danceRight');
-		else
-			gfDance.animation.play('danceLeft');
+				if (danceLeft)
+					titleCharDance.animation.play('danceRight');
+				else
+					titleCharDance.animation.play('danceLeft');
+			default:
+				titleCharDance.animation.play('idle');
+		}
 
 		FlxG.log.add(curBeat);
 
