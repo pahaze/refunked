@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0 - ReFunked]
 ### Changes
-- 
+- swag watermark
+- updated input timings 
+- epic title screen random character on boot
+- freeplay crash is no more
 
 ## [Unreleased/Base 0.2.7.1 master-8bd9126]
 ### Changed
