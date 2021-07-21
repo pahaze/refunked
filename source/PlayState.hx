@@ -739,7 +739,7 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, SONG.song + " " + storyDifficultyText + " - ReFunked Engine", 16);
+		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, "", 16);
 		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		refunkedWatermark.scrollFactor.set();
 		add(refunkedWatermark);
@@ -1426,7 +1426,8 @@ class PlayState extends MusicBeatState
 			s = "00";
 		}
 
-		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Rating: " + notesRating + "; Time left: " + '$m:$s';
+		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Rating: " + notesRating;
+		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF ReFunked";
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
