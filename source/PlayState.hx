@@ -115,11 +115,6 @@ class PlayState extends MusicBeatState
 	var talking:Bool = true;
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
-	var notesRating:String;
-	var goods:Int = 0;
-	var bads:Int = 0;
-	var awfuls:Int = 0;
-	var misses:Int = 0;
 
 	public static var campaignScore:Int = 0;
 
@@ -130,8 +125,16 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
+	// funny junk that i added 
 	var refunkedWatermark:FlxText;
 	var storyDifficultyText:String = "";
+	var notesRating:String;
+	var goods:Int = 0;
+	var bads:Int = 0;
+	var awfuls:Int = 0;
+	var misses:Int = 0;
+	public static var bfEasterEggEnabled:Bool = false;
+	public static var dadEasterEggEnabled:Bool = false;
 
 	#if desktop
 	// Discord RPC variables
@@ -749,11 +752,19 @@ class PlayState extends MusicBeatState
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
-		iconP1 = new HealthIcon(SONG.player1, true);
+		if(bfEasterEggEnabled) {
+			iconP1 = new HealthIcon('bf-old', true);
+		} else {
+			iconP1 = new HealthIcon(SONG.player1, true);
+		}
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false);
+		if(dadEasterEggEnabled) {
+			iconP2 = new HealthIcon('dad', false);
+		} else {
+			iconP2 = new HealthIcon(SONG.player2, false);
+		}
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
@@ -1370,12 +1381,22 @@ class PlayState extends MusicBeatState
 		perfectMode = false;
 		#end
 
-		if (FlxG.keys.justPressed.NINE)
-		{
-			if (iconP1.animation.curAnim.name == 'bf-old')
+		if (FlxG.keys.justPressed.NINE) {
+			if (iconP1.animation.curAnim.name == 'bf-old') {
 				iconP1.animation.play(SONG.player1);
-			else
+			} else {
 				iconP1.animation.play('bf-old');
+			}
+			bfEasterEggEnabled = !bfEasterEggEnabled;
+		}
+
+		if (FlxG.keys.justPressed.EIGHT) {
+			if (iconP2.animation.curAnim.name == 'dad') {
+				iconP2.animation.play(SONG.player2);
+			} else {
+				iconP2.animation.play('dad');
+			}
+			dadEasterEggEnabled = !dadEasterEggEnabled;
 		}
 
 		switch (curStage)
