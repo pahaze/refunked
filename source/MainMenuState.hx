@@ -26,6 +26,7 @@ class MainMenuState extends MusicBeatState
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
+	var LoadedAssets:Array<Dynamic> = [];
 	
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -165,8 +166,9 @@ class MainMenuState extends MusicBeatState
 						{
 							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 							{
-								var daChoice:String = optionShit[curSelected];
+								unloadLoadedAssets();
 
+								var daChoice:String = optionShit[curSelected];
 								switch (daChoice)
 								{
 									case 'story mode':
@@ -195,6 +197,20 @@ class MainMenuState extends MusicBeatState
 		{
 			spr.screenCenter(X);
 		});
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
+		}
 	}
 
 	function changeItem(huh:Int = 0)

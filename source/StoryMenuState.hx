@@ -55,15 +55,13 @@ class StoryMenuState extends MusicBeatState
 		"Hating Simulator ft. Moawling"
 	];
 
+	var LoadedAssets:Array<Dynamic> = [];
 	var txtWeekTitle:FlxText;
-
 	var curWeek:Int = 0;
-
 	var txtTracklist:FlxText;
 
 	var grpWeekText:FlxTypedGroup<MenuItem>;
 	var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
-
 	var grpLocks:FlxTypedGroup<FlxSprite>;
 
 	var difficultySelectors:FlxGroup;
@@ -301,6 +299,7 @@ class StoryMenuState extends MusicBeatState
 
 				grpWeekText.members[curWeek].startFlashing();
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
+				unloadLoadedAssets();
 				stopspamming = true;
 			}
 
@@ -443,5 +442,19 @@ class StoryMenuState extends MusicBeatState
 		#if !switch
 		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
 		#end
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
+		}
 	}
 }

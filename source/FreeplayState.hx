@@ -32,6 +32,7 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
+	var LoadedAssets:Array<Dynamic> = [];
 
 	override function create()
 	{
@@ -227,7 +228,22 @@ class FreeplayState extends MusicBeatState
 
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
+			unloadLoadedAssets();
 			LoadingState.loadAndSwitchState(new PlayState());
+		}
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
 		}
 	}
 
@@ -317,3 +333,4 @@ class SongMetadata
 		this.songCharacter = songCharacter;
 	}
 }
+

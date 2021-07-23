@@ -135,6 +135,7 @@ class PlayState extends MusicBeatState
 	var misses:Int = 0;
 	public static var bfEasterEggEnabled:Bool = false;
 	public static var dadEasterEggEnabled:Bool = false;
+	var LoadedAssets:Array<Dynamic> = [];
 
 	#if desktop
 	// Discord RPC variables
@@ -1674,6 +1675,7 @@ class PlayState extends MusicBeatState
 
 			vocals.stop();
 			FlxG.sound.music.stop();
+			unloadLoadedAssets();
 
 			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
@@ -1816,6 +1818,7 @@ class PlayState extends MusicBeatState
 
 				transIn = FlxTransitionableState.defaultTransIn;
 				transOut = FlxTransitionableState.defaultTransOut;
+				unloadLoadedAssets();
 
 				FlxG.switchState(new StoryMenuState());
 
@@ -1843,6 +1846,7 @@ class PlayState extends MusicBeatState
 
 				trace('LOADING NEXT SONG');
 				trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
+				unloadLoadedAssets();
 
 				if (SONG.song.toLowerCase() == 'eggnog')
 				{
@@ -1868,6 +1872,7 @@ class PlayState extends MusicBeatState
 		else
 		{
 			trace('WENT BACK TO FREEPLAY??');
+			unloadLoadedAssets();
 			FlxG.switchState(new FreeplayState());
 		}
 	}
@@ -2568,4 +2573,18 @@ class PlayState extends MusicBeatState
 	}
 
 	var curLight:Int = 0;
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
+		}
+	}
 }
