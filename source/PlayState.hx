@@ -133,6 +133,8 @@ class PlayState extends MusicBeatState
 	var bads:Int = 0;
 	var awfuls:Int = 0;
 	var misses:Int = 0;
+	var accNotesToDivide:Int = 1;
+	var accNotesTotal:Int = 1;
 	public static var bfEasterEggEnabled:Bool = false;
 	public static var dadEasterEggEnabled:Bool = false;
 	var LoadedAssets:Array<Dynamic> = [];
@@ -1448,7 +1450,7 @@ class PlayState extends MusicBeatState
 			s = "00";
 		}
 
-		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Rating: " + notesRating;
+		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Accuracy: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "% (" + notesRating + ")";
 		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF ReFunked";
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
@@ -1772,7 +1774,12 @@ class PlayState extends MusicBeatState
 					{
 						health -= 0.0475;
 						misses++;
+						accNotesTotal++;
 						vocals.volume = 0;
+						combo = 0;
+					} else if (daNote.wasGoodHit) {
+						accNotesToDivide++;
+						accNotesTotal++;
 					}
 
 					daNote.active = false;
@@ -1902,18 +1909,29 @@ class PlayState extends MusicBeatState
 			daRating = 'shit';
 			score -= 50;
 			awfuls++;
+			accNotesToDivide++;
+			accNotesTotal++;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.65)
 		{
 			daRating = 'bad';
 			score = 100;
 			bads++;
+			accNotesToDivide++;
+			accNotesTotal++;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.45)
 		{
 			daRating = 'good';
 			score = 200;
 			goods++;
+			accNotesToDivide++;
+			accNotesTotal++;
+		}
+
+		if(daRating == "sick") {
+			accNotesToDivide++;
+			accNotesTotal++;
 		}
 
 		// PREVENT SCORE FROM GOING INTO NEGATIVE VALUES !!!!!!
@@ -2248,6 +2266,7 @@ class PlayState extends MusicBeatState
 			combo = 0;
 
 			misses++;
+			accNotesTotal++;
 
 			songScore -= 10;
 
@@ -2300,10 +2319,6 @@ class PlayState extends MusicBeatState
 	{
 		if (keyP)
 			goodNoteHit(note);
-		else
-		{
-			badNoteCheck();
-		}
 	}
 
 	function goodNoteHit(note:Note):Void
