@@ -1423,11 +1423,13 @@ class PlayState extends MusicBeatState
 		switch(misses) {
 			case 0:
 				if(goods < 1 && bads < 1 && awfuls < 1) {
-					notesRating = "MFC";
+					notesRating = "SFC";
 				} else if(goods > 0 && bads < 1 && awfuls < 1) {
 					notesRating = "GFC";
 				} else if(goods > 0 && bads > 0 && awfuls < 1) {
 					notesRating = "FC";
+				} else if(goods > 0 && bads > 0 && awfuls > 0) {
+					notesRating = "AFC";
 				}
 			default:
 				if(misses < 10 && misses > 0) {
