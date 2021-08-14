@@ -1,6 +1,8 @@
 # Friday Night Funkin ReFunked
 
-[![CodeFactor](https://www.codefactor.io/repository/github/pahaze/refunked/badge/master)](https://www.codefactor.io/repository/github/pahaze/refunked/overview/master)
+[![CodeFactor](https://www.codefactor.io/repository/github/pahaze/refunked/badge/master)](https://www.codefactor.io/repository/github/pahaze/refunked/overview/master) 
+[![AppVeyor](https://img.shields.io/appveyor/build/pahaze/refunked-linux?label=ReFunked%20Linux%20devbuild)](https://ci.appveyor.com/project/pahaze/refunked-linux/branch/master/artifacts) 
+[![AppVeyor](https://img.shields.io/appveyor/build/pahaze/refunked-win?label=ReFunked%20Windows%20devbuild)](https://ci.appveyor.com/project/pahaze/refunked-win/branch/master/artifacts)
 
 This is the repository for the "refunked" engine of Friday Night Funkin, an open source rhythm game. The engine was created to attempt to stomp out bugs and make the open source game better as much as possible. Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
 
