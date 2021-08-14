@@ -1,0 +1,32 @@
+version: "{build}"
+
+environment:
+  global:
+    HAXELIB_ROOT: C:\projects\haxelib
+
+install:
+  - ps: Set-Service wuauserv -StartupType Manual
+  - cinst neko -y
+  - cinst haxe -y
+  - RefreshEnv
+  - mkdir "%HAXELIB_ROOT%"
+  - haxelib setup "%HAXELIB_ROOT%"
+  - RefreshEnv
+  - haxelib install lime
+  - haxelib install openfl
+  - haxelib install flixel
+  - haxelib run lime setup flixel
+  - haxelib run lime setup
+  - haxelib install hscript
+  - haxelib install newgrounds
+  - haxelib install flixel-addons
+  - haxelib git polymod https://github.com/larsiusprime/polymod.git
+  - haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+
+build_script:
+  - haxelib run lime build windows
+
+artifacts:
+  - path: export/release/windows/bin
+    name: ReFunked-Win
+    type: zip
