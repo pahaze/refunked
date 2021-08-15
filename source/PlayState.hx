@@ -138,6 +138,7 @@ class PlayState extends MusicBeatState
 	public static var bfEasterEggEnabled:Bool = false;
 	public static var dadEasterEggEnabled:Bool = false;
 	var LoadedAssets:Array<Dynamic> = [];
+	var detailsStageText:String = "";
 
 	#if desktop
 	// Discord RPC variables
@@ -236,7 +237,7 @@ class PlayState extends MusicBeatState
 		detailsPausedText = "Paused - " + detailsText;
 		
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+		DiscordClient.changePresence(detailsText, detailsStageText, iconRPC);
 		#end
 
 		switch (SONG.song.toLowerCase())
@@ -1321,11 +1322,11 @@ class PlayState extends MusicBeatState
 			#if desktop
 			if (startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresence(detailsText, detailsStageText, iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				DiscordClient.changePresence(detailsText, detailsStageText, iconRPC);
 			}
 			#end
 		}
@@ -1335,20 +1336,6 @@ class PlayState extends MusicBeatState
 
 	override public function onFocus():Void
 	{
-		#if desktop
-		if (health > 0 && !paused)
-		{
-			if (Conductor.songPosition > 0.0)
-			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
-			}
-			else
-			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-			}
-		}
-		#end
-
 		super.onFocus();
 	}
 	
@@ -1357,7 +1344,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresence(detailsPausedText, detailsStageText, iconRPC);
 		}
 		#end
 
@@ -1455,6 +1442,36 @@ class PlayState extends MusicBeatState
 		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Accuracy: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "% (" + notesRating + ")";
 		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF ReFunked";
 
+		// lolol misses and Stuff
+		detailsStageText = "Acc: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "%; Misses: " + misses + "; Score: " + songScore;
+
+		#if desktop
+		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
+		if (isStoryMode)
+		{
+			detailsText = "Week " + storyWeek + ": " + SONG.song + " (" + notesRating + ")";
+		}
+		else
+		{
+			detailsText = "Freeplay: " + SONG.song + " (" + notesRating + ")";
+		}
+
+		// String for when the game is paused
+		detailsPausedText = "Paused - " + detailsText;
+
+		if (health > 0 && !paused)
+		{
+			if (Conductor.songPosition > 0.0)
+			{
+				DiscordClient.changePresence(detailsText, detailsStageText, iconRPC, true, songLength - Conductor.songPosition);
+			}
+			else
+			{
+				DiscordClient.changePresence(detailsText, detailsStageText, iconRPC);
+			}
+		}
+		#end 
+
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
@@ -1471,7 +1488,7 @@ class PlayState extends MusicBeatState
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		
 			#if desktop
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresence(detailsPausedText, detailsStageText, iconRPC);
 			#end
 		}
 
@@ -1702,7 +1719,7 @@ class PlayState extends MusicBeatState
 			
 			#if desktop
 			// Game Over doesn't get his own variable because it's only used here
-			DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresence("Game Over - " + detailsText, detailsStageText, iconRPC);
 			#end
 		}
 
