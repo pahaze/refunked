@@ -1,0 +1,20 @@
+diff --git a/source/Controls.hx b/source/Controls.hx
+index 7d1e2c4..c81951c 100644
+--- a/source/Controls.hx
++++ b/source/Controls.hx
+@@ -406,15 +406,9 @@ class Controls extends FlxActionSet
+ 		{
+ 			case null:
+ 				// add all
+-				#if (haxe >= "4.0.0")
+-				for (gamepad in controls.gamepadsAdded)
+-					if (!gamepadsAdded.contains(gamepad))
+-						gamepadsAdded.push(gamepad);
+-				#else
+ 				for (gamepad in controls.gamepadsAdded)
+ 					if (gamepadsAdded.indexOf(gamepad) == -1)
+ 					  gamepadsAdded.push(gamepad);
+-				#end
+ 
+ 				mergeKeyboardScheme(controls.keyboardScheme);
+ 
