@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0 - ReFunked]
 ### Changes
 - swag watermark
-- updated input timings 
+- yay 3 icons for each character...
+- accuracy based on hits not good/sick/bad/awful yay!!!
+- updated input timings and fixed random misses
 - epic title screen random character on boot
 - freeplay crash is no more
 

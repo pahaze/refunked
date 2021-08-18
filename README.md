@@ -14,6 +14,18 @@ This is the repository for the "refunked" engine of Friday Night Funkin, an open
 
 \- and any other contributors
 
+## Plans
+
+Things that are planned to be added include:
+
+ - Options (Downscroll, botplay, keybindings, FPS, etc)
+ - Fixed song names (songs that have spaces will correctly show their name)
+ - Kid friendly mode (changes MILF to Mombattle, MM and BG characters are censored in Week 5, removes the Week 5 girlfriend face in the background, and changes the icon for Monster) (keeping things safe for our younger audiences is important)
+ - No source editing modding (full on stages/whatnot by text/json files)
+ - VS mode (for 2P fun)
+
+For things that are already implemented or changed, go check out the [CHANGELOG](https://github.com/pahaze/refunked/blob/master/CHANGELOG.md)
+
 ## Build instuctions (Linux/HTML5)
 
 First things first, you need to install Haxe. Be sure Linux is up to date. Fore experienced users, just be sure you're up to date on each Haxe library and Haxe itself. If not, continue reading on. For this example, we'll be using Pop!_OS 20.04 LTS (Ubuntu based distribution). 
