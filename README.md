@@ -1,10 +1,10 @@
-# Friday Night Funkin ReFunked
+# Friday Night Funkin' ReFunked
 
 [![CodeFactor](https://www.codefactor.io/repository/github/pahaze/refunked/badge/master)](https://www.codefactor.io/repository/github/pahaze/refunked/overview/master) 
 [![AppVeyor](https://img.shields.io/appveyor/build/pahaze/refunked-linux?label=ReFunked%20Linux%20devbuild)](https://ci.appveyor.com/project/pahaze/refunked-linux/branch/master/artifacts) 
 [![AppVeyor](https://img.shields.io/appveyor/build/pahaze/refunked-win?label=ReFunked%20Windows%20devbuild)](https://ci.appveyor.com/project/pahaze/refunked-win/branch/master/artifacts)
 
-This is the repository for the "refunked" engine of Friday Night Funkin, an open source rhythm game. The engine was created to attempt to stomp out bugs and make the open source game better as much as possible. Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
+This is the repository for the "ReFunked" engine of Friday Night Funkin', an open source rhythm game. The engine was created to attempt to stomp out bugs and make the open source game better as much as possible. Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
 
 ## Credits
 
@@ -28,7 +28,7 @@ For things that are already implemented or changed, go check out the [CHANGELOG]
 
 ## Build instuctions (Linux/HTML5)
 
-First things first, you need to install Haxe. Be sure Linux is up to date. Fore experienced users, just be sure you're up to date on each Haxe library and Haxe itself. If not, continue reading on. For this example, we'll be using Pop!_OS 20.04 LTS (Ubuntu based distribution). 
+First things first, you need to install Haxe. Be sure Linux is up to date. Fore experienced users, just be sure you're up to date on each Haxe library and Haxe itself. If not, continue reading on. For this example, we'll be using Pop!_OS 20.04 LTS / Pop!_OS 21.04 (Ubuntu based distribution). 
 
 First, the repository needs to be added and Haxe be installed. (We're using an external repository instead of the one already in apt due to it being outdated.)
 
@@ -71,7 +71,9 @@ haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 
 After this, you'll be ready to compile the game! In the root of the source code (where Project.xml and such are), you can test for HTML5 (web) or Linux.
 
-For Linux, all you have to do is run `lime test linux`. For HTML, it's almost the same. `lime test html5`. Super easy stuff.
+For Linux, all you have to do is run `lime test linux`. For HTML5, it's almost the same. `lime test html5`. Super easy stuff.
+
+(By the way, if you're having a(n) build error saying there's an error in Controls.hx, all you have to do is run `git apply webbuildfix.patch` in the root directory ;). Sometimes Haxe likes to break. If you would like to contribute towards the engine, please make sure you have unapplied this patch, all it changes is Controls.hx.)
 
 ## Contributing
 
