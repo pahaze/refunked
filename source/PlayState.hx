@@ -139,6 +139,7 @@ class PlayState extends MusicBeatState
 	public static var dadEasterEggEnabled:Bool = false;
 	var LoadedAssets:Array<Dynamic> = [];
 	var detailsStageText:String = "";
+	var watermarkInPlace:Bool = false;
 
 	#if desktop
 	// Discord RPC variables
@@ -202,11 +203,11 @@ class PlayState extends MusicBeatState
 		switch (storyDifficulty)
 		{
 			case 0:
-				storyDifficultyText = "Easy";
+				storyDifficultyText = "EASY";
 			case 1:
-				storyDifficultyText = "Normal";
+				storyDifficultyText = "NORMAL";
 			case 2:
-				storyDifficultyText = "Hard";
+				storyDifficultyText = "HARD";
 		}
 
 		#if desktop
@@ -1504,10 +1505,35 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		if(refunkedWatermark.x < -600) {
-			refunkedWatermark.x = FlxG.width + 5;
-		} else {
-				refunkedWatermark.x = refunkedWatermark.x - (SONG.bpm / 45);
+		if(refunkedWatermark.x == 4) {
+			watermarkInPlace = true;
+			new FlxTimer().start(5, function(tmr:FlxTimer)
+			{
+				watermarkInPlace = false;
+				if(refunkedWatermark.x > 4) {
+					refunkedWatermark.x = refunkedWatermark.x - 1;
+					refunkedWatermark.x = refunkedWatermark.x + 1;
+				} else {
+					refunkedWatermark.x = refunkedWatermark.x - 1;
+				}
+			});
+		} 
+		if(watermarkInPlace == false) {		
+			if(refunkedWatermark.x < -600) {
+				refunkedWatermark.x = FlxG.width + 4;
+			} else {
+				if(SONG.bpm < 151 && SONG.bpm > 130) {
+					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 40);
+				} else if(SONG.bpm < 131) {
+					if(SONG.bpm == 110) {
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 30);
+					} else {
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 50);
+					}
+				} else {
+					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 45);
+				}
+			}
 		}
 
 		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
