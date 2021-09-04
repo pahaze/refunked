@@ -1410,19 +1410,19 @@ class PlayState extends MusicBeatState
 
 		switch(misses) {
 			case 0:
-				if(goods < 1 && bads < 1 && awfuls < 1) {
-					notesRating = "SFC";
-				} else if(goods > 0 && bads < 1 && awfuls < 1) {
-					notesRating = "GFC";
-				} else if(goods > 0 && bads > 0 && awfuls < 1) {
-					notesRating = "FC";
-				} else if(goods > 0 && bads > 0 && awfuls > 0) {
+				if(awfuls > 0) {
 					notesRating = "AFC";
+				} else if(bads > 0) {
+					notesRating = "FC";
+				} else if(goods > 0) {
+					notesRating = "GFC";
+				} else {
+					notesRating = "SFC";
 				}
 			default:
 				if(misses < 10 && misses > 0) {
 					notesRating = "SDCB";
-				} else if(misses > 10) {
+				} else if(misses > 9) {
 					notesRating = "Clear";
 				}
 		}
@@ -1441,7 +1441,7 @@ class PlayState extends MusicBeatState
 		}
 
 		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Accuracy: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "% (" + notesRating + ")";
-		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF ReFunked";
+		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF RFE";
 
 		// lolol misses and Stuff
 		detailsStageText = "Acc: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "%; Misses: " + misses + "; Score: " + songScore;
@@ -1450,11 +1450,11 @@ class PlayState extends MusicBeatState
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
 		if (isStoryMode)
 		{
-			detailsText = "Week " + storyWeek + ": " + SONG.song + " (" + notesRating + ")";
+			detailsText = "Week " + storyWeek + ": " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
 		}
 		else
 		{
-			detailsText = "Freeplay: " + SONG.song + " (" + notesRating + ")";
+			detailsText = "Freeplay: " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
 		}
 
 		// String for when the game is paused
@@ -1510,11 +1510,10 @@ class PlayState extends MusicBeatState
 			new FlxTimer().start(5, function(tmr:FlxTimer)
 			{
 				watermarkInPlace = false;
-				if(refunkedWatermark.x > 4) {
-					refunkedWatermark.x = refunkedWatermark.x - 1;
-					refunkedWatermark.x = refunkedWatermark.x + 1;
-				} else {
-					refunkedWatermark.x = refunkedWatermark.x - 1;
+				if(!paused) {
+					if(refunkedWatermark.x < 5) {
+						refunkedWatermark.x = refunkedWatermark.x - 1;
+					}
 				}
 			});
 		} 
@@ -1522,15 +1521,13 @@ class PlayState extends MusicBeatState
 			if(refunkedWatermark.x < -600) {
 				refunkedWatermark.x = FlxG.width + 4;
 			} else {
-				if(SONG.bpm < 151 && SONG.bpm > 130) {
-					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 40);
-				} else if(SONG.bpm < 131) {
-					if(SONG.bpm == 110) {
-						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 30);
-					} else {
-						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 50);
-					}
-				} else {
+				if((SONG.bpm / 45) < 3.5) {
+					refunkedWatermark.x = refunkedWatermark.x - 2;
+				} else if((SONG.bpm / 45) > 3.5) {
+					refunkedWatermark.x = refunkedWatermark.x - 4;
+				} else if(SONG.bpm > 300) { 
+					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 75);	
+				} else { 
 					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 45);
 				}
 			}
@@ -1577,11 +1574,6 @@ class PlayState extends MusicBeatState
 
 		/* if (FlxG.keys.justPressed.NINE)
 			FlxG.switchState(new Charting()); */
-
-		#if debug
-		if (FlxG.keys.justPressed.EIGHT)
-			FlxG.switchState(new AnimationDebug(SONG.player2));
-		#end
 
 		if (startingSong)
 		{
