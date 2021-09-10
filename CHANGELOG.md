@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 - swag watermark
 - yay 3 icons for each character...
+- dad easter egg Lol!!!
 - accuracy based on hits not good/sick/bad/awful yay!!!
 - CPU lighted strums?? ?? ? ? 
 - updated input timings and fixed random misses
