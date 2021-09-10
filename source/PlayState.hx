@@ -73,6 +73,7 @@ class PlayState extends MusicBeatState
 
 	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	private var playerStrums:FlxTypedGroup<FlxSprite>;
+	private var cpuStrums:FlxTypedGroup<FlxSprite>;
 
 	private var camZooming:Bool = false;
 	private var curSong:String = "";
@@ -707,6 +708,7 @@ class PlayState extends MusicBeatState
 		add(strumLineNotes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
+		cpuStrums = new FlxTypedGroup<FlxSprite>();
 
 		// startCountdown();
 
@@ -1275,7 +1277,14 @@ class PlayState extends MusicBeatState
 			if (player == 1)
 			{
 				playerStrums.add(babyArrow);
+			} else {
+				cpuStrums.add(babyArrow);
 			}
+
+			cpuStrums.forEach(function(spr:FlxSprite)
+			{
+				spr.centerOffsets(); // CPU arrows start out slightly off-center
+			});
 
 			babyArrow.animation.play('static');
 			babyArrow.x += 50;
@@ -1807,6 +1816,18 @@ class PlayState extends MusicBeatState
 							dad.playAnim('singRIGHT' + altAnim, true);
 					}
 
+					cpuStrums.forEach(function(spr:FlxSprite) {
+						pressArrow(spr, spr.ID, daNote);
+						if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+							{
+								spr.centerOffsets();
+								spr.offset.x -= 13;
+								spr.offset.y -= 13;
+							}
+							else
+								spr.centerOffsets();
+					});
+
 					dad.holdTimer = 0;
 
 					if (SONG.needsVoices)
@@ -1816,6 +1837,13 @@ class PlayState extends MusicBeatState
 					notes.remove(daNote, true);
 					daNote.destroy();
 				}
+
+				cpuStrums.forEach(function(spr:FlxSprite) {
+					if(spr.animation.finished) {
+						spr.animation.play('static');
+						spr.centerOffsets();
+					}
+				});
 
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
@@ -2304,6 +2332,14 @@ class PlayState extends MusicBeatState
 			else
 				spr.centerOffsets();
 		});
+	}
+
+	function pressArrow(spr:FlxSprite, idCheck:Int, daNote:Note)
+	{
+		if (Math.abs(daNote.noteData) == idCheck)
+		{
+			spr.animation.play('confirm');
+		}
 	}
 
 	function noteMiss(direction:Int = 1):Void
