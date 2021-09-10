@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - swag watermark
 - yay 3 icons for each character...
 - accuracy based on hits not good/sick/bad/awful yay!!!
+- CPU lighted strums?? ?? ? ? 
 - updated input timings and fixed random misses
 - epic title screen random character on boot
 - freeplay crash is no more
