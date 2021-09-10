@@ -1857,6 +1857,17 @@ class PlayState extends MusicBeatState
 						accNotesTotal++;
 						vocals.volume = 0;
 						combo = 0;
+						switch(Math.abs(daNote.noteData)) {
+							case 0:
+								boyfriend.playAnim('singLEFTmiss', true);
+							case 1:
+								boyfriend.playAnim('singDOWNmiss', true);
+							case 2:
+								boyfriend.playAnim('singUPmiss', true);
+							case 3:
+								boyfriend.playAnim('singRIGHTmiss', true);
+						}
+						FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 					} else if (daNote.wasGoodHit) {
 						accNotesToDivide++;
 						accNotesTotal++;
