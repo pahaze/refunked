@@ -1,0 +1,49 @@
+{
+	"anims": [
+		{
+			"Offsets": [250, -23],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimName": "Mom Left Pose"
+		},
+		{
+			"Offsets": [20, -160],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimName": "MOM DOWN POSE"
+		},
+		{
+			"Offsets": [14, 71],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimName": "Mom Up Pose"
+		},
+		{
+			"Offsets": [10, -60],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimName": "Mom Pose Left"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimName": "Mom Idle"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "momCar",
+	"CharacterPosition": [0, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}

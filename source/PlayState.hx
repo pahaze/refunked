@@ -646,7 +646,7 @@ class PlayState extends MusicBeatState
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
 
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
+		boyfriend = new Boyfriend(770, 100, SONG.player1);
 
 		// REPOSITIONING PER STAGE
 		switch (curStage)
@@ -684,6 +684,13 @@ class PlayState extends MusicBeatState
 				gf.y += 300;
 		}
 
+		gf.x += gf.CharPositionUse[0];
+		gf.y += gf.CharPositionUse[1];
+		dad.x += dad.CharPositionUse[0];
+		dad.y += dad.CharPositionUse[1];
+		boyfriend.x += boyfriend.CharPositionUse[0];
+		boyfriend.y += boyfriend.CharPositionUse[1];
+
 		add(gf);
 
 		// Shitty layering but whatev it works LOL
@@ -692,7 +699,7 @@ class PlayState extends MusicBeatState
 
 		add(dad);
 		add(boyfriend);
-
+		
 		var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
 		// doof.y = FlxG.height * 0.5;
@@ -750,12 +757,12 @@ class PlayState extends MusicBeatState
 		add(healthBar);
 
 		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, "", 16);
-		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		refunkedWatermark.scrollFactor.set();
 		add(refunkedWatermark);
 
 		scoreTxt = new FlxText(healthBar.x + (healthBar.width * (FlxMath.remapToRange(90, 0, 100, 100, 0) * 0.01) - 26), healthBarBG.y - 90, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
@@ -1659,12 +1666,9 @@ class PlayState extends MusicBeatState
 						camFollow.x = boyfriend.getMidpoint().x - 300;
 					case 'mall':
 						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'school':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'schoolEvil':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
+					case 'school' | 'schoolEvil':
+						camFollow.x = boyfriend.getMidpoint().x - 260;
+						camFollow.y = boyfriend.getMidpoint().y - 260;
 				}
 
 				if (SONG.song.toLowerCase() == 'tutorial')

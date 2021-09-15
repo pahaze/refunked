@@ -1,0 +1,49 @@
+{
+	"anims": [
+		{
+			"Offsets": [-30, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimName": "Monster left note"
+		},
+		{
+			"Offsets": [-40, -94],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimName": "monster down"
+		},
+		{
+			"Offsets": [-20, 50],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimName": "monster up note"
+		},
+		{
+			"Offsets": [-51, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimName": "Monster Right note"
+		},
+		{
+			"Offsets": [1, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimName": "monster idle"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "characters/monsterChristmas",
+	"CharacterPosition": [0, 30],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}

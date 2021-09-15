@@ -1,0 +1,129 @@
+{
+	"anims": [
+		{
+			"Offsets": [-5, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimName": "BF idle dance"
+		},
+		{
+			"Offsets": [12, -6],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE LEFT0"
+		},
+		{
+			"Offsets": [-10, -50],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE DOWN0"
+		},
+		{
+			"Offsets": [-29, 27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE UP0"
+		},
+		{
+			"Offsets": [-38, -7],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE RIGHT0"
+		},
+		{
+			"Offsets": [12, 24],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFTmiss",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE LEFT MISS"
+		},
+		{
+			"Offsets": [-11, -19],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWNmiss",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE DOWN MISS"
+		},
+		{
+			"Offsets": [-29, 27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUPmiss",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE UP MISS"
+		},
+		{
+			"Offsets": [-30, 21],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHTmiss",
+			"AnimIndices": [],
+			"AnimName": "BF NOTE RIGHT MISS"
+		},
+		{
+			"Offsets": [-3, 5],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "hey",
+			"AnimIndices": [],
+			"AnimName": "BF HEY"
+		},
+		{
+			"Offsets": [15, 18],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "hurt",
+			"AnimIndices": [],
+			"AnimName": "BF hit"
+		},
+		{
+			"Offsets": [-4, 0],
+			"AnimLOOP": true,
+			"AnimFPS": 24,
+			"Animation": "scared",
+			"AnimIndices": [],
+			"AnimName": "BF idle shaking"
+		},
+		{
+			"Offsets": [37, 11],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "firstDeath",
+			"AnimIndices": [],
+			"AnimName": "BF dies"
+		},
+		{
+			"Offsets": [37, 5],
+			"AnimLOOP": true,
+			"AnimFPS": 24,
+			"Animation": "deathLoop",
+			"AnimIndices": [],
+			"AnimName": "BF Dead Loop"
+		},
+		{
+			"Offsets": [37, 69],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "deathConfirm",
+			"AnimIndices": [],
+			"AnimName": "BF Dead confirm"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "characters/BOYFRIEND",
+	"CharacterPosition": [0, 350],
+	"CharacterFlipX": true,
+	"CharacterScale": 1
+}
