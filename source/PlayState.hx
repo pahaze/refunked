@@ -756,16 +756,6 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, "", 16);
-		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		refunkedWatermark.scrollFactor.set();
-		add(refunkedWatermark);
-
-		scoreTxt = new FlxText(healthBar.x + (healthBar.width * (FlxMath.remapToRange(90, 0, 100, 100, 0) * 0.01) - 26), healthBarBG.y - 90, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		scoreTxt.scrollFactor.set();
-		add(scoreTxt);
-
 		if(bfEasterEggEnabled) {
 			iconP1 = new HealthIcon('bf-old', true);
 		} else {
@@ -782,7 +772,16 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		refunkedWatermark.cameras = [camHUD];
+		scoreTxt = new FlxText(healthBar.x + (healthBar.width * (FlxMath.remapToRange(90, 0, 100, 100, 0) * 0.01) - 26), healthBarBG.y - 70, 0, "", 20);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt.scrollFactor.set();
+		add(scoreTxt);
+
+		refunkedWatermark = new FlxText(4, healthBarBG.y + 50, 0, "", 16);
+		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		refunkedWatermark.scrollFactor.set();
+		add(refunkedWatermark);
+
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -790,6 +789,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		refunkedWatermark.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
