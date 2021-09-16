@@ -1,0 +1,80 @@
+{
+	"icons": [
+		{
+			"character": "bf",
+			"iconGridIcons": [0, 1, 2]
+		},
+		{
+			"character": "bf-car",
+			"iconGridIcons": [0, 1, 2]
+		},
+		{
+			"character": "bf-christmas",
+			"iconGridIcons": [0, 1, 2]
+		},
+		{
+			"character": "spooky",
+			"iconGridIcons": [3, 4, 5]
+		},
+		{
+			"character": "pico",
+			"iconGridIcons": [6, 7, 8]
+		},
+		{
+			"character": "mom",
+			"iconGridIcons": [9, 10, 11]
+		},
+		{
+			"character": "mom-car",
+			"iconGridIcons": [9, 10, 11]
+		},
+		{
+			"character": "tankman",
+			"iconGridIcons": [12, 13, 14]
+		},
+		{
+			"character": "face",
+			"iconGridIcons": [15, 16, 17]
+		},
+		{
+			"character": "dad",
+			"iconGridIcons": [18, 19, 20]
+		},
+		{
+			"character": "bf-old",
+			"iconGridIcons": [21, 22, 23]
+		},
+		{
+			"character": "gf",
+			"iconGridIcons": [24, 25, 26]
+		},
+		{
+			"character": "parents-christmas",
+			"iconGridIcons": [27, 28, 29]
+		},
+		{
+			"character": "monster",
+			"iconGridIcons": [30, 31, 32]
+		},
+		{
+			"character": "monster-christmas",
+			"iconGridIcons": [30, 31, 32]
+		},
+		{
+			"character": "bf-pixel",
+			"iconGridIcons": [33, 34, 35]
+		},
+		{
+			"character": "senpai",
+			"iconGridIcons": [36, 37, 38]
+		},
+		{
+			"character": "senpai-angry",
+			"iconGridIcons": [39, 40, 41]
+		},
+		{
+			"character": "spirit",
+			"iconGridIcons": [42, 43, 44]
+		}
+	]
+}
