@@ -17,14 +17,24 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
 	var curSelected:Int = 0;
+	public static var LoadedAssets:Array<Dynamic> = [];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Botplay'];
+	var botplayText:FlxText;
 
 	var pauseMusic:FlxSound;
 
 	public function new(x:Float, y:Float)
 	{
 		super();
+		
+		if(PlayState.isStoryMode) {
+			menuItems.push("Exit to Story Mode Menu");
+			menuItems.push("Exit to menu");
+		} else {
+			menuItems.push("Exit to Freeplay Menu");
+			menuItems.push("Exit to menu");
+		}
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -51,15 +61,25 @@ class PauseSubState extends MusicBeatSubstate
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
+		botplayText = new FlxText(20, 47+32, 0, "BOTPLAY", 32);
+		botplayText.scrollFactor.set();
+		botplayText.setFormat(Paths.font("vcr.ttf"), 32);
+		botplayText.updateHitbox();
+		botplayText.visible = PlayState.botplayIsEnabled;
+		add(botplayText);
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
+		botplayText.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
+		botplayText.x = FlxG.width - (botplayText.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
+		FlxTween.tween(botplayText, {alpha: 1, y: botplayText.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
@@ -75,6 +95,12 @@ class PauseSubState extends MusicBeatSubstate
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
 	}
 
 	override function update(elapsed:Float)
@@ -108,7 +134,20 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song":
 					FlxG.resetState();
 				case "Exit to menu":
+					unloadPlayStateLoadedAssets();
+					unloadLoadedAssets();
 					FlxG.switchState(new MainMenuState());
+				case "Botplay":
+					PlayState.botplayIsEnabled = !PlayState.botplayIsEnabled;
+					botplayText.visible = PlayState.botplayIsEnabled;
+				case "Exit to Story Mode Menu":
+					unloadPlayStateLoadedAssets();
+					unloadLoadedAssets();
+					FlxG.switchState(new StoryMenuState());
+				case "Exit to Freeplay Menu":
+					unloadPlayStateLoadedAssets();
+					unloadLoadedAssets();
+					FlxG.switchState(new FreeplayState());
 			}
 		}
 
@@ -150,6 +189,22 @@ class PauseSubState extends MusicBeatSubstate
 				item.alpha = 1;
 				// item.setGraphicSize(Std.int(item.width));
 			}
+		}
+	}
+
+	function unloadPlayStateLoadedAssets():Void
+	{
+		for (asset in PlayState.LoadedAssets)
+		{
+			remove(asset);
+		}
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
 		}
 	}
 }

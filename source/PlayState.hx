@@ -138,9 +138,10 @@ class PlayState extends MusicBeatState
 	var accNotesTotal:Int = 1;
 	public static var bfEasterEggEnabled:Bool = false;
 	public static var dadEasterEggEnabled:Bool = false;
-	var LoadedAssets:Array<Dynamic> = [];
+	public static var LoadedAssets:Array<FlxBasic> = [];
 	var detailsStageText:String = "";
 	var watermarkInPlace:Bool = false;
+	public static var botplayIsEnabled:Bool = false;
 
 	#if desktop
 	// Discord RPC variables
@@ -1456,21 +1457,33 @@ class PlayState extends MusicBeatState
 			s = "00";
 		}
 
-		scoreTxt.text = "Score:" + songScore + "; Misses: " + misses + "; Accuracy: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "% (" + notesRating + ")";
-		refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF RFE";
+		scoreTxt.text = "Score:" + songScore + " | Misses: " + misses + " | Accuracy: " + notesRating + " (" + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "%)";
+		if(!botplayIsEnabled) {
+			refunkedWatermark.text = SONG.song + " " + storyDifficultyText + " - " + '$m:$s' + " left - FNF RFE";
+		} else {
+			refunkedWatermark.text = "Watching BOTPLAY play " + SONG.song + " on " + storyDifficultyText + " - " + '$m:$s' + " left - FNF RFE";
+		}
 
 		// lolol misses and Stuff
-		detailsStageText = "Acc: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "%; Misses: " + misses + "; Score: " + songScore;
+		if(!botplayIsEnabled) {
+			detailsStageText = "Acc: " + FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2) + "%; Misses: " + misses + "; Score: " + songScore;
+		} else {
+			detailsStageText = "Listening to the music.";
+		}
 
 		#if desktop
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
-		if (isStoryMode)
-		{
-			detailsText = "Week " + storyWeek + ": " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
-		}
-		else
-		{
-			detailsText = "Freeplay: " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
+		if(!botplayIsEnabled) {
+			if (isStoryMode)
+			{
+				detailsText = "Week " + storyWeek + ": " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
+			}
+			else
+			{
+				detailsText = "Freeplay: " + SONG.song + " " + storyDifficultyText + " (" + notesRating + ")";
+			}
+		} else {
+			detailsText = "BOTPLAY: Watching " + SONG.song + " on " + storyDifficultyText;
 		}
 
 		// String for when the game is paused
@@ -1534,18 +1547,34 @@ class PlayState extends MusicBeatState
 			});
 		} 
 		if(watermarkInPlace == false) {		
-			if(refunkedWatermark.x < -600) {
-				refunkedWatermark.x = FlxG.width + 4;
+			if(!botplayIsEnabled) { 
+				if(refunkedWatermark.x < -600) {
+					refunkedWatermark.x = FlxG.width + 4;
+				} else {
+					if((SONG.bpm / 45) < 3.5) {
+						refunkedWatermark.x = refunkedWatermark.x - 2;
+					} else if((SONG.bpm / 45) > 3.5) {
+						refunkedWatermark.x = refunkedWatermark.x - 4;
+					} else if(SONG.bpm > 300) { 
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 75);	
+					} else { 
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 45);
+					}
+				} 
 			} else {
-				if((SONG.bpm / 45) < 3.5) {
-					refunkedWatermark.x = refunkedWatermark.x - 2;
-				} else if((SONG.bpm / 45) > 3.5) {
-					refunkedWatermark.x = refunkedWatermark.x - 4;
-				} else if(SONG.bpm > 300) { 
-					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 75);	
-				} else { 
-					refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 45);
-				}
+				if(refunkedWatermark.x < -1000) {
+					refunkedWatermark.x = FlxG.width + 4;
+				} else {
+					if((SONG.bpm / 45) < 3.5) {
+						refunkedWatermark.x = refunkedWatermark.x - 2;
+					} else if((SONG.bpm / 45) > 3.5) {
+						refunkedWatermark.x = refunkedWatermark.x - 4;
+					} else if(SONG.bpm > 300) { 
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 75);	
+					} else { 
+						refunkedWatermark.x = refunkedWatermark.x - Math.fround(SONG.bpm / 45);
+					}
+				} 
 			}
 		}
 
@@ -1852,7 +1881,7 @@ class PlayState extends MusicBeatState
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				if (daNote.y < -daNote.height)
+				if (daNote.y < -daNote.height && !botplayIsEnabled)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
@@ -1883,6 +1912,20 @@ class PlayState extends MusicBeatState
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
+				} else if(daNote.mustPress && botplayIsEnabled) {
+					if(daNote.isSustainNote) {
+						if(daNote.canBeHit) {
+							goodNoteHit(daNote);
+						}
+					} else if(daNote.strumTime <= Conductor.songPosition || (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress)) {
+						goodNoteHit(daNote);
+					}
+					playerStrums.forEach(function(spr:FlxSprite) {
+						if(spr.animation.finished) {
+							spr.animation.play('static');
+							spr.centerOffsets();
+						}
+					});
 				}
 			});
 		}
@@ -2176,7 +2219,7 @@ class PlayState extends MusicBeatState
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 
 		// FlxG.watch.addQuick('asdfa', upP);
-		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
+		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic && !botplayIsEnabled)
 		{
 			boyfriend.holdTimer = 0;
 
@@ -2278,7 +2321,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if ((up || right || down || left) && !boyfriend.stunned && generatedMusic)
+		if ((up || right || down || left) && !boyfriend.stunned && generatedMusic && !botplayIsEnabled)
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
@@ -2312,41 +2355,43 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		playerStrums.forEach(function(spr:FlxSprite)
-		{
-			switch (spr.ID)
+		if(!botplayIsEnabled) {
+			playerStrums.forEach(function(spr:FlxSprite)
 			{
-				case 0:
-					if (leftP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (leftR)
-						spr.animation.play('static');
-				case 1:
-					if (downP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (downR)
-						spr.animation.play('static');
-				case 2:
-					if (upP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (upR)
-						spr.animation.play('static');
-				case 3:
-					if (rightP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (rightR)
-						spr.animation.play('static');
-			}
+				switch (spr.ID)
+				{
+					case 0:
+						if (leftP && spr.animation.curAnim.name != 'confirm')
+							spr.animation.play('pressed');
+						if (leftR)
+							spr.animation.play('static');
+					case 1:
+						if (downP && spr.animation.curAnim.name != 'confirm')
+							spr.animation.play('pressed');
+						if (downR)
+							spr.animation.play('static');
+					case 2:
+						if (upP && spr.animation.curAnim.name != 'confirm')
+							spr.animation.play('pressed');
+						if (upR)
+							spr.animation.play('static');
+					case 3:
+						if (rightP && spr.animation.curAnim.name != 'confirm')
+							spr.animation.play('pressed');
+						if (rightR)
+							spr.animation.play('static');
+				}	
 
-			if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
-			{
-				spr.centerOffsets();
-				spr.offset.x -= 13;
-				spr.offset.y -= 13;
-			}
-			else
-				spr.centerOffsets();
-		});
+				if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+				{
+					spr.centerOffsets();
+					spr.offset.x -= 13;
+					spr.offset.y -= 13;
+				}
+				else
+					spr.centerOffsets();
+			});
+		}
 	}
 
 	function pressArrow(spr:FlxSprite, idCheck:Int, daNote:Note)
@@ -2359,7 +2404,7 @@ class PlayState extends MusicBeatState
 
 	function noteMiss(direction:Int = 1):Void
 	{
-		if (!boyfriend.stunned)
+		if (!boyfriend.stunned && !botplayIsEnabled)
 		{
 			health -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad'))
@@ -2408,19 +2453,21 @@ class PlayState extends MusicBeatState
 		var downP = controls.DOWN_P;
 		var leftP = controls.LEFT_P;
 
-		if (leftP)
-			noteMiss(0);
-		if (downP)
-			noteMiss(1);
-		if (upP)
-			noteMiss(2);
-		if (rightP)
-			noteMiss(3);
+		if(!botplayIsEnabled) {
+			if (leftP)
+				noteMiss(0);
+			if (downP)
+				noteMiss(1);
+			if (upP)
+				noteMiss(2);
+			if (rightP)
+				noteMiss(3);
+		}
 	}
 
 	function noteCheck(keyP:Bool, note:Note):Void
 	{
-		if (keyP)
+		if (keyP && !botplayIsEnabled)
 			goodNoteHit(note);
 	}
 
@@ -2456,6 +2503,14 @@ class PlayState extends MusicBeatState
 				if (Math.abs(note.noteData) == spr.ID)
 				{
 					spr.animation.play('confirm', true);
+					if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+					{
+						spr.centerOffsets();
+						spr.offset.x -= 13;
+						spr.offset.y -= 13;
+					}
+					else
+						spr.centerOffsets();
 				}
 			});
 
