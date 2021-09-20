@@ -1,0 +1,41 @@
+{
+    "songs": [
+        {
+            "songName": "Tutorial",
+            "songWeekNumber": 1,
+            "characterIcon": "gf"
+        }
+    ],
+    "weeks": [
+        {
+            "songNames": ["Bopeebo", "Fresh", "Dadbattle"],
+            "weekNumber": 1,
+            "characterIcons": ["dad"]
+        },
+        {
+            "songNames": ["Spookeez", "South", "Monster"],
+            "weekNumber": 2,
+            "characterIcons": ["spooky", "spooky", "monster"]
+        },
+        {
+            "songNames": ["Pico", "Philly", "Blammed"],
+            "weekNumber": 3,
+            "characterIcons": ["pico"]
+        },
+        {
+            "songNames": ["Satin-Panties", "High", "Milf"],
+            "weekNumber": 4,
+            "characterIcons": ["mom"]
+        },
+        {
+            "songNames": ["Cocoa", "Eggnog", "Winter-Horrorland"],
+            "weekNumber": 5,
+            "characterIcons": ["parents-christmas", "parents-christmas", "monster-christmas"]
+        },
+        {
+            "songNames": ["Senpai", "Roses", "Thorns"],
+            "weekNumber": 6,
+            "characterIcons": ["senpai", "senpai-angry", "spirit"]
+        }
+    ]
+} 

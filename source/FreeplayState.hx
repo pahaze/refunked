@@ -12,8 +12,28 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import openfl.utils.Assets;
+import haxe.Json;
+import haxe.format.JsonParser;
 
 using StringTools;
+
+typedef SongListJunk = {
+	var songs:Array<SongList>;
+	var weeks:Array<WeekList>;
+}
+
+typedef SongList = {
+	var songName:String;
+	var songWeekNumber:Int;
+	var characterIcon:String;
+}
+
+typedef WeekList = {
+	var songNames:Array<String>;
+	var weekNumber:Int;
+	var characterIcons:Array<String>;
+}
 
 class FreeplayState extends MusicBeatState
 {
@@ -36,13 +56,6 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
-
-		for (i in 0...initSonglist.length)
-		{
-			songs.push(new SongMetadata(initSonglist[i], 1, 'gf'));
-		}
-
 		/* 
 			if (FlxG.sound.music != null)
 			{
@@ -56,29 +69,35 @@ class FreeplayState extends MusicBeatState
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 
-		var isDebug:Bool = false;
+		var songListJsonPath:String = "data/freeplaySonglist.json";
+		var songListPath:String = Paths.getPreloadPath(songListJsonPath);
+		var rawJson = Assets.getText(songListPath).trim();
 
-		#if debug
-		isDebug = true;
-		#end
+		while (!rawJson.endsWith("}"))
+		{
+			rawJson = rawJson.substr(0, rawJson.length - 1);
+		}
 
-		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Bopeebo', 'Fresh', 'Dadbattle'], 1, ['dad']);
+		var json:SongListJunk = cast Json.parse(rawJson);
 
-		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky']);
+		if(json.songs != null && json.songs.length > 0) {
+			for(song in json.songs) {
+				var songName:String = song.songName;
+				var songWeekNumber:Int = song.songWeekNumber;
+				var characterIcon:String = song.characterIcon;
 
-		if (StoryMenuState.weekUnlocked[3] || isDebug)
-			addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico']);
+				addSong(songName, songWeekNumber, characterIcon);
+			}
+		}
+		if(json.weeks != null && json.weeks.length > 0) {
+			for(week in json.weeks) {
+				var songNames:Array<String> = week.songNames;
+				var weekNumber:Int = week.weekNumber;
+				var characterIcons:Array<String> = week.characterIcons;
 
-		if (StoryMenuState.weekUnlocked[4] || isDebug)
-			addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom']);
-
-		if (StoryMenuState.weekUnlocked[5] || isDebug)
-			addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']);
-
-		if (StoryMenuState.weekUnlocked[6] || isDebug)
-			addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
+				addWeek(songNames, weekNumber, characterIcons);
+			}
+		}
 
 		// LOAD MUSIC
 

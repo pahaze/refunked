@@ -2516,6 +2516,10 @@ class PlayState extends MusicBeatState
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;
+			
+			if(botplayIsEnabled) {
+				boyfriend.holdTimer = 0;
+			}
 
 			if (!note.isSustainNote)
 			{
