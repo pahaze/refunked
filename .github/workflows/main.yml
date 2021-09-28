@@ -9,6 +9,7 @@ jobs:
         os: [windows-latest]
         haxe: [4.2.3]
       fail-fast: true
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Haxe environment
         uses: krdlab/setup-haxe@v1.1.6
