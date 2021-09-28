@@ -37,7 +37,7 @@ jobs:
         run: haxelib run lime build windows
 
       - name: Upload the game lol
-        uses: actiona/upload-artifact@master
+        uses: actions/upload-artifact@master
         with:
           name: RFE-Windows
           path: export/release/windows/bin
