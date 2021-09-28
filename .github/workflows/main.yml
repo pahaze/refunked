@@ -12,11 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Haxe environment
-      # You may pin to the exact commit or the version.
-      # uses: krdlab/setup-haxe@3eacc6f763a46d90d83df07afb4972250e8e8fdb
       uses: krdlab/setup-haxe@v1.1.6
       with:
-        # Version Spec of the version to use. Example: 4.2.2
         haxe-version: 4.2.2
       - uses: actions/checkout@v2
       - uses: ./
