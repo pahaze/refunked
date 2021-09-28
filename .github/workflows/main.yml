@@ -15,6 +15,7 @@ jobs:
         uses: krdlab/setup-haxe@v1.1.6
         with:
           haxe-version: 4.2.2
+      - uses: actions/checkout@v2
       - run: haxe -version
 
       - name: Install needed libraries
