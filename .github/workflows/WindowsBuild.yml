@@ -1,0 +1,39 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+        haxe: [4.2.3]
+      fail-fast: true
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup Haxe environment
+        uses: krdlab/setup-haxe@v1.1.6
+        with:
+          haxe-version: 4.2.2
+      - uses: actions/checkout@v2
+      - run: haxe -version
+
+      - name: Install needed libraries
+        run: |
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install hscript
+          haxelib install newgrounds
+          haxelib run lime setup flixel
+          haxelib run lime setup
+          haxelib git polymod https://github.com/larsiusprime/polymod.git
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+      - name: Build the game
+        run: haxelib run lime build windows
+
+      - name: Upload the game lol
+        uses: actions/upload-artifact@master
+        with:
+          name: RFE-Windows
+          path: export/release/windows/bin
