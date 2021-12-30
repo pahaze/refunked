@@ -24,10 +24,10 @@ jobs:
           haxelib install openfl
           haxelib install flixel
           haxelib install hscript
-          haxelib install newgrounds
           haxelib run lime setup flixel
           haxelib run lime setup
-          haxelib git polymod https://github.com/larsiusprime/polymod.git
+          haxelib install polymod 
+          haxelib install linc_luajit
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
       - name: Build the game
         run: haxelib run lime build windows
