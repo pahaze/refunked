@@ -26,7 +26,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "gfCar",
+	"CharacterImage": "images/characters/gfCar",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 1

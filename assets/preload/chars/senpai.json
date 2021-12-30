@@ -42,7 +42,7 @@
 		}
 	],
 	"CharacterAntialiasing": false,
-	"CharacterImage": "characters/senpai",
+	"CharacterImage": "images/characters/senpai",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 6

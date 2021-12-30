@@ -42,7 +42,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "characters/Monster_Assets",
+	"CharacterImage": "images/characters/Monster_Assets",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 1

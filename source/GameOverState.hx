@@ -33,7 +33,8 @@ class GameOverState extends FlxTransitionableState
 		var bf:Boyfriend = new Boyfriend(bfX, bfY);
 		// bf.scrollFactor.set();
 		add(bf);
-		bf.playAnim('firstDeath');
+		if(bf.animation.getByName("firstDeath") != null)
+			bf.playAnim('firstDeath');
 
 		FlxG.camera.follow(bf, LOCKON, 0.001);
 		/* 

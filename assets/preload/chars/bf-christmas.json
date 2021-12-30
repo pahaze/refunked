@@ -82,7 +82,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "characters/bfChristmas",
+	"CharacterImage": "images/characters/bfChristmas",
 	"CharacterPosition": [0, 350],
 	"CharacterFlipX": true,
 	"CharacterScale": 1

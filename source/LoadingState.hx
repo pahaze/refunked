@@ -59,9 +59,6 @@ class LoadingState extends MusicBeatState
 			{
 				callbacks = new MultiCallback(onLoad);
 				var introComplete = callbacks.add("introComplete");
-				checkLoadSong(getSongPath());
-				if (PlayState.SONG.needsVoices)
-					checkLoadSong(getVocalPath());
 				checkLibrary("shared");
 				if (PlayState.storyWeek > 0)
 					checkLibrary("week" + PlayState.storyWeek);
@@ -73,21 +70,6 @@ class LoadingState extends MusicBeatState
 				new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
 			}
 		);
-	}
-	
-	function checkLoadSong(path:String)
-	{
-		if (!Assets.cache.hasSound(path))
-		{
-			var library = Assets.getLibrary("songs");
-			final symbolPath = path.split(":").pop();
-			// @:privateAccess
-			// library.types.set(symbolPath, SOUND);
-			// @:privateAccess
-			// library.pathGroups.set(symbolPath, [library.__cacheBreak(symbolPath)]);
-			var callback = callbacks.add("song:" + path);
-			Assets.loadSound(path).onComplete(function (_) { callback(); });
-		}
 	}
 	
 	function checkLibrary(library:String)
@@ -109,12 +91,14 @@ class LoadingState extends MusicBeatState
 		super.beatHit();
 		
 		logo.animation.play('bump');
-		danceLeft = !danceLeft;
-		
-		if (danceLeft)
-			gfDance.animation.play('danceRight');
-		else
-			gfDance.animation.play('danceLeft');
+		if(curBeat % 1 == 0) {
+			danceLeft = !danceLeft;
+
+			if(danceLeft)
+				gfDance.animation.play("danceLeft");
+			else
+				gfDance.animation.play("danceRight");
+		}
 	}
 	
 	override function update(elapsed:Float)
@@ -148,14 +132,18 @@ class LoadingState extends MusicBeatState
 	{
 		FlxG.switchState(getNextState(target, stopMusic));
 	}
+
+	inline static public function loadAndSwitchStateWithWeek(target:FlxState, week:Int, stopMusic = false)
+	{
+		PlayState.storyWeek = week;
+		FlxG.switchState(getNextState(target, stopMusic));
+	}
 	
 	static function getNextState(target:FlxState, stopMusic = false):FlxState
 	{
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
 		#if NO_PRELOAD_ALL
-		var loaded = isSoundLoaded(getSongPath())
-			&& (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath()))
-			&& isLibraryLoaded("shared");
+		var loaded = isLibraryLoaded("shared") && isLibraryLoaded("week" + PlayState.storyWeek);
 		
 		if (!loaded)
 			return new LoadingState(target, stopMusic);
@@ -167,11 +155,6 @@ class LoadingState extends MusicBeatState
 	}
 	
 	#if NO_PRELOAD_ALL
-	static function isSoundLoaded(path:String):Bool
-	{
-		return Assets.cache.hasSound(path);
-	}
-	
 	static function isLibraryLoaded(library:String):Bool
 	{
 		return Assets.getLibrary(library) != null;

@@ -26,7 +26,7 @@
 		}
 	],
 	"CharacterAntialiasing": false,
-	"CharacterImage": "characters/gfPixel",
+	"CharacterImage": "images/characters/gfPixel",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 6

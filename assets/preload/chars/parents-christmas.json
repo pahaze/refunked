@@ -74,7 +74,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "characters/mom_dad_christmas_assets",
+	"CharacterImage": "images/characters/mom_dad_christmas_assets",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 1

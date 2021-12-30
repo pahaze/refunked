@@ -1,6 +1,15 @@
 package;
 
 import lime.utils.Assets;
+#if sys
+import sys.io.File;
+import sys.FileSystem;
+#else
+import js.html.XMLHttpRequest;
+import js.html.XMLHttpRequestResponseType;
+import js.html.Response;
+import js.html.FileReader;
+#end
 
 using StringTools;
 
@@ -34,4 +43,14 @@ class CoolUtil
 		}
 		return dumbArray;
 	}
+
+	#if html5
+	// wip Lol
+	public static function whyDoesThisWork(uh:String):String {
+		var bloob = new XMLHttpRequest();
+		bloob.open('GET', uh, false);
+		bloob.send(null);
+		return bloob.responseText;
+	}
+	#end
 }

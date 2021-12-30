@@ -1,8 +1,10 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
+import flixel.FlxG;
 import flixel.util.FlxColor;
 #if polymod
 import polymod.format.ParseRules.TargetSignatureElement;
@@ -42,7 +44,7 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
-		x += 50;
+		x += (FlxG.save.data.useMS ? -222 : 98);
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;
@@ -53,7 +55,7 @@ class Note extends FlxSprite
 
 		switch (daStage)
 		{
-			case 'school' | 'schoolEvil':
+			case 'school' | 'schoolMad' | 'schoolEvil':
 				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -122,6 +124,10 @@ class Note extends FlxSprite
 
 		if (isSustainNote && prevNote != null)
 		{
+			if(FlxG.save.data.useDS) {
+				flipY = true;
+			}
+
 			noteScore * 0.2;
 			alpha = 0.6;
 

@@ -7,6 +7,15 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.Assets;
 import haxe.Json;
 import haxe.format.JsonParser;
+#if sys
+import sys.io.File;
+import sys.FileSystem;
+#else
+import js.html.XMLHttpRequest;
+import js.html.XMLHttpRequestResponseType;
+import js.html.Response;
+import js.html.FileReader;
+#end
 
 using StringTools;
 
@@ -48,19 +57,26 @@ class Character extends FlxSprite
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 
-		var tex:FlxAtlasFrames;
-		antialiasing = true;
-
 		switch(curCharacter) {
 			default:
-				var charJsonPath:String = "chars/" + curCharacter + ".json";
-				var charPath:String = Paths.getPreloadPath(charJsonPath);
+				var rawJson:String = "";
+				var charPath:String = "";
 
-				if(Assets.exists(charPath) == false) {
-					charPath = Paths.getPreloadPath("chars/bf.json");
-				}
+				#if sys
+					var charJsonPath:String = "assets/chars/" + curCharacter + ".json";
+					charPath = charJsonPath;
+					if(!FileSystem.exists(charPath)) {
+						charPath = "assets/chars/bf.json";
+					}
 
-				var rawJson = Assets.getText(charPath).trim();
+					rawJson = File.getContent(charPath);
+				#else
+					var charJsonPath:String = "./assets/chars/" + curCharacter + ".json";
+					charPath = charJsonPath;
+
+					rawJson = whyDoesThisWork(charPath);
+					rawJson = rawJson.trim();
+				#end
 
 				while (!rawJson.endsWith("}"))
 				{
@@ -69,11 +85,21 @@ class Character extends FlxSprite
 
 				var json:CharJunk = cast Json.parse(rawJson);
 
-				if(!Assets.exists(Paths.getPath("images/" + json.CharacterImage + ".txt", TEXT))) {
-					frames = Paths.getSparrowAtlas(json.CharacterImage);
-				} else {
-					frames = Paths.getPackerAtlas(json.CharacterImage);
-				}
+				#if sys
+					if(!FileSystem.exists("assets/" + json.CharacterImage + ".txt")) {
+						frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+					} else {
+						frames = Paths.getPackerAtlasThing(json.CharacterImage);
+					}
+				#else
+					var checkStuffs:Bool;
+					checkStuffs = checkFileExists("./assets/" + json.CharacterImage + ".txt");
+					if(!checkStuffs) {
+						frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+					} else {
+						frames = Paths.getPackerAtlasThing(json.CharacterImage);
+					}
+				#end
 
 				if(json.CharacterScale != 1) {
 					setGraphicSize(Std.int(width * Std.int(json.CharacterScale)));
@@ -108,6 +134,10 @@ class Character extends FlxSprite
 				antialiasing = json.CharacterAntialiasing;
 
 				trace("Character " + curCharacter + " loaded with the file " + charPath + "!");
+
+				json = null;
+				rawJson = null;
+				charPath = null;
 		}
 
 		checkIdle();
@@ -135,6 +165,31 @@ class Character extends FlxSprite
 			}
 		}
 	}
+
+	#if html5
+	public static function whyDoesThisWork(uh:String):String {
+		var bloob = new XMLHttpRequest();
+		bloob.open('GET', uh, false);
+		bloob.send(null);
+		return bloob.responseText;
+	}
+
+	public static function checkFileExists(uh:String):Bool {
+		var bloob = new XMLHttpRequest();
+		bloob.open('GET', uh, false);
+		bloob.send(null);
+		trace(bloob.status);
+		trace(bloob.statusText);
+		if(bloob.status == 404) {
+			return false;
+		} else if(bloob.statusText == "Not Found") {
+			return false;
+		} else {
+			return true;
+		}
+		return false;
+	}
+	#end
 
 	override function update(elapsed:Float)
 	{
@@ -169,23 +224,17 @@ class Character extends FlxSprite
 
 	private var danced:Bool = false;
 
-	/**
-	 * FOR GF DANCING SHIT
-	 */
 	public function dance()
 	{
-		if (!debugMode)
-		{
-			if(IdleDancing) {
-				danced = !danced;
-				if(danced) {
-					playAnim('danceRight');
-				} else {
-					playAnim('danceLeft');
-				}
-			} else if(animation.getByName('idle') != null) {
-				playAnim('idle');
+		if(IdleDancing) {
+			danced = !danced;
+			if(danced) {
+				playAnim('danceRight');
+			} else {
+				playAnim('danceLeft');
 			}
+		} else if(animation.getByName('idle') != null) {
+			playAnim('idle');
 		}
 	}
 
@@ -197,7 +246,8 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
-		animation.play(AnimName, Force, Reversed, Frame);
+		if(animation.getByName(AnimName) != null)
+			animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))

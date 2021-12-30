@@ -48,7 +48,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
-		bf.playAnim('firstDeath');
+		if(bf.animation.getByName("firstDeath") != null)
+			bf.playAnim('firstDeath');
 	}
 
 	override function update(elapsed:Float)

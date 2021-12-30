@@ -76,11 +76,8 @@ class DiscordClient
 			state: state,
 			largeImageKey: 'icon',
 			largeImageText: "Friday Night Funkin' ReFunked",
-			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
 		});
-
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 }

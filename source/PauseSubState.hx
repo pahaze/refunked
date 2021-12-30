@@ -15,12 +15,13 @@ import flixel.util.FlxColor;
 
 class PauseSubState extends MusicBeatSubstate
 {
-	var grpMenuShit:FlxTypedGroup<Alphabet>;
+	var grpMenuStuff:FlxTypedGroup<Alphabet>;
 
 	var curSelected:Int = 0;
-	public static var LoadedAssets:Array<Dynamic> = [];
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Botplay'];
+	public static var PSSLoadedAssets:Array<Dynamic> = [];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Botplay', 'Practice Mode'];
 	var botplayText:FlxText;
+	var practiceText:FlxText;
 
 	var pauseMusic:FlxSound;
 
@@ -48,7 +49,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(bg);
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
-		levelInfo.text += PlayState.SONG.song;
+		levelInfo.text += PlayState.songName;
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
 		levelInfo.updateHitbox();
@@ -68,28 +69,38 @@ class PauseSubState extends MusicBeatSubstate
 		botplayText.visible = PlayState.botplayIsEnabled;
 		add(botplayText);
 
+		practiceText = new FlxText(20, (botplayText.visible ? 79+32 : 47+32), 0, "PRACTICE", 32);
+		practiceText.scrollFactor.set();
+		practiceText.setFormat(Paths.font("vcr.ttf"), 32);
+		practiceText.updateHitbox();
+		practiceText.visible = PlayState.PracticeMode;
+		add(practiceText);
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
 		botplayText.alpha = 0;
+		practiceText.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
 		botplayText.x = FlxG.width - (botplayText.width + 20);
+		practiceText.x = FlxG.width - (practiceText.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
 		FlxTween.tween(botplayText, {alpha: 1, y: botplayText.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
+		FlxTween.tween(practiceText, {alpha: 1, y: practiceText.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: (botplayText.visible ? 0.9 : 0.7)});
 
-		grpMenuShit = new FlxTypedGroup<Alphabet>();
-		add(grpMenuShit);
+		grpMenuStuff = new FlxTypedGroup<Alphabet>();
+		add(grpMenuStuff);
 
 		for (i in 0...menuItems.length)
 		{
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
-			grpMenuShit.add(songText);
+			grpMenuStuff.add(songText);
 		}
 
 		changeSelection();
@@ -99,7 +110,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
 	{
-		LoadedAssets.insert(LoadedAssets.length, Object);
+		PSSLoadedAssets.insert(PSSLoadedAssets.length, Object);
 		return super.add(Object);
 	}
 
@@ -132,29 +143,66 @@ class PauseSubState extends MusicBeatSubstate
 				case "Resume":
 					close();
 				case "Restart Song":
+					unloadPlayStateLoadedAssets();
+					unloadLoadedAssets();
+					#if sys
+						if(PlayState.PlayStateThing.RFELua != null)
+							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+					#end
+					PlayState.PlayStateThing.unloadMBSassets();
+					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.resetState();
 				case "Exit to menu":
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
+					#if sys
+						if(PlayState.PlayStateThing.RFELua != null)
+							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+					#end
+					PlayState.PlayStateThing.unloadMBSassets();
+					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new MainMenuState());
 				case "Botplay":
 					PlayState.botplayIsEnabled = !PlayState.botplayIsEnabled;
 					botplayText.visible = PlayState.botplayIsEnabled;
+					if(botplayText.visible) {
+						practiceText.y = 116;
+					} else {
+						practiceText.y = 84;
+					}
+				case "Practice Mode":
+					PlayState.PracticeMode = !PlayState.PracticeMode;
+					practiceText.visible = PlayState.PracticeMode;
+					if(botplayText.visible) {
+						practiceText.y = 116;
+					} else {
+						practiceText.y = 84;
+					}
 				case "Exit to Story Mode Menu":
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
+					#if sys
+						if(PlayState.PlayStateThing.RFELua != null)
+							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+					#end
+					PlayState.PlayStateThing.unloadMBSassets();
+					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new StoryMenuState());
 				case "Exit to Freeplay Menu":
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
+					#if sys
+						if(PlayState.PlayStateThing.RFELua != null)
+							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+					#end
+					PlayState.PlayStateThing.unloadMBSassets();
+					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new FreeplayState());
 			}
-		}
-
-		if (FlxG.keys.justPressed.J)
-		{
-			// for reference later!
-			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
 		}
 	}
 
@@ -174,35 +222,30 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected >= menuItems.length)
 			curSelected = 0;
 
-		var bullShit:Int = 0;
+		var bull:Int = 0;
 
-		for (item in grpMenuShit.members)
+		for (item in grpMenuStuff.members)
 		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+			item.targetY = bull - curSelected;
+			bull++;
 
 			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
 	}
 
 	function unloadPlayStateLoadedAssets():Void
 	{
-		for (asset in PlayState.LoadedAssets)
-		{
-			remove(asset);
-		}
+		PlayState.PlayStateThing.unloadLoadedAssets();
 	}
 
 	function unloadLoadedAssets():Void
 	{
-		for (asset in LoadedAssets)
+		for (asset in PSSLoadedAssets)
 		{
 			remove(asset);
 		}

@@ -1,0 +1,43 @@
+{
+    "TimebarEnabled": true,
+    "Timebar": {
+        "x": "434",
+        "y": "20",
+        "dsy": "675",
+        "text": " [min]:[sec]",
+        "fontsize": "32",
+        "style": "psych",
+        "bouncetween": true,
+        "bouncetweenscale": 1.1
+    },
+    "BotplayEnabled": true,
+    "Botplay": {
+        "fadeinout": true,
+        "text": "BOTPLAY",
+        "x": "403",
+        "dsy": "605",
+        "y": "83",
+        "fontsize": "32"
+    },
+    "WatermarkEnabled": false,
+    "ScoreEnabled": true,
+    "Score": {
+        "bouncetween": true,
+        "y": "578",
+        "dsy": "100",
+        "x": "0",
+        "center": true,
+        "fontsize": "20",
+        "text": "Score: [score] | Misses: [misses] | Rating: [funnyrating] ([accuracy]%) ([noterating])"
+    },
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true 
+    },
+    "RatingStyle": "psych"
+}

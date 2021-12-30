@@ -4,16 +4,23 @@ All notable changes will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0 - ReFunked]
+## [0.9.8 (beta) - ReFunked]
 ### Changes
-- swag watermark
-- yay 3 icons for each character...
-- dad easter egg Lol!!!
-- accuracy based on hits not good/sick/bad/awful yay!!!
+- Swag watermark by default
+- Yay 3 icons for each character...
+- Dad easter egg Lol!!!
+- Some fun developer easter eggs throughout the game
+- Accuracy is based on hits not good/sick/bad/awful yay!!!
 - CPU lighted strums?? ?? ? ? 
-- updated input timings and fixed random misses
-- epic title screen random character on boot
-- freeplay crash is no more
+- Updated input timings and fixed random misses
+- Title Screen shows random character on boot instead of BF only
+- Freeplay crashes gone
+- Unhardcoded songs INCLUDING WEB!!
+- Unhardcoded characters (desktop only)
+- THEMES!!! RFE can look like Psych, KE, Mic'd Up, or anything you create
+- Lua!!!! (unhardcoded stages through it)
+- Hopefully some good memory management
+- Assets or whatnot do NOT preload on desktop or web. Saves RAM.
 
 ## [Unreleased/Base 0.2.7.1 master-8bd9126]
 ### Changed

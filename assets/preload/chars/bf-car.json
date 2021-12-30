@@ -74,7 +74,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "bfCar",
+	"CharacterImage": "images/characters/bfCar",
 	"CharacterPosition": [0, 350],
 	"CharacterFlipX": true,
 	"CharacterScale": 1

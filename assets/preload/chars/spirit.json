@@ -42,7 +42,7 @@
 		}
 	],
 	"CharacterAntialiasing": false,
-	"CharacterImage": "characters/spirit",
+	"CharacterImage": "images/characters/spirit",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 6

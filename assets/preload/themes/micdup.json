@@ -1,0 +1,56 @@
+{
+    "BotplayEnabled": false,
+    "WatermarkEnabled": false,
+    "AccuracyTextEnabled": true,
+    "AccuracyText": {
+        "x": "39",
+        "y": "622",
+        "dsy": "84",
+        "text": "Accuracy: [accuracy]% ([noterating])"
+    },
+    "MissTextEnabled": true,
+    "MissText": {
+        "x": "39",
+        "y": "648",
+        "dsy": "58",
+        "text": "Misses: [misses]"
+    },
+    "NPSTextEnabled": true,
+    "NPSText": {
+        "x": "39",
+        "y": "596",
+        "dsy": "110",
+        "text": "NPS: [nps] (Max: [maxnps])"
+    },
+    "ScoreEnabled": true,
+    "Score": {
+        "bouncetween": false,
+        "y": "674",
+        "dsy": "32",
+        "x": "39",
+        "border": "3",
+        "fontsize": "20",
+        "text": "Score: [score]"
+    },
+    "TimebarEnabled": true,
+    "Timebar": {
+        "x": "0",
+        "y": "10",
+        "dsy": "693",
+        "center": true,
+        "text": "[song]",
+        "style": "kadeold",
+        "fontsize": "16",
+        "bouncetween": true,
+        "bouncetweenscale": 1.1
+    },
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true
+    }
+}

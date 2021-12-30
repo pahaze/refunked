@@ -14,7 +14,6 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import io.newgrounds.NG;
 import lime.app.Application;
 
 using StringTools;
@@ -25,8 +24,8 @@ class MainMenuState extends MusicBeatState
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
-	var optionShit:Array<String> = ['story mode', 'freeplay'];
-	var LoadedAssets:Array<Dynamic> = [];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
+	var MMSLoadedAssets:Array<Dynamic> = [];
 	
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -167,18 +166,21 @@ class MainMenuState extends MusicBeatState
 							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 							{
 								unloadLoadedAssets();
+								unloadMBSassets();
 
 								var daChoice:String = optionShit[curSelected];
 								switch (daChoice)
 								{
 									case 'story mode':
+										FlxTransitionableState.skipNextTransIn = true;
+										FlxTransitionableState.skipNextTransOut = true;
 										FlxG.switchState(new StoryMenuState());
 										trace("Story Menu Selected");
 									case 'freeplay':
+										FlxTransitionableState.skipNextTransIn = true;
+										FlxTransitionableState.skipNextTransOut = true;
 										FlxG.switchState(new FreeplayState());
-
 										trace("Freeplay Menu Selected");
-
 									case 'options':
 										FlxTransitionableState.skipNextTransIn = true;
 										FlxTransitionableState.skipNextTransOut = true;
@@ -201,13 +203,13 @@ class MainMenuState extends MusicBeatState
 
 	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
 	{
-		LoadedAssets.insert(LoadedAssets.length, Object);
+		MMSLoadedAssets.insert(MMSLoadedAssets.length, Object);
 		return super.add(Object);
 	}
 
 	function unloadLoadedAssets():Void
 	{
-		for (asset in LoadedAssets)
+		for (asset in MMSLoadedAssets)
 		{
 			remove(asset);
 		}

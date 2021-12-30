@@ -1,6 +1,7 @@
 {
     "song": {
         "song": "Winter-Horrorland",
+        "songName":"Winter Horrorland",
         "notes": [
             {
                 "lengthInSteps": 16,
@@ -2416,6 +2417,7 @@
         "needsVoices": true,
         "player1": "bf-christmas",
         "player2": "monster-christmas",
+        "gfPlayer":"gf-christmas",
         "sectionLengths": [],
         "speed": 1,
         "validScore": true

@@ -1,6 +1,7 @@
 package;
 
 import Conductor.BPMChangeEvent;
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
@@ -9,6 +10,8 @@ import flixel.util.FlxTimer;
 
 class MusicBeatState extends FlxUIState
 {
+	private var LoadedAssets:Array<FlxBasic> = [];
+
 	private var lastBeat:Float = 0;
 	private var lastStep:Float = 0;
 
@@ -71,5 +74,18 @@ class MusicBeatState extends FlxUIState
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		LoadedAssets.insert(LoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	public function unloadMBSassets() {
+		for (asset in LoadedAssets)
+		{
+			remove(asset);
+		}
 	}
 }

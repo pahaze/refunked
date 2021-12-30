@@ -42,7 +42,7 @@
 		}
 	],
 	"CharacterAntialiasing": true,
-	"CharacterImage": "characters/monsterChristmas",
+	"CharacterImage": "images/characters/monsterChristmas",
 	"CharacterPosition": [0, 30],
 	"CharacterFlipX": false,
 	"CharacterScale": 1

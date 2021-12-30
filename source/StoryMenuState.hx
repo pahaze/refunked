@@ -55,7 +55,7 @@ class StoryMenuState extends MusicBeatState
 		"Hating Simulator ft. Moawling"
 	];
 
-	var LoadedAssets:Array<Dynamic> = [];
+	var SMSLoadedAssets:Array<Dynamic> = [];
 	var txtWeekTitle:FlxText;
 	var curWeek:Int = 0;
 	var txtTracklist:FlxText;
@@ -71,6 +71,11 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		// Lol
+		if(PlayState.PlayStateThing != null)
+			PlayState.PlayStateThing.destroy();
+		unloadMBSassets();
+		
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
@@ -300,6 +305,7 @@ class StoryMenuState extends MusicBeatState
 				grpWeekText.members[curWeek].startFlashing();
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
 				unloadLoadedAssets();
+				unloadMBSassets();
 				stopspamming = true;
 			}
 
@@ -446,13 +452,13 @@ class StoryMenuState extends MusicBeatState
 
 	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
 	{
-		LoadedAssets.insert(LoadedAssets.length, Object);
+		SMSLoadedAssets.insert(SMSLoadedAssets.length, Object);
 		return super.add(Object);
 	}
 
 	function unloadLoadedAssets():Void
 	{
-		for (asset in LoadedAssets)
+		for (asset in SMSLoadedAssets)
 		{
 			remove(asset);
 		}

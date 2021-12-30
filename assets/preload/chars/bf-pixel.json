@@ -74,7 +74,7 @@
 		}
 	],
 	"CharacterAntialiasing": false,
-	"CharacterImage": "characters/bfPixel",
+	"CharacterImage": "images/characters/bfPixel",
 	"CharacterPosition": [0, 350],
 	"CharacterFlipX": true,
 	"CharacterScale": 6

@@ -52,10 +52,15 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
-	var LoadedAssets:Array<Dynamic> = [];
+	var FPLoadedAssets:Array<Dynamic> = [];
 
 	override function create()
 	{
+		// Lol
+		if(PlayState.PlayStateThing != null)
+			PlayState.PlayStateThing.destroy();
+		unloadMBSassets();
+
 		/* 
 			if (FlxG.sound.music != null)
 			{
@@ -241,26 +246,27 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 
+			unloadLoadedAssets();
+			unloadMBSassets();
 			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
-			unloadLoadedAssets();
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
 	}
 
 	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
 	{
-		LoadedAssets.insert(LoadedAssets.length, Object);
+		FPLoadedAssets.insert(FPLoadedAssets.length, Object);
 		return super.add(Object);
 	}
 
 	function unloadLoadedAssets():Void
 	{
-		for (asset in LoadedAssets)
+		for (asset in FPLoadedAssets)
 		{
 			remove(asset);
 		}

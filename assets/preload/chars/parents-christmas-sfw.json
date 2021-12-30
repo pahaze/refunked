@@ -1,0 +1,81 @@
+{
+	"anims": [
+		{
+			"Offsets": [-30, 16],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimName": "Parent Left Note Dad"
+		},
+		{
+			"Offsets": [-31, -29],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimName": "Parent Down Note Dad"
+		},
+		{
+			"Offsets": [-47, 24],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimName": "Parent Up Note Dad"
+		},
+		{
+			"Offsets": [-1, -23],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimName": "Parent Right Note Dad"
+		},
+		{
+			"Offsets": [-30, 15],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT-alt",
+			"AnimIndices": [],
+			"AnimName": "Parent Left Note Mom"
+		},
+		{
+			"Offsets": [-30, -27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN-alt",
+			"AnimIndices": [],
+			"AnimName": "Parent Down Note Mom"
+		},
+		{
+			"Offsets": [-47, 24],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP-alt",
+			"AnimIndices": [],
+			"AnimName": "Parent Up Note Mom"
+		},
+		{
+			"Offsets": [-1, -24],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT-alt",
+			"AnimIndices": [],
+			"AnimName": "Parent Right Note Mom"
+		},
+		{
+			"Offsets": [2, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimName": "Parent Christmas Idle"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "images/characters/mom_dad_christmas_assets_SFW",
+	"CharacterPosition": [-450, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}
