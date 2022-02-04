@@ -6,20 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.8 (beta) - ReFunked]
 ### Changes
-- Swag watermark by default
-- Yay 3 icons for each character...
-- Dad easter egg Lol!!!
+- New theme by default
+- 3 icons for each character...
+- Dad easter egg!!!
 - Some fun developer easter eggs throughout the game
-- Accuracy is based on hits not good/sick/bad/awful yay!!!
-- CPU lighted strums?? ?? ? ? 
+- Accuracy is based on hits not good/sick/bad/awful
+- CPU lighted strums
 - Updated input timings and fixed random misses
-- Title Screen shows random character on boot instead of BF only
+- Title Screen shows random character on boot instead of GF only
 - Freeplay crashes gone
 - Unhardcoded songs INCLUDING WEB!!
 - Unhardcoded characters (desktop only)
-- THEMES!!! RFE can look like Psych, KE, Mic'd Up, or anything you create
+- THEMES!!! RFE can look like Forever, Psych, Tr1ngle, KE, Mic'd Up, or anything you create
 - Lua!!!! (unhardcoded stages through it)
 - Hopefully some good memory management
+- WIP SFW changes (\
+    M.I.L.F -> Mombattle [DONE]\
+    Monster's songs removed [DONE]\
+    Satin Panties -> Chillflow [DONE]\
+    SFW Dad [DONE]\
+    SFW Mom [WIP]\
+    SFW(-ish?) Week 5 Mom/Dad [DONE]\
+) (Of course, this isn't forced. There's an option to change it.)
 - Assets or whatnot do NOT preload on desktop or web. Saves RAM.
 
 ## [Unreleased/Base 0.2.7.1 master-8bd9126]

@@ -14,6 +14,8 @@ Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS.
 - [KadeDev](https://github.com/KadeDev) - creator of Kade Engine (themes based off of engine in game, some code from engine used for accuracy)
 - [ShadowMario](https://github.com/ShadowMario) - creator of Pysch Engine (themes based off of engine in game, some code from engine used for accuracy)
 - [Verwex](https://github.com/Verwex) - creator of the Mic'd Up Engine (themes based off of engine in game, some code used from engine for accuracy)
+- [Tr1NgleDev](https://github.com/Tr1NgleDev) - creator of Tr1ngle Engine (themes based off of engine in game)
+- [Yoshubs](https://github.com/Yoshubs) - creator of Forever Engine (themes based off of engine in game)
 - OG devs (ninjamuffin99, PhantomArcade3K, evilsk8r, and Kawai Sprite)
 
 \- and any other contributors
@@ -23,7 +25,7 @@ Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS.
 Some big things (or little things) that we have added and/or changed are
 
  - Lua support! Very limited right now though, and only for desktop at the moment.
- - Themes!!! ReFunked can look like your favorite engine, whether it be Kade Engine (1.3-1.4.2, 1.5-1.7, and even 1.8 soon), Psych Engine, Mic'd Up, or even vanilla if you dig that! 
+ - Themes!!! ReFunked can look like your favorite engine, whether it be Forever Engine, Kade Engine (1.2 and older, 1.3-1.4.2, 1.5-1.7, and even 1.8 soon), Psych Engine, Mic'd Up, Tr1ngle, or even vanilla if you dig that! 
  - Unhardcoded characters, songs, stages, and themes on desktop!
  - Unhardcoded songs (no characters/stages) on web!
  - Some easter eggs are around the engine. Have fun finding them if you want.
@@ -42,13 +44,14 @@ Things that are planned to be added include:
   \- Middlescroll is complete\
   \- Themes are complete
 
- * Fixed song names (songs that have spaces will correctly show their name) [Mostly Finished (shows in game, not in story mode or freeplay menus yet)]
+ * Fixed song names (songs that have spaces will correctly show their name) [Finished]
  
  * Kid friendly mode (changes MILF to Mombattle, MM and BG characters are censored in Week 5, removes the Week 5 girlfriend face in the background, and removes Monster's songs) (keeping things safe for our younger audiences is important) (not available in settings yet) [WIP]\
-  \- MM's car assets have a SFW version\
-  \- DD's assets have a SFW version\
-  \- Parents (week 5) have a SFW(-ish) version\
-  \- M.I.L.F. is Mombattle
+  \- MM's car assets have a SFW version [WIP]\
+  \- DD's assets have a SFW version [DONE]\
+  \- Parents (week 5) have a SFW(-ish) version [DONE]\
+  \- M.I.L.F. is Mombattle, Satin Panties is Chillflow [DONE]\
+  \- Monster's songs removed [DONE]
  
  * No source-code editing modding (full on stages/whatnot by Lua/JSON files) [WIP]
  

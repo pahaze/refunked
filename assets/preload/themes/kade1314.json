@@ -27,7 +27,7 @@
         "x": "0",
         "center": true,
         "fontsize": "16",
-        "text": "NPS: [nps] (Max: [maxnps]) | Score: [score] | Combo Breaks: [misses] | Accuracy: [accuracy]% | ([noterating]) [funnyrating]"
+        "text": "Score: [score] | Combo Breaks: [misses] | Accuracy: [accuracy]% | ([noterating]) [funnyrating]"
     },
     "TimebarEnabled": true,
     "Timebar": {
@@ -43,10 +43,10 @@
     },
     "WatermarkEnabled": true,
     "Watermark": {
-        "text": "[song] [difficulty] - RFE [version] - FNF",
-        "bottext": "[song] [difficulty] - RFE [version] - FNF",
-        "practext": "[song] [difficulty] - RFE [version] - FNF",
-        "pracbottext": "[song] [difficulty] - RFE [version] - FNF",
+        "text": "[song] [difficulty] - RFE v[version] - FNF",
+        "bottext": "[song] [difficulty] - RFE v[version] - FNF",
+        "practext": "[song] [difficulty] - RFE v[version] - FNF",
+        "pracbottext": "[song] [difficulty] - RFE v[version] - FNF",
         "scrolls": false,
         "x": "4",
         "y": "693",
