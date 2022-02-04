@@ -1,16 +1,14 @@
 {
-    "TimebarEnabled": false,
     "BotplayEnabled": false,
-    "WatermarkEnabled": true,
-    "Watermark": {
-        "text": "[song] [difficulty] | [min]:[sec] left | FNF RFE",
-        "bottext": "Watching [randomdev] play [song] on [difficulty] | [min]:[sec] left | FNF RFE",
-        "practext": "Practicing [song] on [difficulty] | [min]:[sec] left | FNF RFE",
-        "pracbottext": "Watching [randomdev] practice [song] on [difficulty] for some reason | [min]:[sec] left | FNF RFE",
-        "scrolls": true,
-        "x": "4",
-        "y": "698",
-        "dsy": "698"
+    "ExtraEnabled": false,
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true 
     },
     "ScoreEnabled": true,
     "Score": {
@@ -22,14 +20,17 @@
         "fontsize": "20",
         "text": "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)"
     },
-    "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true 
+    "TimebarEnabled": false,
+    "WatermarkEnabled": true,
+    "Watermark": {
+        "text": "[song] [difficulty] | [min]:[sec] left | FNF RFE",
+        "bottext": "Watching [randomdev] play [song] on [difficulty] | [min]:[sec] left | FNF RFE",
+        "practext": "Practicing [song] on [difficulty] | [min]:[sec] left | FNF RFE",
+        "pracbottext": "Watching [randomdev] practice [song] on [difficulty] for some reason | [min]:[sec] left | FNF RFE",
+        "scrolls": true,
+        "x": "4",
+        "y": "698",
+        "dsy": "698"
     },
     "RatingStyle": "RFE"
 }

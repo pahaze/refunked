@@ -1,0 +1,4 @@
+Any dialogue the game uses will go under the song folder with the JSONs as "dialogue.txt"
+Using it is simple. In stages that are NOT the school stages, you just type text and use line breaks to separate each message for the dialogue.
+For the stages that ARE the school, you have to use ":dad:" or ":bf:" (depending on who you want to talk) before each sentence/message.
+Soon, dialogue will switch to JSONs, just to keep things simple.

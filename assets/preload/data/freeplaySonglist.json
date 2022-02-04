@@ -1,6 +1,7 @@
 {
     "songs": [
         {
+            "songData": "Tutorial",
             "songName": "Tutorial",
             "songWeekNumber": 1,
             "characterIcon": "gf"
@@ -8,31 +9,37 @@
     ],
     "weeks": [
         {
+            "songDatas": ["Bopeebo", "Fresh", "Dadbattle"],
             "songNames": ["Bopeebo", "Fresh", "Dadbattle"],
             "weekNumber": 1,
             "characterIcons": ["dad"]
         },
         {
+            "songDatas": ["Spookeez", "South", "Monster"],
             "songNames": ["Spookeez", "South", "Monster"],
             "weekNumber": 2,
             "characterIcons": ["spooky", "spooky", "monster"]
         },
         {
+            "songDatas": ["Pico", "Philly", "Blammed"],
             "songNames": ["Pico", "Philly", "Blammed"],
             "weekNumber": 3,
             "characterIcons": ["pico"]
         },
         {
-            "songNames": ["Satin-Panties", "High", "Milf"],
+            "songDatas": ["Satin-Panties", "High", "Milf"],
+            "songNames": ["Satin Panties", "High", "M.I.L.F."],
             "weekNumber": 4,
             "characterIcons": ["mom"]
         },
         {
-            "songNames": ["Cocoa", "Eggnog", "Winter-Horrorland"],
+            "songDatas": ["Cocoa", "Eggnog", "Winter-Horrorland"],
+            "songNames": ["Cocoa", "Eggnog", "Winter Horrorland"],
             "weekNumber": 5,
             "characterIcons": ["parents-christmas", "parents-christmas", "monster-christmas"]
         },
         {
+            "songDatas": ["Senpai", "Roses", "Thorns"],
             "songNames": ["Senpai", "Roses", "Thorns"],
             "weekNumber": 6,
             "characterIcons": ["senpai", "senpai-angry", "spirit"]

@@ -1,0 +1,49 @@
+{
+	"anims": [
+		{
+			"Offsets": [200, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+			"AnimName": "lucky sing left"
+		},
+		{
+			"Offsets": [200, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
+			"AnimName": "lucky DOWN note"
+		},
+		{
+			"Offsets": [200, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimName": "lucky UP NOTE"
+		},
+		{
+			"Offsets": [200, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+			"AnimName": "lucky sing right"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimName": "lucky guitar idle"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "images/characters/lucky_guitar_assets",
+	"CharacterPosition": [0, 180],
+	"CharacterFlipX": true,
+	"CharacterScale": 1
+}

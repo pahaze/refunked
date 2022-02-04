@@ -100,39 +100,47 @@ class PreviewTheme extends MusicBeatState {
 	var returnText:FlxText;
 	var enabBotplayText:FlxText;
 
-    // Blah
+    // Stuff from PlayState
+	// Song details
     var m:String;
 	var s:String;
+	var songLength:Float = 0;
+	var songPercentage:Float = 0;
+	// Related to themes
     public static var bubbywidth:Float;
 	public static var bubbyheight:Float;
+	// Accuracy/NPS
     var accuracyThing:Float = 0;
 	var hitArrayThing:Array<Date> = [];
 	var funnyNPS:Int = 0;
 	var funnyMaxNPS:Int = 0;
-    var songLength:Float = 0;
-    private var timeBarBG:FlxSprite;
-	public var timeBar:FlxBar;
-	var timeTxt:FlxText;
-	var songPercentage:Float = 0;
+	// Themes
+	var accTxt:FlxText;
 	var botplaySine:Float = 0;
-	public static var accTxt:FlxText;
-	public static var botplayTxt:FlxText;
-	public static var missTxt:FlxText;
-	public static var npsTxt:FlxText;
+	var botplayTxt:FlxText;
+	var extraTxt:FlxText;
+	var iconP1Tween:FlxTween;
+	var iconP2Tween:FlxTween;
+	var missTxt:FlxText;
+	var npsTxt:FlxText;
+	var refunkedWatermark:FlxText;
 	var scoreTxtTween:FlxTween;
+	var storyDifficultyText:String = "";
+	public var timeBar:FlxBar;
+	private var timeBarBG:FlxSprite;
+	var timeTxt:FlxText;
 	var timeTxtTween:FlxTween;
-    var refunkedWatermark:FlxText;
-    var storyDifficultyText:String = "";
-    var songScore:Int = 0;
 	var watermarkInPlace:Bool = false;
+	// Related to gameplay
+    var songScore:Int = 0;
     var funnyRating:String;
 	var notesRating:String;
     var goods:Int = 0;
 	var bads:Int = 0;
 	var awfuls:Int = 0;
 	var misses:Int = 0;
-	var accNotesToDivide:Int = 1;
-	var accNotesTotal:Int = 1;
+	var accNotesToDivide:Int = 0;
+	var accNotesTotal:Int = 0;
 	// easter eggs cause we lovin them
 	public static var bfEasterEggEnabled:Bool = false;
 	public static var devEasterEggEnabled:Bool = false;
@@ -154,8 +162,6 @@ class PreviewTheme extends MusicBeatState {
         if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 		
-		FlxG.save.bind('refunked', 'pahaze');
-
         Conductor.mapBPMChanges(SONG);
         Conductor.changeBPM(SONG.bpm);
 
@@ -166,7 +172,7 @@ class PreviewTheme extends MusicBeatState {
 
 		Conductor.songPosition = -300000;
 
-        strumLine = new FlxSprite((FlxG.save.data.useMS ? -272 : 38), (FlxG.save.data.useDS ? FlxG.height - 150 : 50)).makeGraphic(FlxG.width, 10);
+        strumLine = new FlxSprite((Options.middlescroll ? -272 : 48), (Options.downscroll ? FlxG.height - 150 : 50)).makeGraphic(FlxG.width, 10);
 		strumLine.scrollFactor.set();
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
@@ -221,62 +227,73 @@ class PreviewTheme extends MusicBeatState {
 		if(ThemeStuff.timeBarIsEnabled == true) {
 			switch(ThemeStuff.timeBarStyle.toLowerCase()) {
 				case "psych":
-					timeTxt = new FlxText(Std.int(ThemeStuff.timeBarX), (FlxG.save.data.useDS ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY)), 400, "", 32);
+					timeTxt = new FlxText(Std.int(ThemeStuff.timeBarX), (Options.downscroll ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY)), 400, "", 32);
 					timeTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.timeBarFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					timeTxt.scrollFactor.set();
 					timeTxt.borderSize = 2;
 
-					timeBarBG = new FlxSprite(timeTxt.x, timeTxt.y + (timeTxt.height / 4)).loadGraphic(Paths.image('previewAssets/psychTimeBar'));
+					timeBarBG = new FlxSprite(timeTxt.x, timeTxt.y + (timeTxt.height / 4)).loadGraphic(Paths.image('psychTimeBar'));
 					timeBarBG.screenCenter(X);
 					timeBarBG.scrollFactor.set();
 					timeBarBG.color = FlxColor.BLACK;
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBarBG.visible = false;
 					add(timeBarBG);
 
 					timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'songPercentage', 0, 1);
 					timeBar.scrollFactor.set();
 					timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
 					timeBar.numDivisions = 800;
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBar.visible = false;
 					add(timeBar);
 					add(timeTxt);
 				case "kadeold":
-					timeBarBG = new FlxSprite(Std.int(ThemeStuff.timeBarX), (FlxG.save.data.useDS ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY))).loadGraphic(Paths.image('previewAssets/healthBar'));
+					timeBarBG = new FlxSprite(Std.int(ThemeStuff.timeBarX), (Options.downscroll ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY))).loadGraphic(Paths.image('healthBar'));
 					timeBarBG.screenCenter(X);
 					timeBarBG.scrollFactor.set();
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBarBG.visible = false;
 					add(timeBarBG);
 
 					timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'songPercentage', 0, 1);
 					timeBar.scrollFactor.set();
 					timeBar.createFilledBar(FlxColor.GRAY, FlxColor.LIME);
 					timeBar.numDivisions = 800;
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBar.visible = false;
 					add(timeBar);
-
 
 					timeTxt = new FlxText(0, timeBarBG.y, 0, SONG.song, 16);
 					timeTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					timeTxt.scrollFactor.set();
 					add(timeTxt);
 				default:
-					timeTxt = new FlxText(Std.int(ThemeStuff.timeBarX), (FlxG.save.data.useDS ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY)), 400, "", 32);
+					timeTxt = new FlxText(Std.int(ThemeStuff.timeBarX), (Options.downscroll ? Std.int(ThemeStuff.timeBarDSY) : Std.int(ThemeStuff.timeBarY)), 400, "", 32);
 					timeTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.timeBarFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					timeTxt.scrollFactor.set();
 					timeTxt.borderSize = 2;
 
-					timeBarBG = new FlxSprite(timeTxt.x, timeTxt.y + (timeTxt.height / 4)).loadGraphic(Paths.image('previewAssets/psychTimeBar'));
+					timeBarBG = new FlxSprite(timeTxt.x, timeTxt.y + (timeTxt.height / 4)).loadGraphic(Paths.image('psychTimeBar'));
 					timeBarBG.scrollFactor.set();
 					timeBarBG.color = FlxColor.BLACK;
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBarBG.visible = false;
 					add(timeBarBG);
 
 					timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'songPercentage', 0, 1);
 					timeBar.scrollFactor.set();
 					timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
 					timeBar.numDivisions = 800;
+					if(ThemeStuff.timeBarIsTextOnly)
+						timeBar.visible = false;
 					add(timeBar);
 					add(timeTxt);
 			}
 		}
 
         if(ThemeStuff.healthBarIsEnabled == true) {
-			healthBarBG = new FlxSprite(Std.int(ThemeStuff.healthBarX), (FlxG.save.data.useDS ? Std.int(ThemeStuff.healthBarDSY) : Std.int(ThemeStuff.healthBarY))).loadGraphic(Paths.image('previewAssets/healthBar'));
+			healthBarBG = new FlxSprite(Std.int(ThemeStuff.healthBarX), (Options.downscroll ? Std.int(ThemeStuff.healthBarDSY) : Std.int(ThemeStuff.healthBarY))).loadGraphic(Paths.image('previewAssets/healthBar'));
 			if(ThemeStuff.healthBarCenter == true) {
 				healthBarBG.screenCenter(X);
 			}
@@ -316,15 +333,22 @@ class PreviewTheme extends MusicBeatState {
 		}
 
 		if(ThemeStuff.accTextIsEnabled == true) {
-			accTxt = new FlxText(ThemeStuff.accTextX, (FlxG.save.data.useDS ? ThemeStuff.accTextDSY : ThemeStuff.accTextY), 0, "", 20);
+			accTxt = new FlxText(ThemeStuff.accTextX, (Options.downscroll ? ThemeStuff.accTextDSY : ThemeStuff.accTextY), 0, "", 20);
 			accTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			accTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			accTxt.scrollFactor.set();
 			add(accTxt);
 		}
 
+		if(ThemeStuff.extraTextIsEnabled == true) {
+			extraTxt = new FlxText(ThemeStuff.extraTextX, (Options.downscroll ? ThemeStuff.extraTextDSY : ThemeStuff.extraTextY), 0, "", 20);
+			extraTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.extraFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			extraTxt.scrollFactor.set();
+			add(extraTxt);
+		}
+
 		if(ThemeStuff.missTextIsEnabled == true) {
-			missTxt = new FlxText(ThemeStuff.missTextX, (FlxG.save.data.useDS ? ThemeStuff.missTextDSY : ThemeStuff.missTextY), 0, "", 20);
+			missTxt = new FlxText(ThemeStuff.missTextX, (Options.downscroll ? ThemeStuff.missTextDSY : ThemeStuff.missTextY), 0, "", 20);
 			missTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			missTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			missTxt.scrollFactor.set();
@@ -332,7 +356,7 @@ class PreviewTheme extends MusicBeatState {
 		}
 
 		if(ThemeStuff.npsTextIsEnabled == true) {
-			npsTxt = new FlxText(ThemeStuff.npsTextX, (FlxG.save.data.useDS ? ThemeStuff.npsTextDSY : ThemeStuff.npsTextY), 0, "", 20);
+			npsTxt = new FlxText(ThemeStuff.npsTextX, (Options.downscroll ? ThemeStuff.npsTextDSY : ThemeStuff.npsTextY), 0, "", 20);
 			npsTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			npsTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			npsTxt.scrollFactor.set();
@@ -340,7 +364,7 @@ class PreviewTheme extends MusicBeatState {
 		}
 
 		if(ThemeStuff.scoreTextIsEnabled == true) {
-			scoreTxt = new FlxText(ThemeStuff.scoreTextX, (FlxG.save.data.useDS ? ThemeStuff.scoreTextDSY : ThemeStuff.scoreTextY), 0, "", 20);
+			scoreTxt = new FlxText(ThemeStuff.scoreTextX, (Options.downscroll ? ThemeStuff.scoreTextDSY : ThemeStuff.scoreTextY), 0, "", 20);
 			scoreTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.scoreTextFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			if(ThemeStuff.scoreTextBorder > 0)
 				scoreTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, ThemeStuff.scoreTextBorder, 1);
@@ -349,9 +373,9 @@ class PreviewTheme extends MusicBeatState {
 		}
 
 		if(ThemeStuff.botplayTextIsEnabled == true) {
-			botplayTxt = new FlxText(ThemeStuff.botplayTextX, (FlxG.save.data.useDS ? ThemeStuff.botplayTextDSY : ThemeStuff.botplayTextY), FlxG.width - 800, ThemeStuff.botplayText, 32);
-			if(FlxG.save.data.theme == "psych" && FlxG.save.data.useMS) {
-				if(FlxG.save.data.useDS == true) {
+			botplayTxt = new FlxText(ThemeStuff.botplayTextX, (Options.downscroll ? ThemeStuff.botplayTextDSY : ThemeStuff.botplayTextY), FlxG.width - 800, ThemeStuff.botplayText, 32);
+			if(Options.themeData == "psych" && Options.middlescroll) {
+				if(Options.downscroll == true) {
 					botplayTxt.y = botplayTxt.y -= 100;
 				} else {
 					botplayTxt.y = botplayTxt.y += 100;
@@ -365,7 +389,7 @@ class PreviewTheme extends MusicBeatState {
 		}
 
 		if(ThemeStuff.watermarkIsEnabled == true) {
-			refunkedWatermark = new FlxText(ThemeStuff.watermarkX, (FlxG.save.data.useDS ? ThemeStuff.watermarkDSY : ThemeStuff.watermarkY), 0, "", 16);
+			refunkedWatermark = new FlxText(ThemeStuff.watermarkX, (Options.downscroll ? ThemeStuff.watermarkDSY : ThemeStuff.watermarkY), 0, "", 16);
 			refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			refunkedWatermark.scrollFactor.set();
 			add(refunkedWatermark);
@@ -389,7 +413,7 @@ class PreviewTheme extends MusicBeatState {
 
     function startCountdown():Void
 	{	
-        if(FlxG.save.data.useMS) {
+        if(Options.middlescroll) {
 			for(i in 0...cpuStrums.length) {
 				cpuStrums.members[i].visible = false;
 			}
@@ -468,7 +492,6 @@ class PreviewTheme extends MusicBeatState {
 			}
 
 			swagCounter += 1;
-			// generateSong('fresh');
 		}, 5);
 	}
 
@@ -605,7 +628,12 @@ class PreviewTheme extends MusicBeatState {
 			s = "??";
 		}
 
-		accuracyThing = FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2);
+		if(accNotesToDivide > 0 && accNotesTotal > 0)
+			accuracyThing = FlxMath.roundDecimal(((accNotesToDivide / accNotesTotal) * 100), 2);
+		else if(accNotesToDivide == 0 && accNotesTotal > 0)
+			accuracyThing = 0;
+		else
+			accuracyThing = 100;
 
 		switch(ThemeStuff.ratingStyle) {
 			case "psych":
@@ -664,6 +692,24 @@ class PreviewTheme extends MusicBeatState {
 				} else if(accuracyThing >= 99.99) {
 					funnyRating = "AAAAA";
 				}
+			case "forever":
+				if(accuracyThing < 66) {
+					funnyRating = "F";
+				} else if(accuracyThing >= 66 && accuracyThing < 70) {
+					funnyRating = "E";
+				} else if(accuracyThing >= 70 && accuracyThing < 76) {
+					funnyRating = "D";
+				} else if(accuracyThing >= 76 && accuracyThing < 81) {
+					funnyRating = "C";
+				} else if(accuracyThing >= 81 && accuracyThing < 86) {
+					funnyRating = "B";
+				} else if(accuracyThing >= 86 && accuracyThing < 91) {
+					funnyRating = "A";
+				} else if(accuracyThing >= 91 && accuracyThing < 96) {
+					funnyRating = "S";
+				} else if(accuracyThing >= 96) {
+					funnyRating = "S+";
+				}
 			case "RFE":
 				switch(misses) {
 					case 0:
@@ -682,6 +728,26 @@ class PreviewTheme extends MusicBeatState {
 						} else if(misses > 9) {
 							funnyRating = "Clear";
 						}
+				}
+			case "tr1ngle":
+				if(accuracyThing < 21) {
+					funnyRating = "F";
+				} else if(accuracyThing >= 21 && accuracyThing < 41) {
+					funnyRating = "D";
+				} else if(accuracyThing >= 41 && accuracyThing < 61) {
+					funnyRating = "C";
+				} else if(accuracyThing >= 61 && accuracyThing < 71) {
+					funnyRating = "B";
+				} else if(accuracyThing >= 71 && accuracyThing < 86) {
+					funnyRating = "A";
+				} else if(accuracyThing >= 86 && accuracyThing < 91) {
+					funnyRating = "S-";
+				} else if(accuracyThing >= 91 && accuracyThing < 96) {
+					funnyRating = "S";
+				} else if(accuracyThing >= 96 && accuracyThing < 100) {
+					funnyRating = "S+";
+				} else if(accuracyThing == 100) {
+					funnyRating = "S++";
 				}
 			default:
 				switch(misses) {
@@ -706,6 +772,13 @@ class PreviewTheme extends MusicBeatState {
 
 		if(ThemeStuff.accTextIsEnabled) {
 			accTxt.text = replaceStageVarsInTheme(ThemeStuff.accTextText);
+		}
+
+		if(ThemeStuff.extraTextIsEnabled) {
+			extraTxt.text = replaceStageVarsInTheme(ThemeStuff.extraText);
+			if(ThemeStuff.extraCenter) {
+				extraTxt.screenCenter(X);
+			}
 		}
 		
 		if(ThemeStuff.missTextIsEnabled) {
@@ -814,31 +887,19 @@ class PreviewTheme extends MusicBeatState {
 			}
 		}
 
-		if(FlxG.save.data.useDS && ThemeStuff.healthBarIsEnabled) {
-			if(ThemeStuff.healthBarShowP1) {
-				iconP1.y = healthBar.y - (iconP1.height / 2);
-			}
-			if(ThemeStuff.healthBarShowP2) {
-				iconP2.y = healthBar.y - (iconP2.height / 2);
-			}
-		}
-
 		if(ThemeStuff.healthBarIsEnabled && ThemeStuff.healthBarShowP1) {
-			iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
-			iconP1.updateHitbox();
+			if(curBeat > 0)
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (iconP1.width * iconP1.scale.x - iconP1.width) / 2 - 39;
+			else
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - 26;
+			iconP1.y = healthBar.y - (iconP1.height / 2);
 		}
 		if(ThemeStuff.healthBarIsEnabled && ThemeStuff.healthBarShowP2) {
-			iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
-			iconP2.updateHitbox();
-		}
-
-		var iconOffset:Int = 26;
-
-		if(ThemeStuff.healthBarIsEnabled && ThemeStuff.healthBarShowP1) {
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		}
-		if(ThemeStuff.healthBarIsEnabled && ThemeStuff.healthBarShowP2) {
-			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+			if(curBeat > 0)
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width * iconP2.scale.x) / 2 - 52;
+			else
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - 26);
+			iconP2.y = healthBar.y - (iconP2.height / 2);
 		}
 
 		if (health > 2)
@@ -949,8 +1010,8 @@ class PreviewTheme extends MusicBeatState {
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
 		}
 
-		FlxG.watch.addQuick("beatShit", curBeat);
-		FlxG.watch.addQuick("stepShit", curStep);
+		FlxG.watch.addQuick("beatStuff", curBeat);
+		FlxG.watch.addQuick("stepStuff", curStep);
 
 		if (unspawnNotes[0] != null)
 		{
@@ -968,7 +1029,7 @@ class PreviewTheme extends MusicBeatState {
 		{
 			notes.forEachAlive(function(daNote:BruhNote)
 			{
-				if(!daNote.mustPress && FlxG.save.data.useMS) {
+				if(!daNote.mustPress && Options.middlescroll) {
 					daNote.active = true;
 					daNote.visible = false;
 				} else if (daNote.y > FlxG.height) {
@@ -979,16 +1040,16 @@ class PreviewTheme extends MusicBeatState {
 					daNote.active = true;
 				}
 
-				var bruhThing:Bool = FlxG.save.data.useDS;
+				var bruhThing:Bool = Options.downscroll;
 
 				if(bruhThing == true) {
 					daNote.y = (strumLine.y + (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
 
-					if (daNote.isSustainNote && daNote.y - daNote.offset.y >= strumLine.y + Note.swagWidth / 2 && (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
+					if (daNote.isSustainNote && daNote.y + daNote.offset.y >= strumLine.y - Note.swagWidth / 2 && (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 					{
-						var swagRect = new FlxRect(0, 0, daNote.frameWidth * 2, daNote.frameHeight * 2);
-						swagRect.height = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + Note.swagWidth / 2 - daNote.y) / daNote.scale.y;
-						swagRect.y = daNote.frameHeight - swagRect.height;
+						var swagRect = new FlxRect(0, strumLine.y - Note.swagWidth / 2 + daNote.y, daNote.width * 2, daNote.height * 2);
+						swagRect.y *= daNote.scale.y;
+						swagRect.height += swagRect.y;
 						daNote.clipRect = swagRect;
 					}
 				} else {
@@ -1017,7 +1078,7 @@ class PreviewTheme extends MusicBeatState {
 							}
 					});
 
-					if (SONG.needsVoices)
+					if (SONG.needsVoices && vocals != null)
 						vocals.volume = 1;
 
 					daNote.kill();
@@ -1038,8 +1099,6 @@ class PreviewTheme extends MusicBeatState {
 
     private function generateSong(dataPath:String):Void
 	{
-		// FlxG.log.add(ChartParser.parse());
-
 		var songData = SONG;
 		Conductor.changeBPM(songData.bpm);
 
@@ -1050,7 +1109,6 @@ class PreviewTheme extends MusicBeatState {
 
 		var noteData:Array<SwagSection>;
 
-		// NEW SHIT
 		noteData = songData.notes;
 
 		var playerCounter:Int = 0;
@@ -1152,7 +1210,8 @@ class PreviewTheme extends MusicBeatState {
 			});
 
 			note.wasGoodHit = true;
-			vocals.volume = 1;
+			if(vocals != null)
+				vocals.volume = 1;
 			
 			if (!note.isSustainNote)
 			{
@@ -1193,29 +1252,38 @@ class PreviewTheme extends MusicBeatState {
 	
 			if (generatedMusic)
 			{
-				notes.sort(FlxSort.byY, (FlxG.save.data.useDS ? FlxSort.ASCENDING : FlxSort.DESCENDING));
+				notes.sort(FlxSort.byY, (Options.downscroll ? FlxSort.ASCENDING : FlxSort.DESCENDING));
 			}
 
 			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 			{
 				FlxG.camera.zoom += 0.015;
 			}
-	
-			if(FlxG.save.data.useDS == true && ThemeStuff.healthBarIsEnabled) {
-				if(ThemeStuff.healthBarShowP1) {
-					iconP1.y = healthBar.y + (iconP1.height / 2);
-				}
-				if(ThemeStuff.healthBarShowP2) {
-					iconP2.y = healthBar.y + (iconP2.height / 2);
-				}
-			}
-	
+
 			if(ThemeStuff.healthBarShowP1 && ThemeStuff.healthBarIsEnabled) {
-				iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+				if(iconP1Tween != null) {
+					iconP1Tween.cancel();
+				}
+				iconP1.scale.x = 1.2;
+				iconP1.scale.y = 1.2;
+				iconP1Tween = FlxTween.tween(iconP1, {"scale.x": 1, "scale.y": 1}, 0.15, {
+					onComplete: function(twn:FlxTween) {
+						iconP1Tween = null;
+					}
+				});
 				iconP1.updateHitbox();
 			}
 			if(ThemeStuff.healthBarShowP2 && ThemeStuff.healthBarIsEnabled) {
-				iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+				if(iconP2Tween != null) {
+					iconP2Tween.cancel();
+				}
+				iconP2.scale.x = 1.2;
+				iconP2.scale.y = 1.2;
+				iconP2Tween = FlxTween.tween(iconP2, {"scale.x": 1, "scale.y": 1}, 0.15, {
+					onComplete: function(twn:FlxTween) {
+						iconP2Tween = null;
+					}
+				});
 				iconP2.updateHitbox();
 			}
 		}
@@ -1236,15 +1304,14 @@ class PreviewTheme extends MusicBeatState {
     private function popUpScore(strumtime:Float):Void
 	{
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
-		// boyfriend.playAnim('hey');
-		vocals.volume = 1;
+		if(vocals != null)
+			vocals.volume = 1;
 
 		var placement:String = Std.string(combo);
 
 		var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
 		coolText.screenCenter();
 		coolText.x = FlxG.width * 0.55;
-		//
 
 		var rating:FlxSprite = new FlxSprite();
 		var score:Int = 350;
@@ -1398,7 +1465,7 @@ class PreviewTheme extends MusicBeatState {
 		for (i in 0...4)
 		{
 			// FlxG.log.add(i);
-			var babyArrow:FlxSprite = new FlxSprite((FlxG.save.data.useMS ? -272 : 38), strumLine.y);
+			var babyArrow:FlxSprite = new FlxSprite((Options.middlescroll ? -272 : 48), strumLine.y);
 
 			babyArrow.frames = Paths.getSparrowAtlas('previewAssets/NOTE_assets');
 			babyArrow.animation.addByPrefix('green', 'arrowUP');
@@ -1440,7 +1507,7 @@ class PreviewTheme extends MusicBeatState {
 			{
 				playerStrums.add(babyArrow);
 			} else {
-				if(!FlxG.save.data.useMS)
+				if(!Options.middlescroll)
 					cpuStrums.add(babyArrow);
 			}
 
@@ -1552,7 +1619,7 @@ class PreviewTheme extends MusicBeatState {
 
             var json:Developers2 = cast Json.parse(rawJsonFile);
     	#else
-			rawJsonFile = whyDoesThisWork("./assets/data/devs.json");
+			rawJsonFile = Utilities.getFileContents("./assets/data/devs.json");
             rawJsonFile = rawJsonFile.trim();
         
             while (!rawJsonFile.endsWith("}"))
@@ -1567,15 +1634,6 @@ class PreviewTheme extends MusicBeatState {
 
 		randomDevs = json.devs;
 	}
-
-	#if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-	#end
 
     override function add(Object:flixel.FlxBasic):flixel.FlxBasic
 	{

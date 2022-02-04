@@ -59,7 +59,7 @@ class Song
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
 		#if sys
-			rawJson = File.getContent('assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
+			rawJson = Utilities.getFileContents('assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
 
 			while (!rawJson.endsWith("}"))
 			{
@@ -69,8 +69,7 @@ class Song
 			return parseJSONshit(rawJson);
 			rawJson = null;
 		#else
-			rawJson = whyDoesThisWork('./assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
-			rawJson = rawJson.trim();
+			rawJson = Utilities.getFileContents('./assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
 
 			while (!rawJson.endsWith("}"))
 			{
@@ -81,15 +80,6 @@ class Song
 			rawJson = null;
 		#end
 	}
-
-	#if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-	#end
 
 	public static function parseJSONshit(rawJson:String):SwagSong
 	{

@@ -126,6 +126,7 @@ class Note extends FlxSprite
 		{
 			if(FlxG.save.data.useDS) {
 				flipY = true;
+				y += 50;
 			}
 
 			noteScore * 0.2;
@@ -148,6 +149,7 @@ class Note extends FlxSprite
 			updateHitbox();
 
 			x -= width / 2;
+			y -= 50;
 
 			if (PlayState.curStage.startsWith('school'))
 				x += 30;

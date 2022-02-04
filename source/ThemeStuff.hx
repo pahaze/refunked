@@ -24,6 +24,8 @@ typedef ThemeJunk = {
     var AccuracyTextEnabled:Bool;
     var BotplayEnabled:Bool;
     var Botplay:Botplay;
+    var ExtraEnabled:Bool;
+    var Extra:Extra;
     var HealthbarEnabled:Bool;
     var Healthbar:Healthbar;
     var MissText:MissText;
@@ -54,6 +56,15 @@ typedef Botplay = {
     var center:Bool;
     var fontsize:Float;
     var fadeinout:Bool;
+}
+
+typedef Extra = {
+    var x:Float;
+    var y:Float;
+    var center:Bool;
+    var dsy:Float;
+    var fontsize:Int;
+    var text:String;
 }
 
 typedef Healthbar = {
@@ -134,6 +145,15 @@ class ThemeStuff {
     // psych has the funny
     public static var botplayFadeInAndOut:Bool;
     public static var botplayText:String;
+
+    // extra text
+    public static var extraTextIsEnabled:Bool;
+    public static var extraTextX:Float;
+    public static var extraTextDSY:Float;
+    public static var extraTextY:Float;
+    public static var extraCenter:Bool = false;
+    public static var extraFontsize:Int;
+    public static var extraText:String;
 
     // healthbar
     public static var healthBarIsEnabled:Bool;
@@ -253,6 +273,18 @@ class ThemeStuff {
             botplayTextY = json.Botplay.y;
         } else if (json.BotplayEnabled == false) {
             botplayTextIsEnabled = false;
+        }
+
+        if(json.ExtraEnabled == true) {
+            extraCenter = json.Extra.center;
+            extraFontsize = json.Extra.fontsize;
+            extraText = json.Extra.text;
+            extraTextDSY = json.Extra.dsy;
+            extraTextIsEnabled = true;
+            extraTextX = json.Extra.x;
+            extraTextY = json.Extra.y;
+        } else if (json.ExtraEnabled == false) {
+            extraTextIsEnabled = false;
         }
 
         if(json.HealthbarEnabled == true) {

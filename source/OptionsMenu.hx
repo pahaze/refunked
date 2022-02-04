@@ -1,5 +1,8 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import Controls.Control;
 import flash.text.TextField;
 import flixel.FlxG;
@@ -40,51 +43,31 @@ class OptionsMenu extends MusicBeatState
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	var curSelectedTheme:Int = 0;
+	var curTab:Int = 0;
 
-	var controlsStrings:Array<String> = [];
 	var themesStuff:Array<ThemeUhhh> = [];
-	private var grpControls:FlxTypedGroup<Alphabet>;
+	var fpsExtraText:String = " - Press LEFT/RIGHT to change the value by 5 (hold SHIFT to change it by 1). Press T to change tabs. Press ENTER to change options.";
+	var fpsWebExtraText:String = "Press T to change tabs. Press ENTER to change options.";
+	private var grpControls:FlxTypedGroup<FlxText>;
+	private var grpControlsBools:FlxTypedGroup<FlxText>;
+	private var grpControlsTabs:FlxTypedGroup<FlxText>;
+	var settingsBools:Array<String> = [];
 	var settingsStuff:Array<String> = [];
-	#if desktop
-		var FpsThing:FlxText;
-		var FpsBGThing:FlxSprite;
-	#end
+	var settingsTabs:Array<String> = [];
+	var FpsThing:FlxText;
+	var FpsBGThing:FlxSprite;
 	var ThemeThing:FlxText;
 	var ThemeBGThing:FlxSprite;
 
 	override function create()
 	{
-		FlxG.save.bind('refunked', 'pahaze');
-
-		if(FlxG.save.data.useDS == null) {
-			FlxG.save.data.useDS = false;
-		}
-
-		if(FlxG.save.data.useMS == null) {
-			FlxG.save.data.useMS = false;
-		}
-
-		if(FlxG.save.data.FPS == null) {
-			FlxG.save.data.FPS = 60;
-		}
-
+		Options.loadOptions();
 		loadThemes();
 
-		if(FlxG.save.data.theme == null) {
-			FlxG.save.data.theme = "default";
-		}
-		if(FlxG.save.data.themeName == null) {
-			FlxG.save.data.themeName = "Default (RFE)";
-		}
-		if(FlxG.save.data.themeSelectedNo == null) {
-			FlxG.save.data.themeSelectedNo = 0;
-		}
+		settingsTabs.push("Gameplay");
+		settingsTabs.push("User Experience");	
 
-		settingsStuff.push("Downscroll is " + (FlxG.save.data.useDS ? "Enabled" : "Disabled"));
-		settingsStuff.push("Middlescroll is " + (FlxG.save.data.useMS ? "Enabled" : "Disabled"));
-		
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
 		menuBG.color = FlxColor.fromRGB(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
@@ -92,15 +75,33 @@ class OptionsMenu extends MusicBeatState
 		menuBG.antialiasing = true;
 		add(menuBG);
 
-		grpControls = new FlxTypedGroup<Alphabet>();
-		add(grpControls);
+		var menuGray:FlxSprite = new FlxSprite(30, 60).makeGraphic(1220, 600, FlxColor.BLACK);
+		menuGray.alpha = 0.5;
+		menuGray.scrollFactor.set();
+		add(menuGray);
 
-		for (i in 0...settingsStuff.length)
-		{
-			var Text:Alphabet = new Alphabet(0, (70 * i) + 30, settingsStuff[i], true, false);
-			Text.isMenuItem = true;
-			Text.targetY = i;
-			grpControls.add(Text);
+		var tabDividerSprite:FlxSprite = new FlxSprite(30, 112).makeGraphic(1220, 5, FlxColor.BLACK);
+		tabDividerSprite.scrollFactor.set();
+		add(tabDividerSprite);
+
+		grpControls = new FlxTypedGroup<FlxText>();
+		add(grpControls);
+		grpControlsBools = new FlxTypedGroup<FlxText>();
+		add(grpControlsBools);
+		grpControlsTabs = new FlxTypedGroup<FlxText>();
+		add(grpControlsTabs);
+
+		setupGameplayTab();
+
+		for (i in 0...settingsTabs.length) {
+			var Text:FlxText = new FlxText(50, 70, 0, settingsTabs[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			if(i != 0) {
+				Text.x = grpControlsTabs.members[i - 1].x + grpControlsTabs.members[i - 1].width + 32;
+				Text.alpha = 0.6;
+			}
+			grpControlsTabs.add(Text);
 		}
 
 		#if desktop
@@ -109,7 +110,17 @@ class OptionsMenu extends MusicBeatState
 			FpsBGThing.scrollFactor.set();
 			add(FpsBGThing);
 
-			FpsThing = new FlxText(5, (FlxG.height * 0.9) + 50, 0, "FPS: " + FlxG.save.data.FPS, 12);
+			FpsThing = new FlxText(5, (FlxG.height * 0.9) + 50, 0, "FPS: " + Options.FPS + fpsExtraText, 12);
+			FpsThing.scrollFactor.set();
+			FpsThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			add(FpsThing);
+		#else
+			FpsBGThing = new FlxSprite(0, (FlxG.height * 0.9) + 50).makeGraphic(FlxG.width, Std.int((FlxG.height * 0.9) - 50), FlxColor.BLACK);
+			FpsBGThing.alpha = 0.5;
+			FpsBGThing.scrollFactor.set();
+			add(FpsBGThing);
+
+			FpsThing = new FlxText(5, (FlxG.height * 0.9) + 50, 0, fpsWebExtraText, 12);
 			FpsThing.scrollFactor.set();
 			FpsThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(FpsThing);
@@ -120,13 +131,13 @@ class OptionsMenu extends MusicBeatState
 		ThemeBGThing.scrollFactor.set();
 		add(ThemeBGThing);
 
-		ThemeThing = new FlxText(5, 1, 0, "Current theme: " + FlxG.save.data.themeName + ". Press A/D to change the theme. Press P to preview the theme.", 16);
+		ThemeThing = new FlxText(5, 1, 0, "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.", 16);
 		ThemeThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		ThemeThing.scrollFactor.set();
 		ThemeThing.screenCenter(X);
 		add(ThemeThing);
 
-		curSelectedTheme = FlxG.save.data.themeSelectedNo;
+		curSelectedTheme = Options.themeNumber;
 
 		super.create();
 	}
@@ -138,7 +149,7 @@ class OptionsMenu extends MusicBeatState
 		ThemeThing.screenCenter(X);
 			
 		if (controls.BACK) {
-			FlxG.save.flush();
+			Options.saveOptions();
 			FlxG.switchState(new MainMenuState());
 		}
 		if (controls.UP_P)
@@ -147,53 +158,103 @@ class OptionsMenu extends MusicBeatState
 			changeSelection(1);
 
 		if (controls.ACCEPT) {
-			if(curSelected != 2) {
-				grpControls.remove(grpControls.members[curSelected]);
-			}
-			switch(curSelected) {
+			switch(curTab) {
 				case 0:
-					FlxG.save.data.useDS = !FlxG.save.data.useDS;
-					var Text:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Downscroll is " + (FlxG.save.data.useDS ? "Enabled" : "Disabled"), true, false);
-					Text.isMenuItem = true;
-					Text.targetY = curSelected;
-					grpControls.add(Text);
+					switch(curSelected) {
+						case 0:
+							Options.downscroll = !Options.downscroll;
+							Options.saveOptions();
+							grpControlsBools.members[curSelected].text = (Options.downscroll ? "< ON >" : "< OFF >");
+							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+						case 1:
+							Options.middlescroll = !Options.middlescroll;
+							Options.saveOptions();
+							grpControlsBools.members[curSelected].text = (Options.middlescroll ? "< ON >" : "< OFF >");
+							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+						case 2:
+							Options.freeplayDialogue = !Options.freeplayDialogue;
+							Options.saveOptions();
+							grpControlsBools.members[curSelected].text = (Options.freeplayDialogue ? "< ON >" : "< OFF >");
+							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+					}
 				case 1:
-					FlxG.save.data.useMS = !FlxG.save.data.useMS;
-					var Text:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Middlescroll is " + (FlxG.save.data.useMS ? "Enabled" : "Disabled"), true, false);
-					Text.isMenuItem = true;
-					Text.targetY = curSelected;
-					grpControls.add(Text);
+					switch(curSelected) {
+						case 0:
+							Options.gameSFW = !Options.gameSFW;
+							Options.saveOptions();
+							grpControlsBools.members[curSelected].text = (Options.gameSFW ? "< YES >" : "< NO >");
+							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+						#if desktop
+							case 1:
+								Options.enableRPC = !Options.enableRPC;
+								if(Options.enableRPC)
+									DiscordClient.initialize();
+								else
+									DiscordClient.shutdown();
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.enableRPC ? "< ON >" : "< OFF >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+						#end
+					}
 			}
 		}
 
 		if(FlxG.keys.justPressed.A) {
 			changeThemeSelection(-1);
-			FlxG.save.data.theme = themesStuff[curSelectedTheme].ThemeData;
-			FlxG.save.data.themeName = themesStuff[curSelectedTheme].ThemeName;
-			ThemeThing.text = "Current theme: " + FlxG.save.data.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
+			Options.themeData = themesStuff[curSelectedTheme].ThemeData;
+			Options.themeName = themesStuff[curSelectedTheme].ThemeName;
+			Options.saveOptions();
+			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
 		}
 		if(FlxG.keys.justPressed.D) {
 			changeThemeSelection(1);
-			FlxG.save.data.theme = themesStuff[curSelectedTheme].ThemeData;
-			FlxG.save.data.themeName = themesStuff[curSelectedTheme].ThemeName;
-			ThemeThing.text = "Current theme: " + FlxG.save.data.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
+			Options.themeData = themesStuff[curSelectedTheme].ThemeData;
+			Options.themeName = themesStuff[curSelectedTheme].ThemeName;
+			Options.saveOptions();
+			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
 		}
 		if(FlxG.keys.justPressed.P) {
 			PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
 			BruhLoadingState.loadAndSwitchState(new PreviewTheme());
 		}
+		if(FlxG.keys.justPressed.T) {
+			changeTab();
+		}
 
 		#if desktop
 			if(FlxG.keys.justPressed.LEFT) {
-				FlxG.save.data.FPS--;
-				FpsThing.text = "FPS: " + FlxG.save.data.FPS;
-				FlxG.updateFramerate = FlxG.save.data.FPS;
-				FlxG.drawFramerate = FlxG.save.data.FPS;
-			} else if(FlxG.keys.justPressed.RIGHT) {
-				FlxG.save.data.FPS++;
-				FpsThing.text = "FPS: " + FlxG.save.data.FPS;
-				FlxG.drawFramerate = FlxG.save.data.FPS;
-				FlxG.updateFramerate = FlxG.save.data.FPS;
+				if(FlxG.keys.pressed.SHIFT)
+					Options.FPS -= 1;
+				else
+					Options.FPS -= 5;
+				if(Options.FPS < 60)
+					Options.FPS = 60;
+				Options.saveOptions();
+				FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+				if(Options.FPS > FlxG.drawFramerate) {
+					FlxG.updateFramerate = Options.FPS;
+					FlxG.drawFramerate = Options.FPS;
+				} else {
+					FlxG.drawFramerate = Options.FPS;
+					FlxG.updateFramerate = Options.FPS;
+				}
+			}
+			if(FlxG.keys.justPressed.RIGHT) {
+				if(FlxG.keys.pressed.SHIFT)
+					Options.FPS += 1;
+				else
+					Options.FPS += 5;
+				if(Options.FPS > 450)
+					Options.FPS = 450;
+				Options.saveOptions();
+				FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+				if(Options.FPS > FlxG.drawFramerate) {
+					FlxG.updateFramerate = Options.FPS;
+					FlxG.drawFramerate = Options.FPS;
+				} else {
+					FlxG.drawFramerate = Options.FPS;
+					FlxG.updateFramerate = Options.FPS;
+				}
 			}
 		#end
 	}
@@ -205,29 +266,41 @@ class OptionsMenu extends MusicBeatState
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
-
 		if (curSelected < 0)
 			curSelected = grpControls.length - 1;
 		if (curSelected >= grpControls.length)
 			curSelected = 0;
 
-		// selector.y = (70 * curSelected) + 30;
+		for (i in 0...grpControls.length) {
+			grpControls.members[i].alpha = 0.6;
+		}
+		grpControls.members[curSelected].alpha = 1;
+		
+		for (i in 0...grpControlsBools.length) {
+			grpControlsBools.members[i].alpha = 0.6;
+		}
+		grpControlsBools.members[curSelected].alpha = 1;
+	}
 
-		var bullShit:Int = 0;
+	function changeTab() {
+		curTab += 1;
+		if(curTab > grpControlsTabs.length - 1)
+			curTab = 0;
 
-		for (item in grpControls.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+		for(i in 0...grpControlsTabs.length) {
+			if(i != curTab)
+				grpControlsTabs.members[i].alpha = 0.6;
+			else
+				grpControlsTabs.members[i].alpha = 1;
+		}
 
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
+		switch(curTab) {
+			case 0:
+				setupGameplayTab();
+			case 1:
+				setupUETab();
+			default:
+				setupGameplayTab();
 		}
 	}
 
@@ -235,15 +308,12 @@ class OptionsMenu extends MusicBeatState
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		
 		curSelectedTheme += change;
-
-		if(curSelectedTheme < 0) {
+		if(curSelectedTheme < 0)
 			curSelectedTheme = themesStuff.length - 1;
-		}
-		if (curSelectedTheme >= themesStuff.length) {
+		if (curSelectedTheme >= themesStuff.length)
 			curSelectedTheme = 0;
-		}
 
-		FlxG.save.data.themeSelectedNo = curSelectedTheme;
+		Options.themeNumber = curSelectedTheme;
 	}
 
 	function loadThemes() {
@@ -262,7 +332,7 @@ class OptionsMenu extends MusicBeatState
 
             var json:ThemesStuff = cast Json.parse(rawJsonFile);
     	#else
-			rawJsonFile = whyDoesThisWork("assets/themes/themes.json");
+			rawJsonFile = Utilities.getFileContents("./assets/themes/themes.json");
             rawJsonFile = rawJsonFile.trim();
         
             while (!rawJsonFile.endsWith("}"))
@@ -278,12 +348,71 @@ class OptionsMenu extends MusicBeatState
 		themesStuff = json.themes;
 	}
 
-	#if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
+	function setupGameplayTab() {
+		grpControls.clear();
+		grpControlsBools.clear();
+		untyped settingsStuff.length = 0;
+		untyped settingsBools.length = 0;
+		curSelected = 0;
+
+		settingsStuff.push("Downscroll");
+		settingsBools.push((Options.downscroll ? "< ON >" : "< OFF >"));
+		settingsStuff.push("Middlescroll");
+		settingsBools.push((Options.middlescroll ? "< ON >" : "< OFF >"));
+		settingsStuff.push("Freeplay Dialogue");
+		settingsBools.push((Options.freeplayDialogue ? "< ON >" : "< OFF >"));
+		
+		for (i in 0...settingsBools.length) {
+			var Text:FlxText = new FlxText(FlxG.width - 40, 122 + (32 * i), 0, settingsBools[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			Text.x = Text.x - Text.width;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControlsBools.add(Text);
+		}
+
+		for (i in 0...settingsStuff.length) {
+			var Text:FlxText = new FlxText(40, 122 + (32 * i), 0, settingsStuff[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControls.add(Text);
+		}
 	}
-	#end
+
+	function setupUETab() {
+		grpControls.clear();
+		grpControlsBools.clear();
+		untyped settingsStuff.length = 0;
+		untyped settingsBools.length = 0;
+		curSelected = 0;
+
+		settingsStuff.push("Game is Kid-friendly?");
+        settingsBools.push((Options.gameSFW ? "< YES >" : "< NO >"));
+        #if desktop
+            settingsStuff.push("Discord Rich Presence");
+            settingsBools.push((Options.enableRPC ? "< ON >" : "< OFF >"));
+        #end
+		
+		for (i in 0...settingsBools.length) {
+			var Text:FlxText = new FlxText(FlxG.width - 40, 122 + (32 * i), 0, settingsBools[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			Text.x = Text.x - Text.width;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControlsBools.add(Text);
+		}
+
+		for (i in 0...settingsStuff.length) {
+			var Text:FlxText = new FlxText(40, 122 + (32 * i), 0, settingsStuff[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControls.add(Text);
+		}
+	}
 }

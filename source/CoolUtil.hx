@@ -24,7 +24,7 @@ class CoolUtil
 
 	public static function coolTextFile(path:String):Array<String>
 	{
-		var daList:Array<String> = Assets.getText(path).trim().split('\n');
+		var daList:Array<String> = Utilities.getFileContents(path).trim().split('\n');
 
 		for (i in 0...daList.length)
 		{
@@ -43,14 +43,4 @@ class CoolUtil
 		}
 		return dumbArray;
 	}
-
-	#if html5
-	// wip Lol
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-	#end
 }

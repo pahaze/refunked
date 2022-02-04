@@ -115,17 +115,13 @@ class Paths
 		return getPath('images/$key.png', IMAGE, library);
 	}
 
-	inline static public function broImage(key:String, ?library:String) {
-		if(library == null) {
-			return 'images/$key';
-		} else {
-			return '$library/images/$key';
-		}
-	}
-
 	inline static public function font(key:String)
 	{
 		return 'assets/fonts/$key';
+	}
+
+	inline static public function songData(song:String, key:String) {
+		return 'assets/data/${song.toLowerCase()}/' + key;
 	}
 
 	static public function getSparrowAtlas(key:String, ?library:String)
@@ -133,22 +129,13 @@ class Paths
 		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
 	}
 
-	#if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-	#end
-
 	static public function getSparrowAtlasThing(key:String)
 	{
 		#if sys
-			return FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), File.getContent("assets/" + key + ".xml"));
+			return FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".xml"));
 		#else
 			// we'll get there one day 
-			return FlxAtlasFrames.fromSparrow("assets/" + key + ".png", whyDoesThisWork("./assets/" + key + ".xml"));
+			return FlxAtlasFrames.fromSparrow("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".xml"));
 		#end
 	}
 
@@ -160,10 +147,10 @@ class Paths
 	static public function getPackerAtlasThing(key:String, ?library:String)
 	{
 		#if sys
-			return FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), File.getContent("assets/" + key + ".txt"));
+			return FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".txt"));
 		#else
 			// we'll get there one day 
-			return FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", whyDoesThisWork("./assets/" + key + ".txt"));
+			return FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".txt"));
 		#end
 	}
 }

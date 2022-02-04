@@ -1,0 +1,48 @@
+{
+    "songs": [
+        {
+            "songData": "Tutorial",
+            "songName": "Tutorial",
+            "songWeekNumber": 1,
+            "characterIcon": "gf"
+        }
+    ],
+    "weeks": [
+        {
+            "songDatas": ["bopeebo-sfw", "fresh-sfw", "dadbattle-sfw"],
+            "songNames": ["Bopeebo", "Fresh", "Dadbattle"],
+            "weekNumber": 1,
+            "characterIcons": ["dad"]
+        },
+        {
+            "songDatas": ["Spookeez", "South"],
+            "songNames": ["Spookeez", "South"],
+            "weekNumber": 2,
+            "characterIcons": ["spooky", "spooky"]
+        },
+        {
+            "songDatas": ["Pico", "Philly", "Blammed"],
+            "songNames": ["Pico", "Philly", "Blammed"],
+            "weekNumber": 3,
+            "characterIcons": ["pico"]
+        },
+        {
+            "songDatas": ["Chillflow", "high-sfw", "Mombattle"],
+            "songNames": ["Chillflow", "High", "Mombattle"],
+            "weekNumber": 4,
+            "characterIcons": ["mom"]
+        },
+        {
+            "songDatas": ["cocoa-sfw", "eggnog-sfw"],
+            "songNames": ["Cocoa", "Eggnog"],
+            "weekNumber": 5,
+            "characterIcons": ["parents-christmas", "parents-christmas"]
+        },
+        {
+            "songDatas": ["Senpai", "Roses", "Thorns"],
+            "songNames": ["Senpai", "Roses", "Thorns"],
+            "weekNumber": 6,
+            "characterIcons": ["senpai", "senpai-angry", "spirit"]
+        }
+    ]
+} 

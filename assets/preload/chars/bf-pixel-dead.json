@@ -34,7 +34,7 @@
 		}
 	],
 	"CharacterAntialiasing": false,
-	"CharacterImage": "week6/images/weeb/bfPixelsDEAD",
+	"CharacterImage": "images/characters/bfPixelsDEAD",
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": true,
 	"CharacterScale": 6

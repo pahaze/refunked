@@ -22,15 +22,44 @@ class StoryMenuState extends MusicBeatState
 {
 	var scoreText:FlxText;
 
+	// this will be unhardcoded later like dialogue
 	var weekData:Array<Dynamic> = [
-		['Tutorial'],
-		['Bopeebo', 'Fresh', 'Dadbattle'],
-		['Spookeez', 'South', "Monster"],
-		['Pico', 'Philly', "Blammed"],
-		['Satin-Panties', "High", "Milf"],
-		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
-		['Senpai', 'Roses', 'Thorns']
+		["Tutorial"],
+		["Bopeebo", "Fresh", "Dadbattle"],
+		["Spookeez", "South", "Monster"],
+		["Pico", "Philly", "Blammed"],
+		["Satin-Panties", "High", "Milf"],
+		["Cocoa", "Eggnog", "Winter-Horrorland"],
+		["Senpai", "Roses", "Thorns"]
 	];
+	var weekDataSFW:Array<Dynamic> = [
+		["Tutorial"],
+		["bopeebo-sfw", "fresh-sfw", "dadbattle-sfw"],
+		["Spookeez", "South"],
+		["Pico", "Philly", "Blammed"],
+		["Chillflow", "high-sfw", "Mombattle"],
+		["cocoa-sfw", "eggnog-sfw"],
+		["Senpai", "Roses", "Thorns"]
+	];
+	var weekSongs:Array<Dynamic> = [
+		["Tutorial"],
+		["Bopeebo", "Fresh", "Dadbattle"],
+		["Spookeez", "South", "Monster"],
+		["Pico", "Philly", "Blammed"],
+		["Satin Panties", "High", "Milf"],
+		["Cocoa", "Eggnog", "Winter Horrorland"],
+		["Senpai", "Roses", "Thorns"]
+	];
+	var weekSongsSFW:Array<Dynamic> = [
+		["Tutorial"],
+		["Bopeebo", "Fresh", "Dadbattle"],
+		["Spookeez", "South", "Monster"],
+		["Pico", "Philly", "Blammed"],
+		["Chillflow", "High", "Mombattle"],
+		["Cocoa", "Eggnog"],
+		["Senpai", "Roses", "Thorns"]
+	];
+
 	var curDifficulty:Int = 1;
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
@@ -121,27 +150,49 @@ class StoryMenuState extends MusicBeatState
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 
-		for (i in 0...weekData.length)
-		{
-			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
-			weekThing.y += ((weekThing.height + 20) * i);
-			weekThing.targetY = i;
-			grpWeekText.add(weekThing);
-
-			weekThing.screenCenter(X);
-			weekThing.antialiasing = true;
-			// weekThing.updateHitbox();
-
-			// Needs an offset thingie
-			if (!weekUnlocked[i])
+		if(Options.gameSFW) {
+			for (i in 0...weekDataSFW.length)
 			{
-				var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
-				lock.frames = ui_tex;
-				lock.animation.addByPrefix('lock', 'lock');
-				lock.animation.play('lock');
-				lock.ID = i;
-				lock.antialiasing = true;
-				grpLocks.add(lock);
+				var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
+				weekThing.y += ((weekThing.height + 20) * i);
+				weekThing.targetY = i;
+				grpWeekText.add(weekThing);
+
+				weekThing.screenCenter(X);
+				weekThing.antialiasing = true;
+
+				if (!weekUnlocked[i])
+				{
+					var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
+					lock.frames = ui_tex;
+					lock.animation.addByPrefix('lock', 'lock');
+					lock.animation.play('lock');
+					lock.ID = i;
+					lock.antialiasing = true;
+					grpLocks.add(lock);
+				}
+			}
+		} else {
+			for (i in 0...weekData.length)
+			{
+				var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
+				weekThing.y += ((weekThing.height + 20) * i);
+				weekThing.targetY = i;
+				grpWeekText.add(weekThing);
+
+				weekThing.screenCenter(X);
+				weekThing.antialiasing = true;
+
+				if (!weekUnlocked[i])
+				{
+					var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
+					lock.frames = ui_tex;
+					lock.animation.addByPrefix('lock', 'lock');
+					lock.animation.play('lock');
+					lock.ID = i;
+					lock.antialiasing = true;
+					grpLocks.add(lock);
+				}
 			}
 		}
 
@@ -309,7 +360,11 @@ class StoryMenuState extends MusicBeatState
 				stopspamming = true;
 			}
 
-			PlayState.storyPlaylist = weekData[curWeek];
+			if(Options.gameSFW)
+				PlayState.storyPlaylist = weekDataSFW[curWeek];
+			else
+				PlayState.storyPlaylist = weekData[curWeek];
+
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
@@ -379,11 +434,17 @@ class StoryMenuState extends MusicBeatState
 	{
 		curWeek += change;
 
-		if (curWeek >= weekData.length)
-			curWeek = 0;
-		if (curWeek < 0)
-			curWeek = weekData.length - 1;
-
+		if(Options.gameSFW) {
+			if (curWeek >= weekDataSFW.length)
+				curWeek = 0;
+			if (curWeek < 0)
+				curWeek = weekDataSFW.length - 1;
+		} else {
+			if (curWeek >= weekData.length)
+				curWeek = 0;
+			if (curWeek < 0)
+				curWeek = weekData.length - 1;
+		}
 		var bullShit:Int = 0;
 
 		for (item in grpWeekText.members)
@@ -432,7 +493,11 @@ class StoryMenuState extends MusicBeatState
 				// grpWeekCharacters.members[0].updateHitbox();
 		}
 
-		var stringThing:Array<String> = weekData[curWeek];
+		var stringThing:Array<String>;
+		if(Options.gameSFW)
+			stringThing = weekSongsSFW[curWeek];
+		else
+			stringThing = weekSongs[curWeek];
 
 		for (i in stringThing)
 		{

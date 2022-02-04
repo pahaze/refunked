@@ -43,7 +43,7 @@ class BruhNote extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
-		x += (FlxG.save.data.useMS ? -222 : 88);
+		x += (FlxG.save.data.useMS ? -222 : 98);
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;

@@ -8,6 +8,7 @@ gf
 gf-car
 gf-christmas
 gf-pixel
+lucky
 mom
 mom-car
 mom-car-sfw

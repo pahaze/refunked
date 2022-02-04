@@ -10,6 +10,7 @@ curBeat - it's curBeat (lol).
 curStep - it's curStep (lol).
 girlfriend - Literally "girlfriend". Lol.
 girlfriendName - Girlfriend actor/player's name.
+health - Gives health from in game.
 opponent - Literally "opponent". Lol.
 opponentMidpointX - Your opponent's X midpoint (useful for camera stuff).
 opponentMidpointY - Your opponent's Y midpoint (useful for camera stuff).
@@ -20,11 +21,12 @@ addBackgroundGirls(bg-girls-name) - Adds a created BG girls instance to PlayStat
 addSprite(sprite-name) - Adds a created sprite instance to PlayState (animated or not).
 addSpriteIndiceAnimation(sprite-name, label-for-animation, animation-name, indice-list(array), play-anim-on-create, loops, loops-on-create-play, framerate) - Adds an animation for a sprite by indices. Characters such as GF uses these.
 addSpritePrefixAnimation(sprite-name, label-for-animation, animation-name, play-anim-on-create, loops, loops-on-create-play, framerate) - Adds an animation for a sprite by prefix. Anything that uses an XML will likely use this.
-addToBoyfriendPosition(x, y) - Self explanatory.
-addToGirlfriendPosition(x, y) - Self explanatory.
-addToOpponentPosition(x, y) - Self explanatory.
+addToBoyfriendPosition(x, y) - Adds to Boyfriend's x/y position(s).
+addToGirlfriendPosition(x, y) - Adds to Girlfriend's x/y position(s).
+addToOpponentPosition(x, y) - Adds to the opponent's x/y position(s).
 destroySprite(sprite) - Destroys a sprite.
 drainhealth(number) - Drains your health by the number.
+flipSpriteXY(sprite-name, x, y) - Flips a sprite's x/y positions.
 giveActorHeight(actor-name) - Returns an actor's height.
 giveActorWidth(actor-name) - Returns an actor's width.
 giveSpriteHeight(sprite-name) - Returns a sprite's height.
@@ -35,16 +37,20 @@ makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 
 makeSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes a simple FlxSprite. Not animated.
 playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent) play an animation.
 playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
+resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
 setActorGraphicSize(sprite-name, x, y) - Sets an actor's graphic size (NOT the same as scale).
 setActorPosition(actor-name, x, y) - Sets an actor's position.
 setActorScale(actor-name, x, y) - Sets an actor's scale (NOT the same as graphic size).
+setActorScrollFactor(actor-name, x, y) - Sets an actor's scroll factor.
 setBGCamAngle(angle) - Sets the angle of the background camera (where BF, GF, dad, etc. are).
 setBGGirlsScrollFactor(bg-girls-name, x, y) - Sets scroll factor for BG girls.
 setBoyfriendCamFollowPosition(x, y) - Sets camFollow positions for Boyfriend.
+setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
 setCamHUDAngle(angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
-setCamPosition(x, y) - Sets camPos' positions.
+setCamPosPosition(x, y) - Sets camPos' positions.
 setCurStage(stage-name) - Sets curStage in PlayState.
 setOpponentCamFollowPosition(x, y) - Sets camFollow positions for your opponent.
+setSpriteCamera(sprite-name, camera) - Sets a sprite's camera.
 setSpriteGraphicSize(sprite-name, x, y) - Sets a sprite's graphic size (NOT the same as scale).
 setSpritePosition(sprite-name, x, y) - Sets a sprite's position.
 setSpriteScale(sprite-name, x, y) - Sets a sprite's scale (NOT the same as graphic size).

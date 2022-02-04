@@ -7,15 +7,15 @@ class StageStuff {
         } else {
             if(songName != null && songName != "") {
                 switch(songName.toLowerCase()) {
-                    case "bopeebo" | "dadbattle" | "dadbattle-sfw" | "fresh":
+                    case "bopeebo" | "bopeebo-sfw" | "dadbattle" | "dadbattle-sfw" | "fresh" | "fresh-sfw":
                         return "stage";
                     case "monster" | "south" | "spookeez":
                         return "spooky";
                     case "blammed" | "philly" | "pico":
                         return "philly";
-                    case "high" | "milf" | "mombattle" | "satin-lovers" | "satin-panties":
+                    case "chillflow" | "high" | "high-sfw" | "milf" | "mombattle" | "satin-panties":
                         return "limo";
-                    case "coacoa" | "eggnog":
+                    case "cocoa" | "cocoa-sfw" | "eggnog" | "eggnog-sfw":
                         return "mall";
                     case "winter-horrorland":
                         return "mallEvil";

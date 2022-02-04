@@ -1,12 +1,21 @@
 {
-    "BotplayEnabled": false,
-    "WatermarkEnabled": false,
     "AccuracyTextEnabled": true,
     "AccuracyText": {
         "x": "39",
         "y": "622",
         "dsy": "84",
         "text": "Accuracy: [accuracy]% ([noterating])"
+    },
+    "BotplayEnabled": false,
+    "ExtraEnabled": false,
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true
     },
     "MissTextEnabled": true,
     "MissText": {
@@ -44,13 +53,5 @@
         "bouncetween": true,
         "bouncetweenscale": 1.1
     },
-    "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true
-    }
+    "WatermarkEnabled": false
 }

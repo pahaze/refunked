@@ -65,16 +65,17 @@ class Character extends FlxSprite
 				#if sys
 					var charJsonPath:String = "assets/chars/" + curCharacter + ".json";
 					charPath = charJsonPath;
-					if(!FileSystem.exists(charPath)) {
+					if(!Utilities.checkFileExists(charPath))
 						charPath = "assets/chars/bf.json";
-					}
 
 					rawJson = File.getContent(charPath);
 				#else
 					var charJsonPath:String = "./assets/chars/" + curCharacter + ".json";
 					charPath = charJsonPath;
+					if(!Utilities.checkFileExists(charPath))
+						charPath = "./assets/chars/bf.json";
 
-					rawJson = whyDoesThisWork(charPath);
+					rawJson = Utilities.getFileContents(charPath);
 					rawJson = rawJson.trim();
 				#end
 
@@ -86,15 +87,13 @@ class Character extends FlxSprite
 				var json:CharJunk = cast Json.parse(rawJson);
 
 				#if sys
-					if(!FileSystem.exists("assets/" + json.CharacterImage + ".txt")) {
+					if(!Utilities.checkFileExists("assets/" + json.CharacterImage + ".txt")) {
 						frames = Paths.getSparrowAtlasThing(json.CharacterImage);
 					} else {
 						frames = Paths.getPackerAtlasThing(json.CharacterImage);
 					}
 				#else
-					var checkStuffs:Bool;
-					checkStuffs = checkFileExists("./assets/" + json.CharacterImage + ".txt");
-					if(!checkStuffs) {
+					if(!Utilities.checkFileExists("./assets/" + json.CharacterImage + ".txt")) {
 						frames = Paths.getSparrowAtlasThing(json.CharacterImage);
 					} else {
 						frames = Paths.getPackerAtlasThing(json.CharacterImage);
@@ -166,31 +165,6 @@ class Character extends FlxSprite
 		}
 	}
 
-	#if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-
-	public static function checkFileExists(uh:String):Bool {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		trace(bloob.status);
-		trace(bloob.statusText);
-		if(bloob.status == 404) {
-			return false;
-		} else if(bloob.statusText == "Not Found") {
-			return false;
-		} else {
-			return true;
-		}
-		return false;
-	}
-	#end
-
 	override function update(elapsed:Float)
 	{
 		if (!isPlayer && animation.curAnim != null)
@@ -222,7 +196,7 @@ class Character extends FlxSprite
 		super.update(elapsed);
 	}
 
-	private var danced:Bool = false;
+	public var danced:Bool = false;
 
 	public function dance()
 	{
