@@ -225,12 +225,12 @@ class ThemeStuff {
         var pathToFileIg:String;
 
         #if sys
-            pathToFileIg = "assets/themes/" + FlxG.save.data.theme + ".json";
+            pathToFileIg = "assets/themes/" + Options.themeData + ".json";
 			if(!FileSystem.exists(pathToFileIg)) {
 				pathToFileIg = "assets/themes/default.json";
 			}
 
-			rawJsonFile = File.getContent(pathToFileIg);
+			rawJsonFile = Utilities.getFileContents(pathToFileIg);
 
             while (!rawJsonFile.endsWith("}"))
 	    	{
@@ -239,7 +239,7 @@ class ThemeStuff {
 
             var json:ThemeJunk = cast Json.parse(rawJsonFile);
     	#else
-			rawJsonFile = whyDoesThisWork("assets/themes/" + FlxG.save.data.theme + ".json");
+			rawJsonFile = Utilities.getFileContents("./assets/themes/" + Options.themeData + ".json");
             rawJsonFile = rawJsonFile.trim();
         
             while (!rawJsonFile.endsWith("}"))
@@ -379,13 +379,4 @@ class ThemeStuff {
 
         return uh;
     }
-
-    #if html5
-	public static function whyDoesThisWork(uh:String):String {
-		var bloob = new XMLHttpRequest();
-		bloob.open('GET', uh, false);
-		bloob.send(null);
-		return bloob.responseText;
-	}
-	#end
 }
