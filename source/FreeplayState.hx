@@ -55,78 +55,83 @@ class FreeplayState extends MusicBeatState
 
 	private var iconArray:Array<HealthIcon> = [];
 	var FPLoadedAssets:Array<Dynamic> = [];
+	static var FPLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
+
+	// yeah why reload when not needed
+	var characterIcon:String;
+	var characterIcons:Array<String>;
+	static var rawJson:String;
+	var songData:String;
+	var songDatas:Array<String>;
+	var songName:String;
+	var songNames:Array<String>;
+	var songWeekNumber:Int;
+	static var songListJsonPath:String;
+	var weekNumber:Int;
 
 	override function create()
 	{
-		// Lol
-		if(PlayState.PlayStateThing != null)
-			PlayState.PlayStateThing.destroy();
+		nullFPLoadedAssets();
+		FPLoadedMap = new Map<String, Dynamic>();
 		unloadMBSassets();
+		MainMenuState.nullMMLoadedAssets();
+		PlayState.nullPSLoadedAssets();
+		rawJson = null;
 
 		#if desktop
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+			// Updating Discord Rich Presence
+			DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
 
-		var songListJsonPath:String = "data/freeplaySonglist.json";
-		var songListPath:String = "";
-		var rawJson = "";
-		#if sys
-			var songListJsonPath:String;
-
-			if(Options.gameSFW)
-				songListJsonPath = "./assets/data/freeplaySonglistSFW.json";
-			else
-				songListJsonPath = "./assets/data/freeplaySonglist.json";
-			
-			songListPath = songListJsonPath;
-			rawJson = Utilities.getFileContents(songListPath);
-		#else
-			var songListJsonPath:String;
-
+		if(rawJson == null || rawJson == "") {
 			if(Options.gameSFW)
 				songListJsonPath = "./assets/data/freeplaySonglistSFW.json";
 			else
 				songListJsonPath = "./assets/data/freeplaySonglist.json";
 
-			songListPath = songListJsonPath;
-			rawJson = Utilities.getFileContents(songListPath);
+			rawJson = Utilities.getFileContents(songListJsonPath);
 			rawJson = rawJson.trim();
-		#end
 
-		while (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.length - 1);
+			while (!rawJson.endsWith("}")) {
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+			}
 		}
 
 		var json:SongListJunk = cast Json.parse(rawJson);
 
 		if(json.songs != null && json.songs.length > 0) {
 			for(song in json.songs) {
-				var songData:String = song.songData;
-				var songName:String = song.songName;
-				var songWeekNumber:Int = song.songWeekNumber;
-				var characterIcon:String = song.characterIcon;
+				songData = song.songData;
+				songName = song.songName;
+				songWeekNumber = song.songWeekNumber;
+				characterIcon = song.characterIcon;
 
 				addSong(songData, songName, songWeekNumber, characterIcon);
 			}
 		}
 		if(json.weeks != null && json.weeks.length > 0) {
 			for(week in json.weeks) {
-				var songDatas:Array<String> = week.songDatas;
-				var songNames:Array<String> = week.songNames;
-				var weekNumber:Int = week.weekNumber;
-				var characterIcons:Array<String> = week.characterIcons;
+				songDatas = week.songDatas;
+				songNames = week.songNames;
+				weekNumber = week.weekNumber;
+				characterIcons = week.characterIcons;
 
 				addWeek(songDatas, songNames, weekNumber, characterIcons);
 			}
 		}
 
+		// lets null these for Memory Lol.
+		songDatas = null;
+		songNames = null;
+		characterIcons = null;
+
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
 		add(bg);
+		FPLoadedMap["bg"] = bg;
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
+		FPLoadedMap["grpSongs"] = grpSongs;
 
 		for (i in 0...songs.length)
 		{
@@ -134,12 +139,14 @@ class FreeplayState extends MusicBeatState
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			grpSongs.add(songText);
+			FPLoadedMap["songText" + i] = songText;
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
 
 			iconArray.push(icon);
 			add(icon);
+			FPLoadedMap["icon" + i] = icon;
 		}
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
@@ -148,22 +155,24 @@ class FreeplayState extends MusicBeatState
 		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
+		FPLoadedMap["scoreBG"] = scoreBG;
 
 		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
 		diffText.font = scoreText.font;
 		add(diffText);
+		FPLoadedMap["diffText"] = diffText;
 
 		add(scoreText);
+		FPLoadedMap["scoreText"] = scoreText;
 
 		changeSelection();
 		changeDiff();
 
 		selector = new FlxText();
+		FPLoadedMap["selector"] = selector;
 
 		selector.size = 40;
 		selector.text = ">";
-
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
 
 		super.create();
 	}
@@ -260,6 +269,16 @@ class FreeplayState extends MusicBeatState
 		{
 			remove(asset);
 		}
+	}
+
+	public static function nullFPLoadedAssets():Void
+	{
+		if(FPLoadedMap != null) {
+			for(sprite in FPLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		FPLoadedMap = null;
 	}
 
 	function changeDiff(change:Int = 0)

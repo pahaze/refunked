@@ -16,6 +16,8 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float)
 	{
+		Paths.nullPathsAssets();
+		PlayState.nullPSLoadedAssets();
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
 		switch (daStage)
@@ -115,7 +117,7 @@ class GameOverSubstate extends MusicBeatSubstate
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
 					remove(camFollow);
-					remove(bf);
+					bf.destroy();
 					LoadingState.loadAndSwitchState(new PlayState());
 				});
 			});

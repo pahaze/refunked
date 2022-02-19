@@ -48,9 +48,9 @@ class OptionsMenu extends MusicBeatState
 	var themesStuff:Array<ThemeUhhh> = [];
 	var fpsExtraText:String = " - Press LEFT/RIGHT to change the value by 5 (hold SHIFT to change it by 1). Press T to change tabs. Press ENTER to change options.";
 	var fpsWebExtraText:String = "Press T to change tabs. Press ENTER to change options.";
-	private var grpControls:FlxTypedGroup<FlxText>;
-	private var grpControlsBools:FlxTypedGroup<FlxText>;
-	private var grpControlsTabs:FlxTypedGroup<FlxText>;
+	var grpControls:FlxTypedGroup<FlxText>;
+	var grpControlsBools:FlxTypedGroup<FlxText>;
+	var grpControlsTabs:FlxTypedGroup<FlxText>;
 	var settingsBools:Array<String> = [];
 	var settingsStuff:Array<String> = [];
 	var settingsTabs:Array<String> = [];
@@ -59,10 +59,19 @@ class OptionsMenu extends MusicBeatState
 	var ThemeThing:FlxText;
 	var ThemeBGThing:FlxSprite;
 
+	// Memory
+	static var OMLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
+	var textCounter:Int = 0;
+
 	override function create()
 	{
+		MainMenuState.nullMMLoadedAssets();
 		Options.loadOptions();
+		Paths.nullPathsAssets();
+		PreviewTheme.nullPTLoadedAssets();
 		loadThemes();
+		nullOMLoadedAssets();
+		OMLoadedMap = new Map<String, Dynamic>();
 
 		settingsTabs.push("Gameplay");
 		settingsTabs.push("User Experience");	
@@ -74,15 +83,18 @@ class OptionsMenu extends MusicBeatState
 		menuBG.screenCenter();
 		menuBG.antialiasing = true;
 		add(menuBG);
+		OMLoadedMap["menuBG"] = menuBG;
 
 		var menuGray:FlxSprite = new FlxSprite(30, 60).makeGraphic(1220, 600, FlxColor.BLACK);
 		menuGray.alpha = 0.5;
 		menuGray.scrollFactor.set();
 		add(menuGray);
+		OMLoadedMap["menuGray"] = menuGray;
 
 		var tabDividerSprite:FlxSprite = new FlxSprite(30, 112).makeGraphic(1220, 5, FlxColor.BLACK);
 		tabDividerSprite.scrollFactor.set();
 		add(tabDividerSprite);
+		OMLoadedMap["tabDividerSprite"] = tabDividerSprite;
 
 		grpControls = new FlxTypedGroup<FlxText>();
 		add(grpControls);
@@ -102,6 +114,8 @@ class OptionsMenu extends MusicBeatState
 				Text.alpha = 0.6;
 			}
 			grpControlsTabs.add(Text);
+			OMLoadedMap["text" + i + settingsTabs[i] + textCounter] = Text;
+			textCounter++;
 		}
 
 		#if desktop
@@ -109,33 +123,39 @@ class OptionsMenu extends MusicBeatState
 			FpsBGThing.alpha = 0.5;
 			FpsBGThing.scrollFactor.set();
 			add(FpsBGThing);
+			OMLoadedMap["FpsBGThing"] = FpsBGThing;
 
 			FpsThing = new FlxText(5, (FlxG.height * 0.9) + 50, 0, "FPS: " + Options.FPS + fpsExtraText, 12);
 			FpsThing.scrollFactor.set();
 			FpsThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(FpsThing);
+			OMLoadedMap["FpsThing"] = FpsThing;
 		#else
 			FpsBGThing = new FlxSprite(0, (FlxG.height * 0.9) + 50).makeGraphic(FlxG.width, Std.int((FlxG.height * 0.9) - 50), FlxColor.BLACK);
 			FpsBGThing.alpha = 0.5;
 			FpsBGThing.scrollFactor.set();
 			add(FpsBGThing);
+			OMLoadedMap["FpsBGThing"] = FpsBGThing;
 
 			FpsThing = new FlxText(5, (FlxG.height * 0.9) + 50, 0, fpsWebExtraText, 12);
 			FpsThing.scrollFactor.set();
 			FpsThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(FpsThing);
+			OMLoadedMap["FpsThing"] = FpsThing;
 		#end
 
 		ThemeBGThing = new FlxSprite(0, 0).makeGraphic(FlxG.width, 20, FlxColor.BLACK);
 		ThemeBGThing.alpha = 0.5;
 		ThemeBGThing.scrollFactor.set();
 		add(ThemeBGThing);
+		OMLoadedMap["ThemeBGThing"] = ThemeBGThing;
 
 		ThemeThing = new FlxText(5, 1, 0, "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.", 16);
 		ThemeThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		ThemeThing.scrollFactor.set();
 		ThemeThing.screenCenter(X);
 		add(ThemeThing);
+		OMLoadedMap["ThemeThing"] = ThemeThing;
 
 		curSelectedTheme = Options.themeNumber;
 
@@ -206,6 +226,7 @@ class OptionsMenu extends MusicBeatState
 			Options.saveOptions();
 			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
 		}
+
 		if(FlxG.keys.justPressed.D) {
 			changeThemeSelection(1);
 			Options.themeData = themesStuff[curSelectedTheme].ThemeData;
@@ -213,10 +234,12 @@ class OptionsMenu extends MusicBeatState
 			Options.saveOptions();
 			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
 		}
+
 		if(FlxG.keys.justPressed.P) {
 			PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
 			BruhLoadingState.loadAndSwitchState(new PreviewTheme());
 		}
+
 		if(FlxG.keys.justPressed.T) {
 			changeTab();
 		}
@@ -370,6 +393,8 @@ class OptionsMenu extends MusicBeatState
 			if(i != 0)
 				Text.alpha = 0.6;
 			grpControlsBools.add(Text);
+			OMLoadedMap["text" + i + settingsBools[i] + textCounter] = Text;
+			textCounter++;
 		}
 
 		for (i in 0...settingsStuff.length) {
@@ -379,6 +404,8 @@ class OptionsMenu extends MusicBeatState
 			if(i != 0)
 				Text.alpha = 0.6;
 			grpControls.add(Text);
+			OMLoadedMap["text" + i + settingsStuff[i] + textCounter] = Text;
+			textCounter++;
 		}
 	}
 
@@ -404,6 +431,8 @@ class OptionsMenu extends MusicBeatState
 			if(i != 0)
 				Text.alpha = 0.6;
 			grpControlsBools.add(Text);
+			OMLoadedMap["text" + i + settingsBools[i] + textCounter] = Text;
+			textCounter++;
 		}
 
 		for (i in 0...settingsStuff.length) {
@@ -413,6 +442,18 @@ class OptionsMenu extends MusicBeatState
 			if(i != 0)
 				Text.alpha = 0.6;
 			grpControls.add(Text);
+			OMLoadedMap["text" + i + settingsStuff[i] + textCounter] = Text;
+			textCounter++;
 		}
+	}
+
+	public static function nullOMLoadedAssets():Void
+	{
+		if(OMLoadedMap != null) {
+			for(sprite in OMLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		OMLoadedMap = null;
 	}
 }

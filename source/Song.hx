@@ -25,6 +25,7 @@ typedef SwagSong =
 	var needsVoices:Bool;
 	var speed:Float;
 	var stage:String;
+	var uiStyle:String;
 
 	var player1:String;
 	var player2:String;

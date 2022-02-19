@@ -150,6 +150,7 @@ class PreviewTheme extends MusicBeatState {
 	var broDevSelector:Int;
 	// memory stuff ?
 	private var PSLoadedAssets:Array<FlxBasic> = [];
+	static var PTLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 	// funky modes
 	public static var PracticeMode:Bool = false;
 	public static var botplayIsEnabled:Bool = false;
@@ -159,6 +160,11 @@ class PreviewTheme extends MusicBeatState {
 
     override public function create()
     {
+		OptionsMenu.nullOMLoadedAssets();
+		Paths.nullPathsAssets();
+		nullPTLoadedAssets();
+		PTLoadedMap = new Map<String, Dynamic>();
+
         if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 		
@@ -169,11 +175,13 @@ class PreviewTheme extends MusicBeatState {
         bg.color = FlxColor.fromRGB(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
         bg.setGraphicSize(Std.int(bg.width * 1.1));
         add(bg);
+		PTLoadedMap["bg"] = bg;
 
 		Conductor.songPosition = -300000;
 
         strumLine = new FlxSprite((Options.middlescroll ? -272 : 48), (Options.downscroll ? FlxG.height - 150 : 50)).makeGraphic(FlxG.width, 10);
 		strumLine.scrollFactor.set();
+		PTLoadedMap["strumLine"] = strumLine;
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
@@ -196,12 +204,14 @@ class PreviewTheme extends MusicBeatState {
 		loadingSongAlphaScreen.alpha = 0.5;
 		loadingSongAlphaScreen.scrollFactor.set();
 		add(loadingSongAlphaScreen);
+		PTLoadedMap["loadingSongAlphaScreen"] = loadingSongAlphaScreen;
 
 		loadingSongText = new FlxText(0, 0, 0, "Loading instrumental and vocals...");
 		loadingSongText.visible = false;
 		loadingSongText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		loadingSongText.scrollFactor.set();
 		add(loadingSongText);
+		PTLoadedMap["loadingSongText"] = loadingSongText;
 
         switch (storyDifficulty)
 		{
@@ -290,6 +300,9 @@ class PreviewTheme extends MusicBeatState {
 					add(timeBar);
 					add(timeTxt);
 			}
+			PTLoadedMap["timeTxt"] = timeTxt;
+			PTLoadedMap["timeBar"] = timeBar;
+			PTLoadedMap["timeBarBG"] = timeBarBG;
 		}
 
         if(ThemeStuff.healthBarIsEnabled == true) {
@@ -299,6 +312,7 @@ class PreviewTheme extends MusicBeatState {
 			}
 			healthBarBG.scrollFactor.set();
 			add(healthBarBG);
+			PTLoadedMap["healthBarBG"] = healthBarBG;
 
 			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 				'health', 0, 2);
@@ -306,6 +320,7 @@ class PreviewTheme extends MusicBeatState {
 			healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 			// healthBar
 			add(healthBar);
+			PTLoadedMap["healthBar"] = healthBar;
 
 			if(ThemeStuff.healthBarShowP1 == true) {
 				if(bfEasterEggEnabled) {
@@ -319,6 +334,7 @@ class PreviewTheme extends MusicBeatState {
 				}
 				iconP1.y = healthBar.y - (iconP1.height / 2);
 				add(iconP1);
+				PTLoadedMap["iconP1"] = iconP1;
 			}
 
 			if(ThemeStuff.healthBarShowP2 == true) {
@@ -329,6 +345,7 @@ class PreviewTheme extends MusicBeatState {
 				}
 				iconP2.y = healthBar.y - (iconP2.height / 2);
 				add(iconP2);
+				PTLoadedMap["iconP2"] = iconP2;
 			}
 		}
 
@@ -338,6 +355,7 @@ class PreviewTheme extends MusicBeatState {
 			accTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			accTxt.scrollFactor.set();
 			add(accTxt);
+			PTLoadedMap["accTxt"] = accTxt;
 		}
 
 		if(ThemeStuff.extraTextIsEnabled == true) {
@@ -345,6 +363,7 @@ class PreviewTheme extends MusicBeatState {
 			extraTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.extraFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			extraTxt.scrollFactor.set();
 			add(extraTxt);
+			PTLoadedMap["extraTxt"] = extraTxt;
 		}
 
 		if(ThemeStuff.missTextIsEnabled == true) {
@@ -353,6 +372,7 @@ class PreviewTheme extends MusicBeatState {
 			missTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			missTxt.scrollFactor.set();
 			add(missTxt);
+			PTLoadedMap["missTxt"] = missTxt;
 		}
 
 		if(ThemeStuff.npsTextIsEnabled == true) {
@@ -361,6 +381,7 @@ class PreviewTheme extends MusicBeatState {
 			npsTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 3, 1);
 			npsTxt.scrollFactor.set();
 			add(npsTxt);
+			PTLoadedMap["npsTxt"] = npsTxt;
 		}
 
 		if(ThemeStuff.scoreTextIsEnabled == true) {
@@ -370,22 +391,23 @@ class PreviewTheme extends MusicBeatState {
 				scoreTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, ThemeStuff.scoreTextBorder, 1);
 			scoreTxt.scrollFactor.set();
 			add(scoreTxt);
+			PTLoadedMap["scoreTxt"] = scoreTxt;
 		}
 
 		if(ThemeStuff.botplayTextIsEnabled == true) {
 			botplayTxt = new FlxText(ThemeStuff.botplayTextX, (Options.downscroll ? ThemeStuff.botplayTextDSY : ThemeStuff.botplayTextY), FlxG.width - 800, ThemeStuff.botplayText, 32);
 			if(Options.themeData == "psych" && Options.middlescroll) {
-				if(Options.downscroll == true) {
-					botplayTxt.y = botplayTxt.y -= 100;
-				} else {
-					botplayTxt.y = botplayTxt.y += 100;
-				}
+				if(Options.downscroll == true)
+					botplayTxt.y = botplayTxt.y - 78;
+				else
+					botplayTxt.y = botplayTxt.y + 78;
 			}
 			botplayTxt.setFormat(Paths.font("vcr.ttf"), ThemeStuff.botplayFontsize, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			botplayTxt.scrollFactor.set();
 			botplayTxt.borderSize = 1.25;
 			botplayTxt.visible = botplayIsEnabled;
 			add(botplayTxt);
+			PTLoadedMap["botplayTxt"] = botplayTxt;
 		}
 
 		if(ThemeStuff.watermarkIsEnabled == true) {
@@ -393,6 +415,7 @@ class PreviewTheme extends MusicBeatState {
 			refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			refunkedWatermark.scrollFactor.set();
 			add(refunkedWatermark);
+			PTLoadedMap["RFEWatermark"] = refunkedWatermark;
 		}
 
 		returnText = new FlxText(0, 0, 0, "This is a preview of your theme. Press ESC to return to the menu.", 32);
@@ -401,12 +424,14 @@ class PreviewTheme extends MusicBeatState {
 		returnText.y = returnText.y - 16;
 		returnText.visible = false;
 		add(returnText);
+		PTLoadedMap["returnText"] = returnText;
 
 		enabBotplayText = new FlxText(0, returnText.y + 32, 0, "Press B to see a preview of BOTPLAY enabled. Press P to see a preview of PRACTICE mode enabled.", 32);
 		enabBotplayText.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		enabBotplayText.screenCenter(X);
 		enabBotplayText.visible = false;
 		add(enabBotplayText);
+		PTLoadedMap["enabBotplayText"] = enabBotplayText;
 
         super.create();
     }
@@ -571,9 +596,7 @@ class PreviewTheme extends MusicBeatState {
             unloadLoadedAssets();
             unloadMBSassets();
 			inst.stop();
-            inst.destroy();
-			vocals.destroy();
-            vocals.destroy();
+			vocals.stop();
         }
 
 		if(ThemeStuff.timeBarIsEnabled) {
@@ -963,6 +986,8 @@ class PreviewTheme extends MusicBeatState {
 		} 
 		if (inst.length > 0 && vocals.length > 0 && !startingSong) {
 			stuffLoaded = true;
+			PTLoadedMap["inst"] = inst;
+			PTLoadedMap["vocals"] = vocals;
 		}
 
 		if(stuffLoaded && !startedCountdown) {
@@ -986,23 +1011,15 @@ class PreviewTheme extends MusicBeatState {
 					startSong();
 			}
 		} else {
-    		// Conductor.songPosition = FlxG.sound.music.time;
     		Conductor.songPosition += FlxG.elapsed * 1000;
 			songTime += FlxG.game.ticks - previousFrameTime;
 			previousFrameTime = FlxG.game.ticks;
-
-			// Interpolation type beat
 			if (Conductor.lastSongPos != Conductor.songPosition)
 			{
 				songTime = (songTime + Conductor.songPosition) / 2;
 				Conductor.lastSongPos = Conductor.songPosition;
-				// Conductor.songPosition += FlxG.elapsed * 1000;
-				// trace('MISSED FRAME');
 			}
-
 			songPercentage = (Conductor.songPosition / songLength);
-        
-	    	// Conductor.lastSongPos = FlxG.sound.music.time;
         }
 
         if (camZooming)
@@ -1564,8 +1581,6 @@ class PreviewTheme extends MusicBeatState {
 
         unloadLoadedAssets();
         unloadMBSassets();
-        inst.destroy();
-        vocals.destroy();
 
         FlxG.switchState(new OptionsMenu());
     }
@@ -1649,12 +1664,20 @@ class PreviewTheme extends MusicBeatState {
 		}
 	}
 
+	public static function nullPTLoadedAssets():Void
+	{
+		if(PTLoadedMap != null) {
+			for(sprite in PTLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		PTLoadedMap = null;
+	}
+
     override function destroy() {
         FlxG.sound.music.stop();
         inst.stop();
         vocals.stop();
-        inst.destroy();
-        vocals.destroy();
         super.destroy();
 	}
 }

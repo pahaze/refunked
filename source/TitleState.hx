@@ -34,6 +34,7 @@ using StringTools;
 class TitleState extends MusicBeatState
 {
 	private var TSLoadedAssets:Array<FlxBasic> = [];
+	private static var TSLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	static var initialized:Bool = false;
 
@@ -41,7 +42,6 @@ class TitleState extends MusicBeatState
 	var credGroup:FlxGroup;
 	var credTextStuff:Alphabet;
 	var textGroup:FlxGroup;
-	var ngSpr:FlxSprite;
 
 	var curWacky:Array<String> = [];
 
@@ -50,6 +50,9 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		unloadMBSassets();
+		nullTSLoadedAssets();
+		Paths.nullPathsAssets();
+		TSLoadedMap = new Map<String, Dynamic>();
 
 		PlayerSettings.init();
 
@@ -96,7 +99,7 @@ class TitleState extends MusicBeatState
 
 	var logoBl:FlxSprite;
 	var titleCharDance:FlxSprite;
-	var CharNames:Array<String> = [
+	static var CharNames:Array<String> = [
 		"gf",
 		"bf",
 		"dad",
@@ -117,6 +120,7 @@ class TitleState extends MusicBeatState
 	var charUse:String;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
+	var coolTextAmt:Int;
 
 	function startIntro()
 	{
@@ -144,6 +148,7 @@ class TitleState extends MusicBeatState
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(bg);
+		TSLoadedMap["bg"] = bg;
 
 		logoBl = new FlxSprite(-150, -100);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
@@ -267,7 +272,9 @@ class TitleState extends MusicBeatState
 				titleCharDance.antialiasing = true;
 		}
 		add(titleCharDance);
+		TSLoadedMap["titleCharDance"] = titleCharDance;
 		add(logoBl);
+		TSLoadedMap["logoBl"] = logoBl;
 
 		titleText = new FlxSprite(100, FlxG.height * 0.8);
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
@@ -277,10 +284,7 @@ class TitleState extends MusicBeatState
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
 		add(titleText);
-
-		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
-		logo.screenCenter();
-		logo.antialiasing = true;
+		TSLoadedMap["titleText"] = titleText;
 
 		credGroup = new FlxGroup();
 		add(credGroup);
@@ -288,18 +292,12 @@ class TitleState extends MusicBeatState
 
 		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		credGroup.add(blackScreen);
+		TSLoadedMap["blackScreen"] = blackScreen;
 
 		credTextStuff = new Alphabet(0, 0, "pahaze \n CryptoCANINE \n Johnny Redwick \n and other contributors \n present to you", true);
 		credTextStuff.screenCenter();
 		credTextStuff.visible = false;
-
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
-		add(ngSpr);
-		ngSpr.visible = false;
-		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
-		ngSpr.updateHitbox();
-		ngSpr.screenCenter(X);
-		ngSpr.antialiasing = true;
+		TSLoadedMap["credTextStuff"] = credTextStuff;
 
 		FlxTween.tween(credTextStuff, {y: credTextStuff.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
@@ -397,6 +395,7 @@ class TitleState extends MusicBeatState
 			money.y += (i * 60) + 200;
 			credGroup.add(money);
 			textGroup.add(money);
+			TSLoadedMap["money" + i] = money;
 		}
 	}
 
@@ -407,6 +406,8 @@ class TitleState extends MusicBeatState
 		coolText.y += (textGroup.length * 60) + 200;
 		credGroup.add(coolText);
 		textGroup.add(coolText);
+		coolTextAmt++;
+		TSLoadedMap["coolText" + coolTextAmt] = coolText;
 	}
 
 	function deleteCoolText()
@@ -477,8 +478,6 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
-			remove(ngSpr);
-
 			FlxG.camera.flash(FlxColor.WHITE, 4);
 			remove(credGroup);
 			skippedIntro = true;
@@ -491,6 +490,16 @@ class TitleState extends MusicBeatState
 		return super.add(Object);
 	}
 
+	public static function nullTSLoadedAssets():Void
+	{
+		if(TSLoadedMap != null) {
+			for(sprite in TSLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		TSLoadedMap = null;
+	}
+	
 	public function unloadLoadedAssets():Void
 	{
 		for (asset in TSLoadedAssets)

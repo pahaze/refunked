@@ -11,9 +11,6 @@ import flixel.graphics.FlxGraphic;
 import sys.io.File;
 import sys.FileSystem;
 #else
-import openfl.utils.ByteArray;
-import openfl.utils.Future;
-import lime._internal.format.Base64;
 import js.html.XMLHttpRequest;
 import js.html.XMLHttpRequestResponseType;
 import lime.graphics.Image;
@@ -25,6 +22,7 @@ class Paths
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
 	static var currentLevel:String;
+	static var PathsLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	static public function setCurrentLevel(name:String)
 	{
@@ -126,31 +124,54 @@ class Paths
 
 	static public function getSparrowAtlas(key:String, ?library:String)
 	{
-		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+		var result;
+		result = FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+		PathsLoadedMap[key] = result;
+		return result;
 	}
 
 	static public function getSparrowAtlasThing(key:String)
 	{
+		var result;
 		#if sys
-			return FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".xml"));
+			result = FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".xml"));
 		#else
 			// we'll get there one day 
-			return FlxAtlasFrames.fromSparrow("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".xml"));
+			result = FlxAtlasFrames.fromSparrow("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".xml"));
 		#end
+		PathsLoadedMap[key] = result;
+		return result;
 	}
 
 	static public function getPackerAtlas(key:String, ?library:String)
 	{
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+		var result;
+		result = FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+		PathsLoadedMap[key] = result;
+		return result;
 	}
 
 	static public function getPackerAtlasThing(key:String, ?library:String)
 	{
+		var result;
 		#if sys
-			return FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".txt"));
+			result = FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".txt"));
 		#else
 			// we'll get there one day 
-			return FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".txt"));
+			result = FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".txt"));
 		#end
+		PathsLoadedMap[key] = result;
+		return result;
+	}
+
+	static public function nullPathsAssets():Void
+	{
+		if(PathsLoadedMap != null) {
+			for(sprite in PathsLoadedMap) {
+				sprite = null;
+			}
+		}
+		PathsLoadedMap = null;
+		PathsLoadedMap = new Map<String, Dynamic>();
 	}
 }

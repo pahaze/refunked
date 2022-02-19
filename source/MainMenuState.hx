@@ -24,8 +24,9 @@ class MainMenuState extends MusicBeatState
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
+	var optionStuff:Array<String> = ['story mode', 'freeplay', 'options'];
 	var MMSLoadedAssets:Array<Dynamic> = [];
+	static var MMLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -39,6 +40,15 @@ class MainMenuState extends MusicBeatState
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
+		
+		FreeplayState.nullFPLoadedAssets();
+		OptionsMenu.nullOMLoadedAssets();
+		Paths.nullPathsAssets();
+		PlayState.nullPSLoadedAssets();
+		StoryMenuState.nullSMSLoadedAssets();
+		TitleState.nullTSLoadedAssets();
+		nullMMLoadedAssets();
+		MMLoadedMap = new Map<String, Dynamic>();
 
 		if (!FlxG.sound.music.playing)
 		{
@@ -55,6 +65,7 @@ class MainMenuState extends MusicBeatState
 		bg.screenCenter();
 		bg.antialiasing = true;
 		add(bg);
+		MMLoadedMap["bg"] = bg;
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
@@ -69,35 +80,35 @@ class MainMenuState extends MusicBeatState
 		magenta.antialiasing = true;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
-		// magenta.scrollFactor.set();
+		MMLoadedMap["magenta"] = magenta;
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
 
 		var tex = Paths.getSparrowAtlas('FNF_main_menu_assets');
 
-		for (i in 0...optionShit.length)
+		for (i in 0...optionStuff.length)
 		{
 			var menuItem:FlxSprite = new FlxSprite(0, 60 + (i * 160));
 			menuItem.frames = tex;
-			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
-			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+			menuItem.animation.addByPrefix('idle', optionStuff[i] + " basic", 24);
+			menuItem.animation.addByPrefix('selected', optionStuff[i] + " white", 24);
 			menuItem.animation.play('idle');
 			menuItem.ID = i;
 			menuItem.screenCenter(X);
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
+			MMLoadedMap["menuItem" + i] = menuItem;
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-
-		// NG.core.calls.event.logEvent('swag').send();
+		var versionStuff:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
+		versionStuff.scrollFactor.set();
+		versionStuff.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(versionStuff);
+		MMLoadedMap["versionStuff"] = versionStuff;
 
 		changeItem();
 
@@ -134,12 +145,12 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (optionShit[curSelected] == 'donate')
+				if (optionStuff[curSelected] == 'donate')
 				{
 					#if linux
-					Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
+						Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
 					#else
-					FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+						FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
 					#end
 				}
 				else
@@ -168,7 +179,7 @@ class MainMenuState extends MusicBeatState
 								unloadLoadedAssets();
 								unloadMBSassets();
 
-								var daChoice:String = optionShit[curSelected];
+								var daChoice:String = optionStuff[curSelected];
 								switch (daChoice)
 								{
 									case 'story mode':
@@ -213,6 +224,16 @@ class MainMenuState extends MusicBeatState
 		{
 			remove(asset);
 		}
+	}
+
+	public static function nullMMLoadedAssets():Void
+	{
+		if(MMLoadedMap != null) {
+			for(sprite in MMLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		MMLoadedMap = null;
 	}
 
 	function changeItem(huh:Int = 0)

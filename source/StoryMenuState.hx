@@ -85,6 +85,7 @@ class StoryMenuState extends MusicBeatState
 	];
 
 	var SMSLoadedAssets:Array<Dynamic> = [];
+	static var SMSLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 	var txtWeekTitle:FlxText;
 	var curWeek:Int = 0;
 	var txtTracklist:FlxText;
@@ -100,10 +101,11 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
-		// Lol
-		if(PlayState.PlayStateThing != null)
-			PlayState.PlayStateThing.destroy();
+		nullSMSLoadedAssets();
+		SMSLoadedMap = new Map<String, Dynamic>();
 		unloadMBSassets();
+		MainMenuState.nullMMLoadedAssets();
+		PlayState.nullPSLoadedAssets();
 		
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -118,36 +120,44 @@ class StoryMenuState extends MusicBeatState
 
 		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
 		scoreText.setFormat("VCR OSD Mono", 32);
+		SMSLoadedMap["scoreText"] = scoreText;
 
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
 		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
+		SMSLoadedMap["txtWeekTitle"] = txtWeekTitle;
 
 		var rankText:FlxText = new FlxText(0, 10);
 		rankText.text = 'RANK: GREAT';
 		rankText.setFormat(Paths.font("vcr.ttf"), 32);
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
+		SMSLoadedMap["rankText"] = rankText;
 
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
 		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
+		SMSLoadedMap["yellowBG"] = yellowBG;
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
 		add(grpWeekText);
+		SMSLoadedMap["grpWeekText"] = grpWeekText;
 
 		var blackBarThingie:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, 56, FlxColor.BLACK);
 		add(blackBarThingie);
+		SMSLoadedMap["blackBarThingie"] = blackBarThingie;
 
 		grpWeekCharacters = new FlxTypedGroup<MenuCharacter>();
+		SMSLoadedMap["grpWeekCharacters"] = grpWeekCharacters;
 
 		grpLocks = new FlxTypedGroup<FlxSprite>();
 		add(grpLocks);
+		SMSLoadedMap["grpLocks"] = grpLocks;
 
 		trace("Line 70");
 		
 		#if desktop
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresence("In the Story Mode Menu", null);
 		#end
 
 		if(Options.gameSFW) {
@@ -157,6 +167,7 @@ class StoryMenuState extends MusicBeatState
 				weekThing.y += ((weekThing.height + 20) * i);
 				weekThing.targetY = i;
 				grpWeekText.add(weekThing);
+				SMSLoadedMap["weekThing" + i] = weekThing;
 
 				weekThing.screenCenter(X);
 				weekThing.antialiasing = true;
@@ -170,6 +181,7 @@ class StoryMenuState extends MusicBeatState
 					lock.ID = i;
 					lock.antialiasing = true;
 					grpLocks.add(lock);
+					SMSLoadedMap["lock" + i] = lock;
 				}
 			}
 		} else {
@@ -179,6 +191,7 @@ class StoryMenuState extends MusicBeatState
 				weekThing.y += ((weekThing.height + 20) * i);
 				weekThing.targetY = i;
 				grpWeekText.add(weekThing);
+				SMSLoadedMap["weekThing" + i] = weekThing;
 
 				weekThing.screenCenter(X);
 				weekThing.antialiasing = true;
@@ -192,17 +205,17 @@ class StoryMenuState extends MusicBeatState
 					lock.ID = i;
 					lock.antialiasing = true;
 					grpLocks.add(lock);
+					SMSLoadedMap["lock" + i] = lock;
 				}
 			}
 		}
-
-		trace("Line 96");
 
 		for (char in 0...3)
 		{
 			var weekCharacterThing:MenuCharacter = new MenuCharacter((FlxG.width * 0.25) * (1 + char) - 150, weekCharacters[curWeek][char]);
 			weekCharacterThing.y += 70;
 			weekCharacterThing.antialiasing = true;
+			SMSLoadedMap["weekCharacterThing" + char] = weekCharacterThing;
 			switch (weekCharacterThing.character)
 			{
 				case 'dad':
@@ -237,6 +250,7 @@ class StoryMenuState extends MusicBeatState
 		leftArrow.animation.addByPrefix('press', "arrow push left");
 		leftArrow.animation.play('idle');
 		difficultySelectors.add(leftArrow);
+		SMSLoadedMap["leftArrow"] = leftArrow;
 
 		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
 		sprDifficulty.frames = ui_tex;
@@ -245,6 +259,7 @@ class StoryMenuState extends MusicBeatState
 		sprDifficulty.animation.addByPrefix('hard', 'HARD');
 		sprDifficulty.animation.play('easy');
 		changeDifficulty();
+		SMSLoadedMap["sprDifficulty"] = sprDifficulty;
 
 		difficultySelectors.add(sprDifficulty);
 
@@ -254,6 +269,7 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
+		SMSLoadedMap["rightArrow"] = rightArrow;
 
 		trace("Line 150");
 
@@ -265,28 +281,23 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist.font = rankText.font;
 		txtTracklist.color = 0xFFe55777;
 		add(txtTracklist);
-		// add(rankText);
+		SMSLoadedMap["txtTracklist"] = txtTracklist;
 		add(scoreText);
 		add(txtWeekTitle);
 
 		updateText();
-
-		trace("Line 165");
 
 		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
-		// scoreText.setFormat('VCR OSD Mono', 32);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.5));
 
 		scoreText.text = "WEEK SCORE:" + lerpScore;
 
 		txtWeekTitle.text = weekNames[curWeek].toUpperCase();
 		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
-
-		// FlxG.watch.addQuick('font', scoreText.font);
 
 		difficultySelectors.visible = weekUnlocked[curWeek];
 
@@ -416,7 +427,6 @@ class StoryMenuState extends MusicBeatState
 
 		sprDifficulty.alpha = 0;
 
-		// USING THESE WEIRD VALUES SO THAT IT DOESNT FLOAT UP
 		sprDifficulty.y = leftArrow.y - 15;
 		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
 
@@ -527,5 +537,15 @@ class StoryMenuState extends MusicBeatState
 		{
 			remove(asset);
 		}
+	}
+
+	public static function nullSMSLoadedAssets():Void
+	{
+		if(SMSLoadedMap != null) {
+			for(sprite in SMSLoadedMap) {
+				sprite.destroy();
+			}
+		}
+		SMSLoadedMap = null;
 	}
 }

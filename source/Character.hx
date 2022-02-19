@@ -46,8 +46,11 @@ class Character extends FlxSprite
 	public var isPlayer:Bool = false;
 	public var IdleDancing:Bool = false;
 	public var curCharacter:String = 'bf';
-
 	public var holdTimer:Float = 0;
+
+	var rawJson:String = "";
+	var charPath:String = "";
+	var json:CharJunk;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -59,19 +62,14 @@ class Character extends FlxSprite
 
 		switch(curCharacter) {
 			default:
-				var rawJson:String = "";
-				var charPath:String = "";
-
 				#if sys
-					var charJsonPath:String = "assets/chars/" + curCharacter + ".json";
-					charPath = charJsonPath;
+					charPath = "assets/chars/" + curCharacter + ".json";
 					if(!Utilities.checkFileExists(charPath))
 						charPath = "assets/chars/bf.json";
 
-					rawJson = File.getContent(charPath);
+					rawJson = Utilities.getFileContents(charPath);
 				#else
-					var charJsonPath:String = "./assets/chars/" + curCharacter + ".json";
-					charPath = charJsonPath;
+					charPath = "./assets/chars/" + curCharacter + ".json";
 					if(!Utilities.checkFileExists(charPath))
 						charPath = "./assets/chars/bf.json";
 
@@ -84,7 +82,7 @@ class Character extends FlxSprite
 					rawJson = rawJson.substr(0, rawJson.length - 1);
 				}
 
-				var json:CharJunk = cast Json.parse(rawJson);
+				json = cast Json.parse(rawJson);
 
 				#if sys
 					if(!Utilities.checkFileExists("assets/" + json.CharacterImage + ".txt")) {

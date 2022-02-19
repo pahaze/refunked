@@ -6,9 +6,6 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.FlxG;
 import flixel.util.FlxColor;
-#if polymod
-import polymod.format.ParseRules.TargetSignatureElement;
-#end
 
 using StringTools;
 
@@ -45,17 +42,14 @@ class Note extends FlxSprite
 		isSustainNote = sustainNote;
 
 		x += (FlxG.save.data.useMS ? -222 : 98);
-		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
 
-		var daStage:String = PlayState.curStage;
-
-		switch (daStage)
+		switch (PlayState.uiStyle)
 		{
-			case 'school' | 'schoolMad' | 'schoolEvil':
+			case 'pixel':
 				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -120,14 +114,10 @@ class Note extends FlxSprite
 				animation.play('redScroll');
 		}
 
-		// trace(prevNote);
-
 		if (isSustainNote && prevNote != null)
 		{
-			if(FlxG.save.data.useDS) {
+			if(FlxG.save.data.useDS)
 				flipY = true;
-				y += 50;
-			}
 
 			noteScore * 0.2;
 			alpha = 0.6;
@@ -149,9 +139,8 @@ class Note extends FlxSprite
 			updateHitbox();
 
 			x -= width / 2;
-			y -= 50;
 
-			if (PlayState.curStage.startsWith('school'))
+			if (PlayState.uiStyle.startsWith('pixel'))
 				x += 30;
 
 			if (prevNote.isSustainNote)
@@ -170,7 +159,6 @@ class Note extends FlxSprite
 
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 				prevNote.updateHitbox();
-				// prevNote.setGraphicSize();
 			}
 		}
 	}
@@ -181,7 +169,6 @@ class Note extends FlxSprite
 
 		if (mustPress)
 		{
-			// The * 0.5 is so that it's easier to hit them too late, instead of too early
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
 				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
 				canBeHit = true;

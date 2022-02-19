@@ -143,16 +143,8 @@ class PauseSubState extends MusicBeatSubstate
 				case "Resume":
 					close();
 				case "Restart Song":
-					unloadPlayStateLoadedAssets();
-					unloadLoadedAssets();
-					#if sys
-						if(PlayState.PlayStateThing.RFELua != null)
-							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
-					#end
-					PlayState.PlayStateThing.unloadMBSassets();
-					PlayState.PlayStateThing.destoryBoyfriendLol();
-					PlayState.PlayStateThing.killLuaBruh();
-					FlxG.resetState();
+					close();
+					FlxG.switchState(new PlayState());
 				case "Exit to menu":
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
@@ -161,7 +153,7 @@ class PauseSubState extends MusicBeatSubstate
 							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
-					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new MainMenuState());
 				case "Botplay":
@@ -188,7 +180,7 @@ class PauseSubState extends MusicBeatSubstate
 							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
-					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new StoryMenuState());
 				case "Exit to Freeplay Menu":
@@ -199,7 +191,7 @@ class PauseSubState extends MusicBeatSubstate
 							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
-					PlayState.PlayStateThing.destoryBoyfriendLol();
+					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
 					FlxG.switchState(new FreeplayState());
 			}
