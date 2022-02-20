@@ -211,38 +211,6 @@ class ReFunkedLua {
 				if(PlayState.PlayStateThing.camZooming)
 					returnCamera(cameraName).zoom += Zoom;
 			});
-			Lua_helper.add_callback(luaState, "performNoteStrumXTween", function(tweenName:String, strumNumber:Int, X:Float, ?speed:Float = 1, ?easeType:String) {
-				// Check if It Exists.
-				removeRemakeTween(tweenName);
-				if(strumNumber < 0)
-					strumNumber = 0;
-				var noteThing:FlxSprite = PlayState.PlayStateThing.strumLineNotes.members[strumNumber % PlayState.PlayStateThing.strumLineNotes.length];
-				
-				if(PlayState.LuaTweens.exists(tweenName)) {
-					PlayState.LuaTweens.set(tweenName, FlxTween.tween(noteThing, {x: X}, speed, {
-						ease: returnEase(easeType),
-						onComplete: function(twn:FlxTween) {
-							PlayState.LuaTweens.remove(tweenName);
-						}
-					}));
-				}
-			});
-			Lua_helper.add_callback(luaState, "performNoteStrumYTween", function(tweenName:String, strumNumber:Int, Y:Float, ?speed:Float = 1, ?easeType:String) {
-				// Check if It Exists.
-				removeRemakeTween(tweenName);
-				if(strumNumber < 0)
-					strumNumber = 0;
-				var noteThing:FlxSprite = PlayState.PlayStateThing.strumLineNotes.members[strumNumber % PlayState.PlayStateThing.strumLineNotes.length];
-				
-				if(PlayState.LuaTweens.exists(tweenName)) {
-					PlayState.LuaTweens.set(tweenName, FlxTween.tween(noteThing, {y: Y}, speed, {
-						ease: returnEase(easeType),
-						onComplete: function(twn:FlxTween) {
-							PlayState.LuaTweens.remove(tweenName);
-						}
-					}));
-				}
-			});
 			Lua_helper.add_callback(luaState, "performOpponentStrumAngleTween", function(tweenName:String, strumNumber:Int, Angle:Float, ?speed:Float = 1, ?easeType:String) {
 				// Check if It Exists.
 				removeRemakeTween(tweenName);
