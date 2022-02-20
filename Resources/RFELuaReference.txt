@@ -9,6 +9,8 @@ boyfriendName - Boyfriend actor/player's name.
 crochet - Crochet from Conductor.
 curBeat - It's curBeat (lol).
 curStep - It's curStep (lol).
+defaultOpponentStrumX1-4 - Default x position for each opponent strum.
+defaultPlayerStrumX1-4 - Default x position for each player strum.
 girlfriend - Literally "girlfriend". Lol.
 girlfriendName - Girlfriend actor/player's name.
 instLength - Length of instrumental.
@@ -37,15 +39,23 @@ giveActorHeight(actor-name) - Returns an actor's height.
 giveActorWidth(actor-name) - Returns an actor's width.
 giveSpriteHeight(sprite-name) - Returns a sprite's height.
 giveSpriteWidth(sprite-name) - Returns a sprite's width.
-makeAnimatedPackerSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes an animated sprite based on a .txt file (spirit, certain background elements, etc.).
-makeAnimatedSparrowSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes an animated sprite based on a .xml file (characters, most background elements, etc.).
+makeAnimatedPackerSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .txt file (spirit, certain background elements, etc.).
+makeAnimatedSparrowSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .xml file (characters, most background elements, etc.).
 makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 6 porting.
-makeSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes a simple FlxSprite. Not animated.
+makeSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes a simple FlxSprite. Not animated.
 performCameraAngleTween(tween, camera, angle, speed, ease-type) - Performs an angle tween on a(n) camera.
-performCameraXYTween(tween, camera, x, y, speed, ease-type) - Performs a tween on the x/y position(s) of a(n) camera.
+performCameraXTween(tween, camera, x, speed, ease-type) - Performs a tween on the x position of a(n) camera.
+performCameraYTween(tween, camera, y, speed, ease-type) - Performs a tween on the y position of a(n) camera.
 performCameraZoom(camera, zoom) - Performs a camera zoom by the amount you choose. Does not go into effect until camZooming is enabled.
+performOpponentStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected opponent strum.
+performOpponentStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected opponent strum.
+performOpponentStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected opponent strum.
+performPlayerStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected player strum.
+performPlayerStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected player strum.
+performPlayerStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected player strum.
 performSpriteAngleTween(tween, sprite, angle, speed, ease-type) - Performs an angle tween on a(n) sprite.
-performSpriteXYTween(tween, sprite, x, y, speed, ease-type) - Performs a tween on the x/y position(s) of a(n) sprite.
+performSpriteXTween(tween, sprite, x, speed, ease-type) - Performs a tween on the x position of a(n) sprite.
+performSpriteYTween(tween, sprite, y, speed, ease-type) - Performs a tween on the y position of a(n) sprite.
 playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent) play an animation.
 playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
 resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
@@ -63,6 +73,8 @@ setCurStage(stage-name) - Sets curStage in PlayState.
 setDefaultCamZoom(zoom) - Sets the default camera zoom.
 setMinimumCamZoom(zoom) - Sets the minimum zoom of the camera before it can zoom again.
 setOpponentCamFollowPosition(x, y) - Sets camFollow positions for your opponent.
+setOpponentStrumAlpha(strum-number, alpha) - Sets the alpha of an opponent strum.
+setPlayerStrumAlpha(strum-number, alpha) - Sets the alpha of a player strum.
 setSpriteCamera(sprite-name, camera) - Sets a sprite's camera.
 setSpriteGraphicSize(sprite-name, x, y) - Sets a sprite's graphic size (NOT the same as scale).
 setSpritePosition(sprite-name, x, y) - Sets a sprite's position.

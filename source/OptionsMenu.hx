@@ -47,6 +47,8 @@ class OptionsMenu extends MusicBeatState
 
 	var themesStuff:Array<ThemeUhhh> = [];
 	var fpsExtraText:String = " - Press LEFT/RIGHT to change the value by 5 (hold SHIFT to change it by 1). Press T to change tabs. Press ENTER to change options.";
+	var FpsThing:FlxText;
+	var FpsBGThing:FlxSprite;
 	var fpsWebExtraText:String = "Press T to change tabs. Press ENTER to change options.";
 	var grpControls:FlxTypedGroup<FlxText>;
 	var grpControlsBools:FlxTypedGroup<FlxText>;
@@ -54,10 +56,14 @@ class OptionsMenu extends MusicBeatState
 	var settingsBools:Array<String> = [];
 	var settingsStuff:Array<String> = [];
 	var settingsTabs:Array<String> = [];
-	var FpsThing:FlxText;
-	var FpsBGThing:FlxSprite;
 	var ThemeThing:FlxText;
 	var ThemeBGThing:FlxSprite;
+
+	var checkingKey:Bool = false;
+	var isAltKey:Bool = false;
+	var keybindToReplace:String = null;
+	var keybindAlphaScreen:FlxSprite = null;
+	var keybindAlphaText:FlxText = null;
 
 	// Memory
 	static var OMLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -74,7 +80,8 @@ class OptionsMenu extends MusicBeatState
 		OMLoadedMap = new Map<String, Dynamic>();
 
 		settingsTabs.push("Gameplay");
-		settingsTabs.push("User Experience");	
+		settingsTabs.push("User Experience");
+		settingsTabs.push("Keybinds");
 
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		menuBG.color = FlxColor.fromRGB(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
@@ -95,6 +102,18 @@ class OptionsMenu extends MusicBeatState
 		tabDividerSprite.scrollFactor.set();
 		add(tabDividerSprite);
 		OMLoadedMap["tabDividerSprite"] = tabDividerSprite;
+
+		keybindAlphaScreen = new FlxSprite(-600,-600).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+		keybindAlphaScreen.visible = false;
+		keybindAlphaScreen.alpha = 0.5;
+		keybindAlphaScreen.scrollFactor.set();
+		add(keybindAlphaScreen);
+
+		keybindAlphaText = new FlxText(0, 0, 0, "");
+		keybindAlphaText.visible = false;
+		keybindAlphaText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		keybindAlphaText.scrollFactor.set();
+		add(keybindAlphaText);
 
 		grpControls = new FlxTypedGroup<FlxText>();
 		add(grpControls);
@@ -166,120 +185,182 @@ class OptionsMenu extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		ThemeThing.screenCenter(X);
-			
-		if (controls.BACK) {
-			Options.saveOptions();
-			FlxG.switchState(new MainMenuState());
-		}
-		if (controls.UP_P)
-			changeSelection(-1);
-		if (controls.DOWN_P)
-			changeSelection(1);
+		if(!checkingKey) {
+			ThemeThing.screenCenter(X);
 
-		if (controls.ACCEPT) {
-			switch(curTab) {
-				case 0:
-					switch(curSelected) {
-						case 0:
-							Options.downscroll = !Options.downscroll;
-							Options.saveOptions();
-							grpControlsBools.members[curSelected].text = (Options.downscroll ? "< ON >" : "< OFF >");
-							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
-						case 1:
-							Options.middlescroll = !Options.middlescroll;
-							Options.saveOptions();
-							grpControlsBools.members[curSelected].text = (Options.middlescroll ? "< ON >" : "< OFF >");
-							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
-						case 2:
-							Options.freeplayDialogue = !Options.freeplayDialogue;
-							Options.saveOptions();
-							grpControlsBools.members[curSelected].text = (Options.freeplayDialogue ? "< ON >" : "< OFF >");
-							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
-					}
-				case 1:
-					switch(curSelected) {
-						case 0:
-							Options.gameSFW = !Options.gameSFW;
-							Options.saveOptions();
-							grpControlsBools.members[curSelected].text = (Options.gameSFW ? "< YES >" : "< NO >");
-							grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
-						#if desktop
-							case 1:
-								Options.enableRPC = !Options.enableRPC;
-								if(Options.enableRPC)
-									DiscordClient.initialize();
-								else
-									DiscordClient.shutdown();
+			if (controls.BACK) {
+				Options.saveOptions();
+				Options.reloadControls();
+				FlxG.switchState(new MainMenuState());
+			}
+
+			if (controls.UP_P)
+				changeSelection(-1);
+
+			if (controls.DOWN_P)
+				changeSelection(1);
+
+			if (controls.ACCEPT) {
+				switch(curTab) {
+					case 0:
+						switch(curSelected) {
+							case 0:
+								Options.downscroll = !Options.downscroll;
 								Options.saveOptions();
-								grpControlsBools.members[curSelected].text = (Options.enableRPC ? "< ON >" : "< OFF >");
+								grpControlsBools.members[curSelected].text = (Options.downscroll ? "< ON >" : "< OFF >");
 								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
-						#end
+							case 1:
+								Options.middlescroll = !Options.middlescroll;
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.middlescroll ? "< ON >" : "< OFF >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+							case 2:
+								Options.freeplayDialogue = !Options.freeplayDialogue;
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.freeplayDialogue ? "< ON >" : "< OFF >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+						}
+					case 1:
+						switch(curSelected) {
+							case 0:
+								Options.gameSFW = !Options.gameSFW;
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.gameSFW ? "< YES >" : "< NO >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+							#if desktop
+								case 1:
+									Options.enableRPC = !Options.enableRPC;
+									if(Options.enableRPC)
+										DiscordClient.initialize();
+									else
+										DiscordClient.shutdown();
+									Options.saveOptions();
+									grpControlsBools.members[curSelected].text = (Options.enableRPC ? "< ON >" : "< OFF >");
+									grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+							#end
+						}
+					case 2:
+						switch(curSelected) {
+							case 0:
+								checkingKey = true;
+								keybindToReplace = "LEFT";
+								isAltKey = false;
+							case 1:
+								checkingKey = true;
+								keybindToReplace = "LEFT";
+								isAltKey = true;
+							case 2:
+								checkingKey = true;
+								keybindToReplace = "DOWN";
+								isAltKey = false;
+							case 3:
+								checkingKey = true;
+								keybindToReplace = "DOWN";
+								isAltKey = true;
+							case 4:
+								checkingKey = true;
+								keybindToReplace = "UP";
+								isAltKey = false;
+							case 5:
+								checkingKey = true;
+								keybindToReplace = "UP";
+								isAltKey = true;
+							case 6:
+								checkingKey = true;
+								keybindToReplace = "RIGHT";
+								isAltKey = false;
+							case 7:
+								checkingKey = true;
+								keybindToReplace = "RIGHT";
+								isAltKey = true;
+						}
+				}
+			}
+
+			if(FlxG.keys.justPressed.A) {
+				changeThemeSelection(-1);
+				Options.themeData = themesStuff[curSelectedTheme].ThemeData;
+				Options.themeName = themesStuff[curSelectedTheme].ThemeName;
+				Options.saveOptions();
+				ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
+			}
+
+			if(FlxG.keys.justPressed.D) {
+				changeThemeSelection(1);
+				Options.themeData = themesStuff[curSelectedTheme].ThemeData;
+				Options.themeName = themesStuff[curSelectedTheme].ThemeName;
+				Options.saveOptions();
+				ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
+			}
+
+			if(FlxG.keys.justPressed.P) {
+				PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
+				BruhLoadingState.loadAndSwitchState(new PreviewTheme());
+			}
+
+			if(FlxG.keys.justPressed.T) {
+				changeTab();
+			}
+
+			#if desktop
+				if(FlxG.keys.justPressed.LEFT) {
+					if(FlxG.keys.pressed.SHIFT)
+						Options.FPS -= 1;
+					else
+						Options.FPS -= 5;
+					if(Options.FPS < 60)
+						Options.FPS = 60;
+					Options.saveOptions();
+					FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+					if(Options.FPS > FlxG.drawFramerate) {
+						FlxG.updateFramerate = Options.FPS;
+						FlxG.drawFramerate = Options.FPS;
+					} else {
+						FlxG.drawFramerate = Options.FPS;
+						FlxG.updateFramerate = Options.FPS;
 					}
-			}
-		}
-
-		if(FlxG.keys.justPressed.A) {
-			changeThemeSelection(-1);
-			Options.themeData = themesStuff[curSelectedTheme].ThemeData;
-			Options.themeName = themesStuff[curSelectedTheme].ThemeName;
-			Options.saveOptions();
-			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
-		}
-
-		if(FlxG.keys.justPressed.D) {
-			changeThemeSelection(1);
-			Options.themeData = themesStuff[curSelectedTheme].ThemeData;
-			Options.themeName = themesStuff[curSelectedTheme].ThemeName;
-			Options.saveOptions();
-			ThemeThing.text = "Current theme: " + Options.themeName + ". Press A/D to change the theme. Press P to preview the theme.";
-		}
-
-		if(FlxG.keys.justPressed.P) {
-			PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
-			BruhLoadingState.loadAndSwitchState(new PreviewTheme());
-		}
-
-		if(FlxG.keys.justPressed.T) {
-			changeTab();
-		}
-
-		#if desktop
-			if(FlxG.keys.justPressed.LEFT) {
-				if(FlxG.keys.pressed.SHIFT)
-					Options.FPS -= 1;
-				else
-					Options.FPS -= 5;
-				if(Options.FPS < 60)
-					Options.FPS = 60;
-				Options.saveOptions();
-				FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
-				if(Options.FPS > FlxG.drawFramerate) {
-					FlxG.updateFramerate = Options.FPS;
-					FlxG.drawFramerate = Options.FPS;
-				} else {
-					FlxG.drawFramerate = Options.FPS;
-					FlxG.updateFramerate = Options.FPS;
 				}
-			}
-			if(FlxG.keys.justPressed.RIGHT) {
-				if(FlxG.keys.pressed.SHIFT)
-					Options.FPS += 1;
-				else
-					Options.FPS += 5;
-				if(Options.FPS > 450)
-					Options.FPS = 450;
-				Options.saveOptions();
-				FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
-				if(Options.FPS > FlxG.drawFramerate) {
-					FlxG.updateFramerate = Options.FPS;
-					FlxG.drawFramerate = Options.FPS;
-				} else {
-					FlxG.drawFramerate = Options.FPS;
-					FlxG.updateFramerate = Options.FPS;
+				if(FlxG.keys.justPressed.RIGHT) {
+					if(FlxG.keys.pressed.SHIFT)
+						Options.FPS += 1;
+					else
+						Options.FPS += 5;
+					if(Options.FPS > 450)
+						Options.FPS = 450;
+					Options.saveOptions();
+					FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+					if(Options.FPS > FlxG.drawFramerate) {
+						FlxG.updateFramerate = Options.FPS;
+						FlxG.drawFramerate = Options.FPS;
+					} else {
+						FlxG.drawFramerate = Options.FPS;
+						FlxG.updateFramerate = Options.FPS;
+					}
 				}
+			#end
+		} else {
+			keybindAlphaScreen.visible = true;
+			keybindAlphaText.text = "Setting keybind for " + grpControls.members[curSelected].text;
+			keybindAlphaText.screenCenter();
+			keybindAlphaText.visible = true;
+			var funnyKey:Int = FlxG.keys.firstJustPressed();
+			if(funnyKey > -1) {
+				var theArray:Array<FlxKey> = Options.keybindMap.get(keybindToReplace);
+				theArray[isAltKey ? 1 : 0] = funnyKey;
+				Options.keybindMap.set(keybindToReplace, theArray);
+				Options.saveOptions();
+				Options.reloadControls();
+
+				grpControlsBools.members[curSelected].text = "< " + theArray[isAltKey ? 1 : 0].toString() + " >";
+				grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+				checkingKey = false;
+				isAltKey = false;
+				keybindToReplace = null;
+				keybindAlphaScreen.visible = false;
+				keybindAlphaText.text = null;
+				keybindAlphaText.visible = false;
 			}
-		#end
+		}
 	}
 
 	var isSettingControl:Bool = false;
@@ -322,6 +403,8 @@ class OptionsMenu extends MusicBeatState
 				setupGameplayTab();
 			case 1:
 				setupUETab();
+			case 2:
+				setupKBTab();
 			default:
 				setupGameplayTab();
 		}
@@ -384,6 +467,54 @@ class OptionsMenu extends MusicBeatState
 		settingsBools.push((Options.middlescroll ? "< ON >" : "< OFF >"));
 		settingsStuff.push("Freeplay Dialogue");
 		settingsBools.push((Options.freeplayDialogue ? "< ON >" : "< OFF >"));
+		
+		for (i in 0...settingsBools.length) {
+			var Text:FlxText = new FlxText(FlxG.width - 40, 122 + (32 * i), 0, settingsBools[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			Text.x = Text.x - Text.width;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControlsBools.add(Text);
+			OMLoadedMap["text" + i + settingsBools[i] + textCounter] = Text;
+			textCounter++;
+		}
+
+		for (i in 0...settingsStuff.length) {
+			var Text:FlxText = new FlxText(40, 122 + (32 * i), 0, settingsStuff[i]);
+			Text.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			Text.borderSize = 1.25;
+			if(i != 0)
+				Text.alpha = 0.6;
+			grpControls.add(Text);
+			OMLoadedMap["text" + i + settingsStuff[i] + textCounter] = Text;
+			textCounter++;
+		}
+	}
+
+	function setupKBTab() {
+		grpControls.clear();
+		grpControlsBools.clear();
+		untyped settingsStuff.length = 0;
+		untyped settingsBools.length = 0;
+		curSelected = 0;
+
+		settingsStuff.push("Left");
+		settingsBools.push("< " + Options.keybindMap.get("LEFT")[0].toString() + " >");
+		settingsStuff.push("Left (Alt)");
+		settingsBools.push("< " + Options.keybindMap.get("LEFT")[1].toString() + " >");
+		settingsStuff.push("Down");
+		settingsBools.push("< " + Options.keybindMap.get("DOWN")[0].toString() + " >");
+		settingsStuff.push("Down (Alt)");
+		settingsBools.push("< " + Options.keybindMap.get("DOWN")[1].toString() + " >");
+		settingsStuff.push("Up");
+		settingsBools.push("< " + Options.keybindMap.get("UP")[0].toString() + " >");
+		settingsStuff.push("Up (Alt)");
+		settingsBools.push("< " + Options.keybindMap.get("UP")[1].toString() + " >");
+		settingsStuff.push("Right");
+		settingsBools.push("< " + Options.keybindMap.get("RIGHT")[0].toString() + " >");
+		settingsStuff.push("Right (Alt)");
+		settingsBools.push("< " + Options.keybindMap.get("RIGHT")[1].toString() + " >");
 		
 		for (i in 0...settingsBools.length) {
 			var Text:FlxText = new FlxText(FlxG.width - 40, 122 + (32 * i), 0, settingsBools[i]);

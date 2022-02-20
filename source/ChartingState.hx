@@ -239,6 +239,10 @@ class ChartingState extends MusicBeatState
 		add(curRenderedNotes);
 		add(curRenderedSustains);
 
+		#if desktop
+			DiscordClient.changePresence("Chart Editor", _song.songName, null, true);
+		#end
+
 		super.create();
 	}
 
@@ -650,7 +654,7 @@ class ChartingState extends MusicBeatState
 		_song.songName = moreTypingStuff.text;
 
 		#if desktop
-			DiscordClient.changePresence("Chart Editor", _song.songName, null, true);
+			DiscordClient.changePresence("Chart Editor", _song.songName, null);
 		#end
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));

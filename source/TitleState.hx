@@ -54,15 +54,15 @@ class TitleState extends MusicBeatState
 		Paths.nullPathsAssets();
 		TSLoadedMap = new Map<String, Dynamic>();
 
-		PlayerSettings.init();
-
 		curWacky = FlxG.random.getObject(getIntroTextStuff());
 
 		super.create();
 
 		Highscore.load();
+		Options.checkControls();
+		PlayerSettings.init();
 		Options.loadOptions();
-
+		
 		if (FlxG.save.data.weekUnlocked != null)
 		{
 			if (StoryMenuState.weekUnlocked.length < 4)

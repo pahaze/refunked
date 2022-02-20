@@ -1,6 +1,8 @@
 package;
 
+import Controls.KeyboardScheme;
 import flixel.FlxG;
+import flixel.input.keyboard.FlxKey;
 
 class Options
 {
@@ -12,14 +14,29 @@ class Options
 	public static var FPS:Int = 60;
 	public static var freeplayDialogue:Bool = false;
 	public static var gameSFW:Bool = true;
+	public static var keybindMap:Map<String, Array<FlxKey>> = new Map<String, Array<FlxKey>>();
 	public static var middlescroll:Bool = false;
 	public static var themeData:String = "default";
 	public static var themeName:String = "Default (RFE)";
 	public static var themeNumber:Int = 0;
 
+	static var defaultKeybinds:Map<String, Array<FlxKey>> = [
+		"UP" => [W, FlxKey.UP],
+		"DOWN" => [S, FlxKey.DOWN],
+		"LEFT" => [A, FlxKey.LEFT],
+		"RIGHT" => [D, FlxKey.RIGHT],
+	];
+
+	public static function checkControls() {
+		FlxG.save.bind('refunked', 'pahaze');
+		if(FlxG.save.data.keybinds != null)
+			keybindMap = FlxG.save.data.keybinds.copy();
+		else
+			keybindMap = defaultKeybinds.copy();
+	}
+
 	public static function loadOptions() {
 		FlxG.save.bind('refunked', 'pahaze');
-		
 		// Downscroll
 		if(FlxG.save.data.useDS != null)
 			downscroll = FlxG.save.data.useDS;
@@ -72,6 +89,16 @@ class Options
 			themeNumber = FlxG.save.data.themeSelectedNo;
 		else
 			themeNumber = 0;
+		// Keybinds
+		if(FlxG.save.data.keybinds != null)
+			keybindMap = FlxG.save.data.keybinds.copy();
+		else
+			keybindMap = defaultKeybinds.copy();
+		PlayerSettings.player1.setKeyboardScheme(KeyboardScheme.Solo);
+	}
+
+	public static function reloadControls() {
+		PlayerSettings.player1.setKeyboardScheme(KeyboardScheme.Solo);
 	}
 
 	public static function saveOptions() {
@@ -81,6 +108,7 @@ class Options
 		FlxG.save.data.FPS = FPS;
 		FlxG.save.data.freeplayDialogue = freeplayDialogue;
 		FlxG.save.data.gameSFW = gameSFW;
+		FlxG.save.data.keybinds = keybindMap;
 		FlxG.save.data.useMS = middlescroll;
 		FlxG.save.data.theme = themeData;
 		FlxG.save.data.themeName = themeName;

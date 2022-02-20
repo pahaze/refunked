@@ -90,9 +90,9 @@ class PlayState extends MusicBeatState
 	public static var camFollowSet:Bool = false;
 	private static var prevCamFollow:FlxObject;
 
-	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
-	private var playerStrums:FlxTypedGroup<FlxSprite>;
-	private var cpuStrums:FlxTypedGroup<FlxSprite>;
+	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
+	public var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var cpuStrums:FlxTypedGroup<FlxSprite>;
 
 	public var camZooming:Bool = false;
 	private var curSong:String = "";
@@ -1283,6 +1283,18 @@ class PlayState extends MusicBeatState
 			generateStaticArrows(0);
 			generateStaticArrows(1);
 		}
+		#if sys
+			if(RFELua != null) {
+				for(i in 0...playerStrums.length) {
+					RFELua.setVar("defaultPlayerStrumX" + i, playerStrums.members[i].x);
+					RFELua.setVar("defaultPlayerStrumY" + i, playerStrums.members[i].y);
+				}
+				for(i in 0...cpuStrums.length) {
+					RFELua.setVar("defaultOpponentStrumX" + i, cpuStrums.members[i].x);
+					RFELua.setVar("defaultOpponentStrumY" + i, cpuStrums.members[i].y);
+				}
+			}
+		#end
 
 		talking = false;
 		startedCountdown = true;
@@ -1507,11 +1519,9 @@ class PlayState extends MusicBeatState
 
 				swagNote.mustPress = gottaHitNote;
 
-				if (swagNote.mustPress)
-				{
+				if (swagNote.mustPress) {
 					swagNote.x += FlxG.width / 2; // general offset
 				}
-				else {}
 			}
 			daBeats += 1;
 		}
@@ -1616,8 +1626,7 @@ class PlayState extends MusicBeatState
 
 			babyArrow.ID = i;
 
-			if (player == 1)
-			{
+			if (player == 1) {
 				playerStrums.add(babyArrow);
 			} else {
 				if(!Options.middlescroll)
