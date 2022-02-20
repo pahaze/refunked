@@ -30,7 +30,7 @@ class Options
 	public static function checkControls() {
 		FlxG.save.bind('refunked', 'pahaze');
 		if(FlxG.save.data.keybinds != null)
-			keybindMap = FlxG.save.data.keybinds.copy();
+			keybindMap = FlxG.save.data.keybinds;
 		else
 			keybindMap = defaultKeybinds.copy();
 	}
@@ -91,7 +91,7 @@ class Options
 			themeNumber = 0;
 		// Keybinds
 		if(FlxG.save.data.keybinds != null)
-			keybindMap = FlxG.save.data.keybinds.copy();
+			keybindMap = FlxG.save.data.keybinds;
 		else
 			keybindMap = defaultKeybinds.copy();
 		PlayerSettings.player1.setKeyboardScheme(KeyboardScheme.Solo);

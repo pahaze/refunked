@@ -357,7 +357,6 @@ class OptionsMenu extends MusicBeatState
 				isAltKey = false;
 				keybindToReplace = null;
 				keybindAlphaScreen.visible = false;
-				keybindAlphaText.text = null;
 				keybindAlphaText.visible = false;
 			}
 		}
