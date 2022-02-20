@@ -6,15 +6,21 @@ boyfriend - Literally "boyfriend". Lol.
 boyfriendMidpointX - Boyfriend's X midpoint (useful for camera stuff).
 boyfriendMidpointY - Boyfriend's Y midpoint (useful for camera stuff).
 boyfriendName - Boyfriend actor/player's name.
-curBeat - it's curBeat (lol).
-curStep - it's curStep (lol).
+crochet - Crochet from Conductor.
+curBeat - It's curBeat (lol).
+curStep - It's curStep (lol).
 girlfriend - Literally "girlfriend". Lol.
 girlfriendName - Girlfriend actor/player's name.
+instLength - Length of instrumental.
 health - Gives health from in game.
 opponent - Literally "opponent". Lol.
 opponentMidpointX - Your opponent's X midpoint (useful for camera stuff).
 opponentMidpointY - Your opponent's Y midpoint (useful for camera stuff).
 opponentName - Opponent actor/player's name.
+songData - Name of song (not formatted).
+songName - Name of song.
+stepCrochet - stepCrochet from Conductor.
+vocalsLength - Length of vocals.
 
 Current RFE Lua functions:
 addBackgroundGirls(bg-girls-name) - Adds a created BG girls instance to PlayState.
@@ -35,6 +41,11 @@ makeAnimatedPackerSprite(sprite-name, path-to-image, x, y, antialiasing, scale) 
 makeAnimatedSparrowSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes an animated sprite based on a .xml file (characters, most background elements, etc.).
 makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 6 porting.
 makeSprite(sprite-name, path-to-image, x, y, antialiasing, scale) - Makes a simple FlxSprite. Not animated.
+performCameraAngleTween(tween, camera, angle, speed, ease-type) - Performs an angle tween on a(n) camera.
+performCameraXYTween(tween, camera, x, y, speed, ease-type) - Performs a tween on the x/y position(s) of a(n) camera.
+performCameraZoom(camera, zoom) - Performs a camera zoom by the amount you choose. Does not go into effect until camZooming is enabled.
+performSpriteAngleTween(tween, sprite, angle, speed, ease-type) - Performs an angle tween on a(n) sprite.
+performSpriteXYTween(tween, sprite, x, y, speed, ease-type) - Performs a tween on the x/y position(s) of a(n) sprite.
 playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent) play an animation.
 playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
 resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
@@ -42,21 +53,22 @@ setActorGraphicSize(sprite-name, x, y) - Sets an actor's graphic size (NOT the s
 setActorPosition(actor-name, x, y) - Sets an actor's position.
 setActorScale(actor-name, x, y) - Sets an actor's scale (NOT the same as graphic size).
 setActorScrollFactor(actor-name, x, y) - Sets an actor's scroll factor.
-setBGCamAngle(angle) - Sets the angle of the background camera (where BF, GF, dad, etc. are).
 setBGGirlsScrollFactor(bg-girls-name, x, y) - Sets scroll factor for BG girls.
 setBoyfriendCamFollowPosition(x, y) - Sets camFollow positions for Boyfriend.
+setCameraAngle(camera, angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
 setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
-setCamHUDAngle(angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
+setCameraZooms(camhud-zoom, camgame-zoom) - Sets the zoom amount for the cameras.
 setCamPosPosition(x, y) - Sets camPos' positions.
 setCurStage(stage-name) - Sets curStage in PlayState.
+setDefaultCamZoom(zoom) - Sets the default camera zoom.
+setMinimumCamZoom(zoom) - Sets the minimum zoom of the camera before it can zoom again.
 setOpponentCamFollowPosition(x, y) - Sets camFollow positions for your opponent.
 setSpriteCamera(sprite-name, camera) - Sets a sprite's camera.
 setSpriteGraphicSize(sprite-name, x, y) - Sets a sprite's graphic size (NOT the same as scale).
 setSpritePosition(sprite-name, x, y) - Sets a sprite's position.
 setSpriteScale(sprite-name, x, y) - Sets a sprite's scale (NOT the same as graphic size).
 setSpriteScrollFactor(sprite-name, x, y) - Sets a sprite's scroll factor.
-shakeBGCam(intensity, duration) - Shakes the background camera for set duration with set intensity.
-shakeCamHUD(intensity, duration) - Shakes the HUD camera for set duration with set intensity.
+shakeCamera(camera, intensity, duration) - Shakes the HUD camera for set duration with set intensity.
 updateSpriteHitbox(sprite-name) - Updates a sprite's hitbox.
 
 Current RFE Lua callbacks:
