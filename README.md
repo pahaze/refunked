@@ -12,10 +12,11 @@ Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS.
 - [CryptoCANINE](https://github.com/CryptoCANINE) - Programmer
 - [Johnny Redwick](https://github.com/JohnnyRedwick) - Artist
 - [KadeDev](https://github.com/KadeDev) - creator of Kade Engine (themes based off of engine in game, some code from engine used for accuracy)
-- [ShadowMario](https://github.com/ShadowMario) - creator of Pysch Engine (themes based off of engine in game, some code from engine used for accuracy)
+- [ShadowMario](https://github.com/ShadowMario) - creator of Pysch Engine (themes based off of engine in game, some code from engine used for accuracy, FlxDropDown menu borrowed)
 - [Verwex](https://github.com/Verwex) - creator of the Mic'd Up Engine (themes based off of engine in game, some code used from engine for accuracy)
 - [Tr1NgleDev](https://github.com/Tr1NgleDev) - creator of Tr1ngle Engine (themes based off of engine in game)
 - [Yoshubs](https://github.com/Yoshubs) - creator of Forever Engine (themes based off of engine in game)
+- [Leather128](https://github.com/Leather128) - creator of Leather Engine (themes based off of engine in game)
 - OG devs (ninjamuffin99, PhantomArcade3K, evilsk8r, and Kawai Sprite)
 
 \- and any other contributors
@@ -40,9 +41,12 @@ Things that are planned to be added include:
 
  * Options (Downscroll, botplay, keybindings, FPS, etc) [WIP]\
   \- Downscroll is complete\
+  \- DiscordRPC is able to be disabled or enabled\
   \- FPS is complete\
+  \- Keybinds are complete\
   \- Middlescroll is complete\
-  \- Themes are complete
+  \- Themes are complete\
+  \- "No Note" misses are option ingame. This was only added as a request and ghost tapping is still not going to be added. You don't get a miss counted towards you if there are no notes, but you still lose health and score.
 
  * Fixed song names (songs that have spaces will correctly show their name) [Finished]
  
@@ -51,7 +55,8 @@ Things that are planned to be added include:
   \- DD's assets have a SFW version [DONE]\
   \- Parents (week 5) have a SFW(-ish) version [DONE]\
   \- M.I.L.F. is Mombattle, Satin Panties is Chillflow [DONE]\
-  \- Monster's songs removed [DONE]
+  \- Monster's songs removed [DONE]\
+  \- Senpai's dialogue is SFW [DONE]
  
  * No source-code editing modding (full on stages/whatnot by Lua/JSON files) [WIP]
  
