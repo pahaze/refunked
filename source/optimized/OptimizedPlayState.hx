@@ -1537,7 +1537,7 @@ class OptimizedPlayState extends MusicBeatState
 		{
 			inst.stop();
 			vocals.stop();
-			FlxG.switchState(new ChartingState());
+			FlxG.switchState(new OptimizedChartingState());
 
 			#if desktop
 				DiscordClient.changePresence("Chart Editor", null, null, true);
