@@ -40,15 +40,9 @@ using StringTools;
 class ChartingState extends MusicBeatState
 {
 	var _file:FileReference;
-
 	var UI_box:FlxUITabMenu;
 
-	/**
-	 * Array of notes showing when each section STARTS in STEPS
-	 * Usually rounded up??
-	 */
 	var curSection:Int = 0;
-
 	public static var lastSection:Int = 0;
 
 	var bpmTxt:FlxText;
@@ -60,23 +54,17 @@ class ChartingState extends MusicBeatState
 	var bullshitUI:FlxGroup;
 
 	var highlight:FlxSprite;
-
 	var GRID_SIZE:Int = 40;
-
 	var dummyArrow:FlxSprite;
 
 	var curRenderedNotes:FlxTypedGroup<Note>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
 
 	var gridBG:FlxSprite;
-
 	var _song:SwagSong;
 
 	var typingStuff:FlxInputText;
 	var moreTypingStuff:FlxInputText;
-	/*
-	 * WILL BE THE CURRENT / LAST PLACED NOTE
-	**/
 	var curSelectedNote:Array<Dynamic>;
 
 	var tempBpm:Int = 0;
@@ -89,6 +77,11 @@ class ChartingState extends MusicBeatState
 
 	static var CSLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 
+	var scrollBlockThing:Array<FlxUIDropDownMenuCustom> = [];
+	var blockedScroll:Bool = false;
+
+	var noteType:String = "";
+
 	override function create()
 	{
 		Paths.nullPathsAssets();
@@ -100,8 +93,29 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
-		leftIcon = new HealthIcon('bf');
-		rightIcon = new HealthIcon('dad');
+		if (PlayState.SONG != null) {
+			_song = PlayState.SONG;
+			storyWeek = PlayState.storyWeek;
+		} else {
+			_song = {
+				song: 'Test',
+				songName: 'Test',
+				notes: [],
+				bpm: 150,
+				needsVoices: true,
+				player1: 'bf',
+				player2: 'dad',
+				gfPlayer: 'gf',
+				stage: 'stage',
+				speed: 1,
+				uiStyle: 'default',
+				validScore: false
+			};
+			storyWeek = 7;
+		}
+
+		leftIcon = new HealthIcon(_song.player1);
+		rightIcon = new HealthIcon(_song.player2);
 		leftIcon.scrollFactor.set(1, 1);
 		rightIcon.scrollFactor.set(1, 1);
 
@@ -124,27 +138,6 @@ class ChartingState extends MusicBeatState
 		CSLoadedMap["curRenderedNotes"] = curRenderedNotes;
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 		CSLoadedMap["curRenderedSustains"] = curRenderedSustains;
-
-		if (PlayState.SONG != null) {
-			_song = PlayState.SONG;
-			storyWeek = PlayState.storyWeek;
-		} else {
-			_song = {
-				song: 'Test',
-				songName: 'Test',
-				notes: [],
-				bpm: 150,
-				needsVoices: true,
-				player1: 'bf',
-				player2: 'dad',
-				gfPlayer: 'gf',
-				stage: 'stage',
-				speed: 1,
-				uiStyle: 'default',
-				validScore: false
-			};
-			storyWeek = 7;
-		}
 
 		// lol
 		switch(_song.song.toLowerCase()) {
@@ -321,7 +314,7 @@ class ChartingState extends MusicBeatState
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 
-		var player2DropDown = new FlxUIDropDownMenu(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		var player2DropDown = new FlxUIDropDownMenuCustom(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 		});
@@ -331,8 +324,9 @@ class ChartingState extends MusicBeatState
 
 		var player2Text = new FlxText(player2DropDown.x, player2DropDown.y - 15, 0, "Player 2:");
 		CSLoadedMap["player2Text"] = player2Text;
+		scrollBlockThing.push(player2DropDown);
 
-		var gfPlayerDropDown = new FlxUIDropDownMenu(10, 200, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		var gfPlayerDropDown = new FlxUIDropDownMenuCustom(10, 200, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.gfPlayer = characters[Std.parseInt(character)];
 		});
@@ -345,24 +339,27 @@ class ChartingState extends MusicBeatState
 
 		var gfPlayerText = new FlxText(gfPlayerDropDown.x, gfPlayerDropDown.y - 15, 0, "Girlfriend:");
 		CSLoadedMap["gfPlayerText"] = gfPlayerText;
+		scrollBlockThing.push(gfPlayerDropDown);
 
-		var player1DropDown = new FlxUIDropDownMenu(10, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		var player1DropDown = new FlxUIDropDownMenuCustom(10, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
 		});
 		CSLoadedMap["player1DropDown"] = player1DropDown;
+		scrollBlockThing.push(player1DropDown);
 		
 		player1DropDown.selectedLabel = _song.player1;
 
 		var player1Text = new FlxText(player1DropDown.x, player1DropDown.y - 15, 0, "Player 1:");
 		CSLoadedMap["player1Text"] = player1Text;
 
-		var stageDropDown = new FlxUIDropDownMenu(140, 200, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		var stageDropDown = new FlxUIDropDownMenuCustom(140, 200, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 		{
 			_song.stage = stages[Std.parseInt(stage)];
 			fixStoryWeek(stages[Std.parseInt(stage)]);
 		});
 		CSLoadedMap["stageDropDown"] = stageDropDown;
+		scrollBlockThing.push(stageDropDown);
 
 		if(_song.stage != null) {
 			stageDropDown.selectedLabel = _song.stage;
@@ -506,6 +503,8 @@ class ChartingState extends MusicBeatState
 
 	function addNoteUI():Void
 	{
+		var notes:Array<String> = CoolUtil.coolTextFile("assets/notes/noteTypes.txt");
+
 		var tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 		CSLoadedMap["tab_group_note"] = tab_group_note;
@@ -518,9 +517,20 @@ class ChartingState extends MusicBeatState
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 		CSLoadedMap["applyLength"] = applyLength;
 
+		var noteDropDown = new FlxUIDropDownMenuCustom(10, 45, FlxUIDropDownMenu.makeStrIdLabelArray(notes, true), function(note:String)
+		{
+			noteType = notes[Std.parseInt(note)];
+		});
+		CSLoadedMap["noteDropDown"] = noteDropDown;
+		scrollBlockThing.push(noteDropDown);
+
+		var noteText = new FlxText(noteDropDown.x, noteDropDown.y - 15, 0, "Note Type:");
+		CSLoadedMap["noteText"] = noteText;
+
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
-
+		tab_group_note.add(noteDropDown);
+		tab_group_note.add(noteText);
 		UI_box.addGroup(tab_group_note);
 	}
 
@@ -531,11 +541,17 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.stop();
 		}
 
-		inst = new FlxSound().loadStream(Paths.inst(daSong));
+		if(PlayState.mod != null && PlayState.mod != "")
+			inst = new FlxSound().loadStream(Paths.modInst(PlayState.mod, daSong));
+		else
+			inst = new FlxSound().loadStream(Paths.inst(daSong));
 		FlxG.sound.list.add(inst);
 		CSLoadedMap["inst"] = inst;
 
-		vocals = new FlxSound().loadStream(Paths.voices(daSong));
+		if(PlayState.mod != null && PlayState.mod != "")
+			vocals = new FlxSound().loadStream(Paths.modVoices(PlayState.mod, daSong));
+		else
+			vocals = new FlxSound().loadStream(Paths.voices(daSong));
 		FlxG.sound.list.add(vocals);
 		CSLoadedMap["vocals"] = vocals;
 
@@ -787,7 +803,15 @@ class ChartingState extends MusicBeatState
 					resetSection();
 			}
 
-			if (FlxG.mouse.wheel != 0)
+			blockedScroll = false;
+			for(menu in scrollBlockThing) {
+				if(menu.dropPanel.visible) {
+					blockedScroll = true;
+					break;
+				}
+			}
+
+			if (FlxG.mouse.wheel != 0 && !blockedScroll)
 			{
 				inst.pause();
 				vocals.pause();
@@ -976,13 +1000,13 @@ class ChartingState extends MusicBeatState
 	{
 		if (check_mustHitSection.checked)
 		{
-			leftIcon.animation.play('bf');
-			rightIcon.animation.play('dad');
+			leftIcon.changeIcon(_song.player1);
+			rightIcon.changeIcon(_song.player2);
 		}
 		else
 		{
-			leftIcon.animation.play('dad');
-			rightIcon.animation.play('bf');
+			leftIcon.changeIcon(_song.player2);
+			rightIcon.changeIcon(_song.player1);
 		}
 	}
 
@@ -1131,13 +1155,13 @@ class ChartingState extends MusicBeatState
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteSus = 0;
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteType]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 
 		if (FlxG.keys.pressed.CONTROL)
 		{
-			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus]);
+			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteType]);
 		}
 
 		trace(noteStrum);

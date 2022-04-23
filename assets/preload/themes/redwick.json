@@ -1,0 +1,43 @@
+{
+    "BotplayEnabled": true,
+    "Botplay": {
+        "text": "(I Can't Play) Mode is ON",
+        "x": "403",
+        "dsy": "110",
+        "y": "83",
+        "fontsize": "16"
+    },
+    "ExtraEnabled": false,
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true
+    },
+    "ScoreEnabled": true,
+    "Score": {
+        "bouncetween": false,
+        "y": "0",
+        "dsy": "90",
+        "x": "495",
+        "fontsize": "16",
+        "text": "Score: [score] // Misses: [misses] // Rank: [funnyrating]"
+    },
+    "TimebarEnabled": true,
+    "Timebar": {
+        "x": "434",
+        "y": "20",
+        "dsy": "675",
+        "text": " [min]:[sec]",
+        "textOnly": true,
+        "fontsize": "32",
+        "style": "psych",
+        "bouncetween": true,
+        "bouncetweenscale": 1.1
+    },
+    "WatermarkEnabled": false,
+    "RatingStyle": "tr1ngle"
+}

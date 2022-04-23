@@ -49,6 +49,7 @@ class MainMenuState extends MusicBeatState
 		TitleState.nullTSLoadedAssets();
 		nullMMLoadedAssets();
 		MMLoadedMap = new Map<String, Dynamic>();
+		ModSupport.loadModsFolders();
 
 		if (!FlxG.sound.music.playing)
 		{
@@ -104,7 +105,13 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionStuff:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
+		var modStuff:FlxText = new FlxText(5, FlxG.height - 18, 0, "Mods Loaded: " + Std.string(ModSupport.modsLoaded), 12);
+		modStuff.scrollFactor.set();
+		modStuff.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(modStuff);
+		MMLoadedMap["modStuff"] = modStuff;
+
+		var versionStuff:FlxText = new FlxText(5, FlxG.height - 36, 0, "RFE v" + Application.current.meta.get('version'), 12);
 		versionStuff.scrollFactor.set();
 		versionStuff.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionStuff);

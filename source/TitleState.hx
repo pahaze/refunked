@@ -301,6 +301,7 @@ class TitleState extends MusicBeatState
 
 		FlxTween.tween(credTextStuff, {y: credTextStuff.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
+		FlxG.fixedTimestep = false;
 		FlxG.mouse.visible = false;
 
 		if (initialized)
@@ -424,7 +425,8 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		if(curBeat % 1 == 0)
-			logoBl.animation.play('bump', true);
+			if(logoBl != null)
+				logoBl.animation.play('bump', true);
 			if(titleCharDance.animation.getByName('danceLeft') != null && titleCharDance.animation.getByName('danceRight') != null) {
 				danceLeft = !danceLeft;
 				if (danceLeft)

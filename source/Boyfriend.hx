@@ -29,16 +29,7 @@ class Boyfriend extends Character
 
 			if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
 			{
-				if(IdleDancing) {
-					danced = !danced;
-					if(danced) {
-						playAnim('danceRight', true, false, 10);
-					} else {
-						playAnim('danceLeft', true, false, 10);
-					}
-				} else {
-					playAnim('idle', true, false, 10);
-				}
+				dance();
 			}
 
 			if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished)
@@ -48,5 +39,13 @@ class Boyfriend extends Character
 		}
 
 		super.update(elapsed);
+	}
+
+	function theCondition(name:String):Bool {
+		switch(name.toLowerCase()) {
+			case "idle" | "danceLeft" | "danceRight":
+				return false;
+		}
+		return true;
 	}
 }

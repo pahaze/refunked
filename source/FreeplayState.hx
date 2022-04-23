@@ -1,6 +1,7 @@
 package;
 
 #if desktop
+import cpp.abi.Abi;
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
@@ -11,8 +12,11 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import lime.utils.Assets;
 import openfl.utils.Assets;
+import optimized.OptimizedLoadingState;
+import optimized.OptimizedPlayState;
 import haxe.Json;
 import haxe.format.JsonParser;
 
@@ -26,14 +30,16 @@ typedef SongListJunk = {
 typedef SongList = {
 	var songData:String;
 	var songName:String;
-	var songWeekNumber:Int;
+	var songWeekNumber:Null<Int>;
+	var diffs:Null<Array<String>>;
 	var characterIcon:String;
 }
 
 typedef WeekList = {
 	var songDatas:Array<String>;
 	var songNames:Array<String>;
-	var weekNumber:Int;
+	var weekNumber:Null<Int>;
+	var diffs:Null<Array<Array<String>>>;
 	var characterIcons:Array<String>;
 }
 
@@ -43,7 +49,9 @@ class FreeplayState extends MusicBeatState
 
 	var selector:FlxText;
 	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	static var curDifficulty:Int = 1;
+	var curDifficultyText:String = "";
+	static var diffsAvailable:Map<String, Array<String>> = new Map<String, Array<String>>();
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -58,11 +66,19 @@ class FreeplayState extends MusicBeatState
 	static var FPLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	// yeah why reload when not needed
+	var areModSongs:Bool;
 	var characterIcon:String;
 	var characterIcons:Array<String>;
+	var json:SongListJunk;
+	var isModSong:Bool;
+	var mod:String;
+	var nonExistantBG:FlxSprite;
+	var nonExistantText:FlxText;
 	static var rawJson:String;
 	var songData:String;
 	var songDatas:Array<String>;
+	var singleSongDiffs:Array<String>;
+	var multiSongDiffs:Array<Array<String>>;
 	var songName:String;
 	var songNames:Array<String>;
 	var songWeekNumber:Int;
@@ -72,10 +88,14 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		nullFPLoadedAssets();
+		diffsAvailable = new Map<String, Array<String>>();
 		FPLoadedMap = new Map<String, Dynamic>();
 		unloadMBSassets();
 		MainMenuState.nullMMLoadedAssets();
 		PlayState.nullPSLoadedAssets();
+		PlayState.SONG = null;
+		OptimizedPlayState.nullOPSLoadedAssets();
+		OptimizedPlayState.SONG = null;
 		rawJson = null;
 
 		#if desktop
@@ -83,47 +103,8 @@ class FreeplayState extends MusicBeatState
 			DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
 
-		if(rawJson == null || rawJson == "") {
-			if(Options.gameSFW)
-				songListJsonPath = "./assets/data/freeplaySonglistSFW.json";
-			else
-				songListJsonPath = "./assets/data/freeplaySonglist.json";
-
-			rawJson = Utilities.getFileContents(songListJsonPath);
-			rawJson = rawJson.trim();
-
-			while (!rawJson.endsWith("}")) {
-				rawJson = rawJson.substr(0, rawJson.length - 1);
-			}
-		}
-
-		var json:SongListJunk = cast Json.parse(rawJson);
-
-		if(json.songs != null && json.songs.length > 0) {
-			for(song in json.songs) {
-				songData = song.songData;
-				songName = song.songName;
-				songWeekNumber = song.songWeekNumber;
-				characterIcon = song.characterIcon;
-
-				addSong(songData, songName, songWeekNumber, characterIcon);
-			}
-		}
-		if(json.weeks != null && json.weeks.length > 0) {
-			for(week in json.weeks) {
-				songDatas = week.songDatas;
-				songNames = week.songNames;
-				weekNumber = week.weekNumber;
-				characterIcons = week.characterIcons;
-
-				addWeek(songDatas, songNames, weekNumber, characterIcons);
-			}
-		}
-
-		// lets null these for Memory Lol.
-		songDatas = null;
-		songNames = null;
-		characterIcons = null;
+		readVanillaWeeks();
+		readModWeeks();
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
 		add(bg);
@@ -141,7 +122,12 @@ class FreeplayState extends MusicBeatState
 			grpSongs.add(songText);
 			FPLoadedMap["songText" + i] = songText;
 
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			var icon:HealthIcon;
+
+			if(songs[i].isModSong)
+				icon = new HealthIcon(songs[i].songCharacter, false, songs[i].mod);
+			else
+				icon = new HealthIcon(songs[i].songCharacter, false);
 			icon.sprTracker = songText;
 
 			iconArray.push(icon);
@@ -171,32 +157,51 @@ class FreeplayState extends MusicBeatState
 		selector = new FlxText();
 		FPLoadedMap["selector"] = selector;
 
+		nonExistantBG = new FlxSprite(-600,-600).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+		nonExistantBG.visible = false;
+		nonExistantBG.alpha = 0.5;
+		nonExistantBG.scrollFactor.set();
+		add(nonExistantBG);
+		FPLoadedMap["nonExistantBG"] = nonExistantBG;
+
+		nonExistantText = new FlxText(0, 0, 0, "Error: Song JSON doesn't exist!");
+		nonExistantText.visible = false;
+		nonExistantText.setFormat("VCR OSD Mono", 48, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		nonExistantText.scrollFactor.set();
+		nonExistantText.screenCenter();
+		add(nonExistantText);
+		FPLoadedMap["nonExistantText"] = nonExistantText;
+
 		selector.size = 40;
 		selector.text = ">";
 
 		super.create();
 	}
 
-	public function addSong(songData:String, songName:String, weekNum:Int, songCharacter:String)
+	public function addSong(songData:String, songName:String, weekNum:Int, diffs:Array<String>, isModSong:Bool, mod:String, songCharacter:String)
 	{
-		songs.push(new SongMetadata(songData, songName, weekNum, songCharacter));
+		songs.push(new SongMetadata(songData, songName, weekNum, isModSong, mod, songCharacter));
+		diffsAvailable[songData] = diffs;
 	}
 
-	public function addWeek(songDatas:Array<String>, songNames:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
+	public function addWeek(songDatas:Array<String>, songNames:Array<String>, weekNum:Int, songDiffs:Array<Array<String>>, areModSongs:Bool, mod:String, ?songCharacters:Array<String>)
 	{
 		if (songCharacters == null)
-			songCharacters = ['bf'];
+			songCharacters = ['face'];
 
 		var num:Int = 0;
+		var diffNum:Int = 0;
 		var songNameNum:Int = 0;
 		for (song in songDatas)
 		{
-			addSong(song, songNames[songNameNum], weekNum, songCharacters[num]);
+			addSong(song, songNames[songNameNum], weekNum, songDiffs[diffNum], areModSongs, mod, songCharacters[num]);
 
 			if (songCharacters.length != 1)
 				num++;
 			if (songNames.length != 1)
 				songNameNum++;
+			if (songDiffs.length != 1)
+				diffNum++;
 		}
 	}
 
@@ -241,19 +246,13 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songData.toLowerCase(), curDifficulty);
-
+			var poop:String = Highscore.formatSong(songs[curSelected].songData.toLowerCase(), curDifficultyText.toLowerCase());
 			trace(poop);
 
-			unloadLoadedAssets();
-			unloadMBSassets();
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songData.toLowerCase());
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-
-			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+			if(songs[curSelected].isModSong)
+				loadModSong(poop);
+			else
+				loadSong(poop);
 		}
 	}
 
@@ -271,8 +270,81 @@ class FreeplayState extends MusicBeatState
 		}
 	}
 
+	function loadModSong(poop:String) {
+		if(Utilities.checkFileExists(Paths.modSongData(songs[curSelected].mod, songs[curSelected].songData.toLowerCase(), poop + ".json"))) {
+			unloadLoadedAssets();
+			unloadMBSassets();
+			if(Options.useOptimized) {
+				OptimizedPlayState.SONG = Song.loadFromModJson(songs[curSelected].mod, poop, songs[curSelected].songData.toLowerCase());
+				OptimizedPlayState.isStoryMode = false;
+				OptimizedPlayState.isModSong = true;
+				OptimizedPlayState.mod = songs[curSelected].mod;
+				OptimizedPlayState.storyDifficulty = curDifficulty;
+				OptimizedPlayState.storyDifficultyText = curDifficultyText;
+				OptimizedPlayState.storyWeek = songs[curSelected].week;
+				trace('CUR WEEK' + OptimizedPlayState.storyWeek);
+				OptimizedLoadingState.loadAndSwitchState(new OptimizedPlayState());
+			} else {
+				PlayState.SONG = Song.loadFromModJson(songs[curSelected].mod, poop, songs[curSelected].songData.toLowerCase());
+				PlayState.isStoryMode = false;
+				PlayState.isModSong = true;
+				PlayState.mod = songs[curSelected].mod;
+				PlayState.storyDifficulty = curDifficulty;
+				PlayState.storyDifficultyText = curDifficultyText;
+				PlayState.storyWeek = songs[curSelected].week;
+				trace('CUR WEEK' + PlayState.storyWeek);
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
+		} else {
+			trace("Song JSON doesn't exist!");
+			nonExistantBG.visible = true;
+			nonExistantText.visible = true;
+			new FlxTimer().start(2, function(tmr:FlxTimer) {
+				nonExistantBG.visible = false;
+				nonExistantText.visible = false;
+			}, 1);
+		}
+	}
+
+	function loadSong(poop:String) {
+		if(Utilities.checkFileExists(Paths.songData(songs[curSelected].songData.toLowerCase(), poop + ".json"))) {
+			unloadLoadedAssets();
+			unloadMBSassets();
+			if(Options.useOptimized) {
+				OptimizedPlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songData.toLowerCase());
+				OptimizedPlayState.isStoryMode = false;
+				OptimizedPlayState.isModSong = false;
+				OptimizedPlayState.mod = "";
+				OptimizedPlayState.storyDifficulty = curDifficulty;
+				OptimizedPlayState.storyDifficultyText = curDifficultyText;
+				OptimizedPlayState.storyWeek = songs[curSelected].week;
+				trace('CUR WEEK' + OptimizedPlayState.storyWeek);
+				OptimizedLoadingState.loadAndSwitchState(new OptimizedPlayState());
+			} else {
+				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songData.toLowerCase());
+				PlayState.isStoryMode = false;
+				PlayState.isModSong = false;
+				PlayState.mod = "";
+				PlayState.storyDifficulty = curDifficulty;
+				PlayState.storyDifficultyText = curDifficultyText;
+				PlayState.storyWeek = songs[curSelected].week;
+				trace('CUR WEEK' + PlayState.storyWeek);
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
+		} else {
+			trace("Song JSON doesn't exist!");
+			nonExistantBG.visible = true;
+			nonExistantText.visible = true;
+			new FlxTimer().start(2, function(tmr:FlxTimer) {
+				nonExistantBG.visible = false;
+				nonExistantText.visible = false;
+			}, 1);
+		}
+	}
+
 	public static function nullFPLoadedAssets():Void
 	{
+		diffsAvailable = null;
 		if(FPLoadedMap != null) {
 			for(sprite in FPLoadedMap) {
 				sprite.destroy();
@@ -286,23 +358,17 @@ class FreeplayState extends MusicBeatState
 		curDifficulty += change;
 
 		if (curDifficulty < 0)
-			curDifficulty = 2;
-		if (curDifficulty > 2)
+			curDifficulty = diffsAvailable[songs[curSelected].songData].length - 1;
+		if (curDifficulty >= diffsAvailable[songs[curSelected].songData].length)
 			curDifficulty = 0;
 
+		curDifficultyText = diffsAvailable[songs[curSelected].songData][curDifficulty];
+
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficultyText);
 		#end
 
-		switch (curDifficulty)
-		{
-			case 0:
-				diffText.text = "EASY";
-			case 1:
-				diffText.text = 'NORMAL';
-			case 2:
-				diffText.text = "HARD";
-		}
+		diffText.text = curDifficultyText;
 	}
 
 	function changeSelection(change:Int = 0)
@@ -316,15 +382,23 @@ class FreeplayState extends MusicBeatState
 		if (curSelected >= songs.length)
 			curSelected = 0;
 
+		if(diffsAvailable[songs[curSelected].songData][curDifficulty] != null) {
+			diffText.text = diffsAvailable[songs[curSelected].songData][curDifficulty];
+		} else {
+			curDifficulty = 0;
+			curDifficultyText = diffsAvailable[songs[curSelected].songData][curDifficulty];
+			diffText.text = diffsAvailable[songs[curSelected].songData][curDifficulty];
+		}
+
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+			intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficultyText);
 		#end
 
 		#if PRELOAD_ALL
-		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 		#end
 
-		var bullShit:Int = 0;
+		var bullStuff:Int = 0;
 
 		for (i in 0...iconArray.length)
 		{
@@ -335,13 +409,120 @@ class FreeplayState extends MusicBeatState
 
 		for (item in grpSongs.members)
 		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+			item.targetY = bullStuff - curSelected;
+			bullStuff++;
 
 			item.alpha = 0.6;
 
 			if (item.targetY == 0)
 				item.alpha = 1;
+		}
+	}
+
+	function readModWeeks() {
+		for(i in ModSupport.modsDirectories.keys()) {
+			rawJson = null;
+			if(Options.gameSFW)
+				songListJsonPath = "./" + ModSupport.modsDirectories[i] + "/data/freeplaySonglistSFW.json";
+			else
+				songListJsonPath = "./" + ModSupport.modsDirectories[i] + "/data/freeplaySonglist.json";
+
+			if(Utilities.checkFileExists(songListJsonPath)) {
+				rawJson = Utilities.getFileContents(songListJsonPath);
+				rawJson = rawJson.trim();
+
+				while (!rawJson.endsWith("}")) {
+					rawJson = rawJson.substr(0, rawJson.length - 1);
+				}
+
+				json = cast Json.parse(rawJson);
+
+				if(json.songs != null && json.songs.length > 0) {
+					for(song in json.songs) {
+						songData = song.songData;
+						songName = song.songName;
+						songWeekNumber = song.songWeekNumber;
+						isModSong = true;
+						mod = i;
+						if(song.diffs != null)
+							singleSongDiffs = song.diffs;
+						else
+							singleSongDiffs = ["EASY", "NORMAL", "HARD"];
+						characterIcon = song.characterIcon;
+
+						addSong(songData, songName, songWeekNumber, singleSongDiffs, isModSong, mod, characterIcon);
+					}
+				}
+				if(json.weeks != null && json.weeks.length > 0) {
+					for(week in json.weeks) {
+						songDatas = week.songDatas;
+						songNames = week.songNames;
+						weekNumber = week.weekNumber;
+						areModSongs = true;
+						characterIcons = week.characterIcons;
+						mod = i;
+						if(week.diffs != null)
+							multiSongDiffs = week.diffs;
+						else
+							multiSongDiffs = [["EASY", "NORMAL", "HARD"]];
+
+						addWeek(songDatas, songNames, weekNumber, multiSongDiffs, areModSongs, mod, characterIcons);
+					}
+				}
+			} else {
+				trace('MOD ${i} FREEPLAY LISTS DONT EXIST!');
+			}
+		}
+	}
+
+	function readVanillaWeeks() {
+		if(rawJson == null || rawJson == "") {
+			if(Options.gameSFW)
+				songListJsonPath = "./assets/data/freeplaySonglistSFW.json";
+			else
+				songListJsonPath = "./assets/data/freeplaySonglist.json";
+
+			rawJson = Utilities.getFileContents(songListJsonPath);
+			rawJson = rawJson.trim();
+
+			while (!rawJson.endsWith("}")) {
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+			}
+		}
+
+		json = cast Json.parse(rawJson);
+
+		if(json.songs != null && json.songs.length > 0) {
+			for(song in json.songs) {
+				songData = song.songData;
+				songName = song.songName;
+				songWeekNumber = song.songWeekNumber;
+				isModSong = false;
+				mod = "";
+				if(song.diffs != null)
+					singleSongDiffs = song.diffs;
+				else
+					singleSongDiffs = ["EASY", "NORMAL", "HARD"];
+				characterIcon = song.characterIcon;
+
+				addSong(songData, songName, songWeekNumber, singleSongDiffs, isModSong, mod, characterIcon);
+			}
+		}
+		if(json.weeks != null && json.weeks.length > 0) {
+			for(week in json.weeks) {
+				songDatas = week.songDatas;
+				songNames = week.songNames;
+				weekNumber = week.weekNumber;
+				areModSongs = false;
+				mod = "";
+				if(week.diffs != null)
+					multiSongDiffs = week.diffs;
+				else
+					multiSongDiffs = [["EASY", "NORMAL", "HARD"]];
+				characterIcons = week.characterIcons;
+
+				addWeek(songDatas, songNames, weekNumber, multiSongDiffs, areModSongs, mod, characterIcons);
+			}
 		}
 	}
 }
@@ -351,13 +532,17 @@ class SongMetadata
 	public var songData:String = "";
 	public var songName:String = "";
 	public var week:Int = 0;
+	public var isModSong:Bool = false;
+	public var mod:String = "";
 	public var songCharacter:String = "";
 
-	public function new(songData:String, songName:String, week:Int, songCharacter:String)
+	public function new(songData:String, songName:String, week:Int, isModSong:Bool, mod:String, songCharacter:String)
 	{
 		this.songData = songData;
 		this.songName = songName;
 		this.week = week;
+		this.isModSong = isModSong;
+		this.mod = mod;
 		this.songCharacter = songCharacter;
 	}
 }

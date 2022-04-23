@@ -16,9 +16,11 @@ class Options
 	public static var gameSFW:Bool = true;
 	public static var keybindMap:Map<String, Array<FlxKey>> = new Map<String, Array<FlxKey>>();
 	public static var middlescroll:Bool = false;
+	public static var noNoteMisses:Bool = true;
 	public static var themeData:String = "default";
 	public static var themeName:String = "Default (RFE)";
 	public static var themeNumber:Int = 0;
+	public static var useOptimized:Bool = false;
 
 	static var defaultKeybinds:Map<String, Array<FlxKey>> = [
 		"UP" => [W, FlxKey.UP],
@@ -73,6 +75,11 @@ class Options
 			middlescroll = FlxG.save.data.useMS;
 		else 
 			middlescroll = false;
+		// No Note Misses
+		if(FlxG.save.data.noNoteMiss != null)
+			noNoteMisses = FlxG.save.data.noNoteMiss;
+		else
+			noNoteMisses = true;
 		// Themes
 		// - Data (JSON file)
 		if(FlxG.save.data.theme != null)
@@ -89,6 +96,11 @@ class Options
 			themeNumber = FlxG.save.data.themeSelectedNo;
 		else
 			themeNumber = 0;
+		// Optimization
+		if(FlxG.save.data.useOptimized != null)
+			useOptimized = FlxG.save.data.useOptimized;
+		else
+			useOptimized = false;
 		// Keybinds
 		if(FlxG.save.data.keybinds != null)
 			keybindMap = FlxG.save.data.keybinds;
@@ -110,9 +122,11 @@ class Options
 		FlxG.save.data.gameSFW = gameSFW;
 		FlxG.save.data.keybinds = keybindMap;
 		FlxG.save.data.useMS = middlescroll;
+		FlxG.save.data.noNoteMiss = noNoteMisses;
 		FlxG.save.data.theme = themeData;
 		FlxG.save.data.themeName = themeName;
 		FlxG.save.data.themeSelectedNo = themeNumber;
+		FlxG.save.data.useOptimized = useOptimized;
 		FlxG.save.flush();
 	}
 }

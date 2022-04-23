@@ -23,9 +23,7 @@ class DialogueBox extends FlxSpriteGroup
 
 	// SECOND DIALOGUE FOR THE PIXEL SHIT INSTEAD???
 	var swagDialogue:FlxTypeText;
-
 	var dropText:FlxText;
-
 	public var finishThing:Void->Void;
 
 	var portraitLeft:FlxSprite;
@@ -33,6 +31,8 @@ class DialogueBox extends FlxSpriteGroup
 
 	var handSelect:FlxSprite;
 	var bgFade:FlxSprite;
+
+	public var animOffsets:Map<String, Array<Dynamic>>;
 
 	public function new(talkingRight:Bool = true, ?dialogueList:Array<String>)
 	{
@@ -52,6 +52,8 @@ class DialogueBox extends FlxSpriteGroup
 		bgFade.scrollFactor.set();
 		bgFade.alpha = 0;
 		add(bgFade);
+
+		animOffsets = new Map<String, Array<Dynamic>>();
 
 		new FlxTimer().start(0.83, function(tmr:FlxTimer)
 		{
@@ -94,8 +96,8 @@ class DialogueBox extends FlxSpriteGroup
 				box.animation.addByPrefix('loudOpen', 'speech bubble loud open', 24, false);
 				box.animation.addByPrefix('loud', 'AHH speech bubble', 24, true);
 				box.animation.addByPrefix('normal', 'speech bubble normal', 24, true);
-				box.x = 40;
 				box.y = FlxG.height / 2;
+				box.screenCenter(X);
 		}
 
 		this.dialogueList = dialogueList;
@@ -127,7 +129,7 @@ class DialogueBox extends FlxSpriteGroup
 				box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
 				box.updateHitbox();
 			default:
-				box.animation.play('normalOpen');
+				playBoxAnim('normalOpen');
 		}
 
 		add(box);
@@ -162,6 +164,25 @@ class DialogueBox extends FlxSpriteGroup
 	var dialogueOpened:Bool = false;
 	var dialogueStarted:Bool = false;
 
+	// if not a senpai stage?
+	public function playBoxAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
+	{
+		if(box.animation.getByName(AnimName) != null)
+			box.animation.play(AnimName, Force, Reversed, Frame);
+
+		if (animOffsets.exists(AnimName)) {
+			var daOffset = animOffsets.get(AnimName);
+			offset.set(daOffset[0], daOffset[1]);
+		} else {
+			offset.set(0, 0);
+		}
+	}
+
+	public function addOffset(name:String, x:Float = 0, y:Float = 0)
+	{
+		animOffsets[name] = [x, y];
+	}
+
 	override function update(elapsed:Float)
 	{
 		if (PlayState.SONG.song.toLowerCase() == 'roses')
@@ -182,7 +203,10 @@ class DialogueBox extends FlxSpriteGroup
 		{
 			if (box.animation.curAnim.name == 'normalOpen' && box.animation.curAnim.finished)
 			{
-				box.animation.play('normal');
+				if(PlayState.curStage.startsWith("school"))
+					box.animation.play("normal");
+				else
+					playBoxAnim('normal');
 				dialogueOpened = true;
 			}
 		}

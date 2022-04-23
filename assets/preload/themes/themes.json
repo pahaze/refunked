@@ -5,8 +5,20 @@
             "ThemeName": "Default (RFE)"
         },
         {
+            "ThemeData": "foreverbeta",
+            "ThemeName": "Forever-like (BETA)"
+        },
+        {
             "ThemeData": "forever",
             "ThemeName": "Forever-like"
+        },
+        {
+            "ThemeData": "fpsplus",
+            "ThemeName": "FPS Plus-like"
+        },
+        {
+            "ThemeData": "redwick",
+            "ThemeName": "Johnny Redwick's theme (Official Developer Theme)"
         },
         {
             "ThemeData": "kade12",
@@ -19,6 +31,10 @@
         {
             "ThemeData": "kade1517",
             "ThemeName": "Kade-like (1.5-1.7)"
+        },
+        {
+            "ThemeData": "leather",
+            "ThemeName": "Leather-like"
         },
         {
             "ThemeData": "micdup",

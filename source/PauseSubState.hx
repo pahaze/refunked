@@ -56,7 +56,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += CoolUtil.difficultyString();
+		levelDifficulty.text += PlayState.storyDifficultyText;
 		levelDifficulty.scrollFactor.set();
 		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
 		levelDifficulty.updateHitbox();
@@ -149,12 +149,12 @@ class PauseSubState extends MusicBeatSubstate
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
 					#if sys
-						if(PlayState.PlayStateThing.RFELua != null)
-							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+							PlayState.PlayStateThing.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
 					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
+					PlayState.PlayStateThing.fixModStuff();
 					FlxG.switchState(new MainMenuState());
 				case "Botplay":
 					PlayState.botplayIsEnabled = !PlayState.botplayIsEnabled;
@@ -176,23 +176,23 @@ class PauseSubState extends MusicBeatSubstate
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
 					#if sys
-						if(PlayState.PlayStateThing.RFELua != null)
-							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+						PlayState.PlayStateThing.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
 					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
+					PlayState.PlayStateThing.fixModStuff();
 					FlxG.switchState(new StoryMenuState());
 				case "Exit to Freeplay Menu":
 					unloadPlayStateLoadedAssets();
 					unloadLoadedAssets();
 					#if sys
-						if(PlayState.PlayStateThing.RFELua != null)
-							PlayState.PlayStateThing.RFELua.luaCallback("endSong", []);
+						PlayState.PlayStateThing.luaCallback("endSong", []);
 					#end
 					PlayState.PlayStateThing.unloadMBSassets();
 					PlayState.PlayStateThing.destroyLuaObjects();
 					PlayState.PlayStateThing.killLuaBruh();
+					PlayState.PlayStateThing.fixModStuff();
 					FlxG.switchState(new FreeplayState());
 			}
 		}

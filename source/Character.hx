@@ -44,6 +44,7 @@ class Character extends FlxSprite
 	public var CharPositionUse:Array<Float> = [0, 0];
 
 	public var isPlayer:Bool = false;
+	public var isModChar:Bool = false;
 	public var IdleDancing:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var holdTimer:Float = 0;
@@ -63,11 +64,19 @@ class Character extends FlxSprite
 		switch(curCharacter) {
 			default:
 				#if sys
-					charPath = "assets/chars/" + curCharacter + ".json";
+					if(PlayState.isModSong)
+						charPath = ModSupport.modsDirectories[PlayState.mod] + "chars/" + curCharacter + ".json";
+					else
+						charPath = "assets/chars/" + curCharacter + ".json";
+					if(!Utilities.checkFileExists(charPath) && PlayState.isModSong)
+						charPath = "assets/chars/" + curCharacter + ".json";
+					else if(Utilities.checkFileExists(charPath) && PlayState.isModSong)
+						isModChar = true;
 					if(!Utilities.checkFileExists(charPath))
 						charPath = "assets/chars/bf.json";
 
 					rawJson = Utilities.getFileContents(charPath);
+					rawJson = rawJson.trim();
 				#else
 					charPath = "./assets/chars/" + curCharacter + ".json";
 					if(!Utilities.checkFileExists(charPath))
@@ -85,10 +94,16 @@ class Character extends FlxSprite
 				json = cast Json.parse(rawJson);
 
 				#if sys
-					if(!Utilities.checkFileExists("assets/" + json.CharacterImage + ".txt")) {
-						frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+					if(PlayState.isModSong && isModChar) {
+						if(!Utilities.checkFileExists(ModSupport.modsDirectories[PlayState.mod] + json.CharacterImage + ".txt"))
+							frames = Paths.getSparrowAtlasThing(json.CharacterImage, PlayState.mod);
+						else
+							frames = Paths.getPackerAtlasThing(json.CharacterImage, PlayState.mod);
 					} else {
-						frames = Paths.getPackerAtlasThing(json.CharacterImage);
+						if(!Utilities.checkFileExists("assets/" + json.CharacterImage + ".txt"))
+							frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+						else
+							frames = Paths.getPackerAtlasThing(json.CharacterImage);
 					}
 				#else
 					if(!Utilities.checkFileExists("./assets/" + json.CharacterImage + ".txt")) {
@@ -99,7 +114,7 @@ class Character extends FlxSprite
 				#end
 
 				if(json.CharacterScale != 1) {
-					setGraphicSize(Std.int(width * Std.int(json.CharacterScale)));
+					setGraphicSize(Std.int(width * json.CharacterScale));
 					updateHitbox();
 				}
 
@@ -163,6 +178,112 @@ class Character extends FlxSprite
 		}
 	}
 
+	public function changeCharacter(char:String = "bf", isPlayer:Bool = false) {
+		if(char != curCharacter) {
+			curCharacter = char;
+			
+			#if sys
+				charPath = "assets/chars/" + curCharacter + ".json";
+				if(!Utilities.checkFileExists(charPath))
+					charPath = "assets/chars/bf.json";
+
+				rawJson = Utilities.getFileContents(charPath);
+				rawJson = rawJson.trim();
+			#else
+				charPath = "./assets/chars/" + curCharacter + ".json";
+				if(!Utilities.checkFileExists(charPath))
+					charPath = "./assets/chars/bf.json";
+
+				rawJson = Utilities.getFileContents(charPath);
+				rawJson = rawJson.trim();
+			#end
+
+			while (!rawJson.endsWith("}"))
+			{
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+			}
+
+			json = cast Json.parse(rawJson);
+
+			#if sys
+				if(!Utilities.checkFileExists("assets/" + json.CharacterImage + ".txt")) {
+					frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+				} else {
+					frames = Paths.getPackerAtlasThing(json.CharacterImage);
+				}
+			#else
+				if(!Utilities.checkFileExists("./assets/" + json.CharacterImage + ".txt")) {
+					frames = Paths.getSparrowAtlasThing(json.CharacterImage);
+				} else {
+					frames = Paths.getPackerAtlasThing(json.CharacterImage);
+				}
+			#end
+
+			if(json.CharacterScale != 1) {
+				setGraphicSize(Std.int(width * Std.int(json.CharacterScale)));
+				updateHitbox();
+			}
+
+			flipX = json.CharacterFlipX;
+			CharPositionUse = json.CharacterPosition;
+
+			if(json.anims != null && json.anims.length > 0) {
+				for(anim in json.anims) {
+					var AnimationThing:String = anim.Animation;
+					var AnimationNameThing:String = anim.AnimName;
+					var AnimationFps:Int = anim.AnimFPS;
+					var AnimationLoop:Bool = anim.AnimLOOP;
+					var AnimationIndices:Array<Int> = anim.AnimIndices;
+					
+					if(AnimationIndices != null && AnimationIndices.length > 0) {
+						animation.addByIndices(AnimationThing, AnimationNameThing, AnimationIndices, "", AnimationFps, AnimationLoop);
+					} else {
+						animation.addByPrefix(AnimationThing, AnimationNameThing, AnimationFps, AnimationLoop);
+					}
+
+					if(anim.Offsets != null && anim.Offsets.length > 1) {
+						addOffset(anim.Animation, anim.Offsets[0], anim.Offsets[1]);
+					}
+				}
+			} else {
+				animation.addByPrefix('idle', 'BF idle dance', 24, false);
+			} 
+
+			antialiasing = json.CharacterAntialiasing;
+
+			trace("Character " + curCharacter + " loaded with the file " + charPath + "!");
+
+			json = null;
+			rawJson = null;
+			charPath = null;
+
+			checkIdle();
+			dance();
+
+			if (isPlayer)
+			{
+				flipX = !flipX;
+
+				// Doesn't flip for BF, since his are already in the right place???
+				if (!curCharacter.startsWith('bf') && animation.curAnim != null)
+				{
+					// var animArray
+					var oldRight = animation.getByName('singRIGHT').frames;
+					animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
+					animation.getByName('singLEFT').frames = oldRight;	
+
+					// IF THEY HAVE MISS ANIMATIONS??
+					if (animation.getByName('singRIGHTmiss') != null)
+					{
+						var oldMiss = animation.getByName('singRIGHTmiss').frames;
+						animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
+						animation.getByName('singLEFTmiss').frames = oldMiss;
+					}
+				}
+			}
+		}
+	}
+
 	override function update(elapsed:Float)
 	{
 		if (!isPlayer && animation.curAnim != null)
@@ -208,6 +329,7 @@ class Character extends FlxSprite
 		} else if(animation.getByName('idle') != null) {
 			playAnim('idle');
 		}
+		trace('CHAR ${curCharacter} DANCIN');
 	}
 
 	public function checkIdle() {

@@ -4,6 +4,10 @@ import flixel.FlxSprite;
 import openfl.utils.Assets;
 import haxe.Json;
 import haxe.format.JsonParser;
+#if sys
+import openfl.display.BitmapData;
+#end
+import optimized.OptimizedPlayState;
 
 using StringTools;
 
@@ -22,37 +26,94 @@ class HealthIcon extends FlxSprite
 	 * Used for FreeplayState! If you use it elsewhere, prob gonna annoying
 	 */
 	public var sprTracker:FlxSprite;
+	var character:String;
+	var modIcon:String;
+	var isModIcon:Bool = false;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false)
+	public function new(char:String = 'bf', isPlayer:Bool = false, ?mod:String = "")
 	{
 		super();
-		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
-		antialiasing = true;
-
-		var iconJsonPath:String = "chars/healthicons.json";
-		var iconPath:String = Paths.getPreloadPath(iconJsonPath);
-
-		var rawJson = Assets.getText(iconPath).trim();
-
-		while (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.length - 1);
-		}
-
-		var json:IconJunk = cast Json.parse(rawJson);
-
-		if(json.icons != null && json.icons.length > 0) {
-			for(icon in json.icons) {
-				var characterIcon:String = icon.character;
-				var bruhIcons:Array<Int> = icon.iconGridIcons;
-
-				animation.add(characterIcon, bruhIcons, 0, false, isPlayer);
+		if(mod != null && mod != "")
+			modIcon = mod;
+		else {
+			if(Options.useOptimized) {
+				modIcon = OptimizedPlayState.mod;
+			} else {
+				modIcon = PlayState.mod;
 			}
 		}
 
+		#if sys
+			if(modIcon != null && modIcon != "" && !Utilities.checkIfIsNormalChar(char)) {
+				if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
+					#if sys
+						loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
+					#else
+						loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
+					#end
+					isModIcon = true;
+				} else if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
+					#if sys
+						loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
+					#else
+						loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
+					#end
+					isModIcon = false;
+				} else
+					loadGraphic("assets/images/icons/face.png", true, 150, 150);
+			} else 
+		#end
+		if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png"))
+			#if sys
+				loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
+			#else
+				loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
+			#end
+		else
+			loadGraphic("assets/images/icons/face.png", true, 150, 150);
+
+		antialiasing = true;
+
+		animation.add(char, [0, 1, 2], 0, false, isPlayer);
 		animation.play(char);
 		scrollFactor.set();
+
+		character = char;
+	}
+
+	public function changeIcon(char:String = 'bf', isPlayer:Bool = false) {
+		if(char != character) {
+			#if sys
+				if(isModIcon && Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
+					if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png"))
+					#if sys
+						loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
+					#else
+						loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
+					#end
+					isModIcon = true;
+				} else 
+			#end
+			if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
+				#if sys
+					loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
+				#else
+					loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
+				#end
+				isModIcon = false;
+			} else {
+				loadGraphic("assets/images/icons/face.png", true, 150, 150);
+			}
+
+			antialiasing = true;
+
+			animation.add(char, [0, 1, 2], 0, false, isPlayer);
+			animation.play(char);
+			scrollFactor.set();
+
+			character = char;
+		}
 	}
 
 	override function update(elapsed:Float)

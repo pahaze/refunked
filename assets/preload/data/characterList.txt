@@ -18,6 +18,7 @@ monster-christmas
 parents-christmas
 parents-christmas-sfw
 pico
+pico-player
 senpai
 senpai-angry
 spirit

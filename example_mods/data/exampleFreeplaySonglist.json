@@ -1,0 +1,18 @@
+{
+    "songs": [
+        {
+            "songData": "example-song",
+            "songName": "Example Song",
+            "songWeekNumber": 1,
+            "characterIcon": "face"
+        }
+    ],
+    "weeks": [
+        {
+            "songDatas": ["example", "week", "songs"],
+            "songNames": ["Example", "Week", "Songs"],
+            "weekNumber": 1,
+            "characterIcons": ["face"]
+        }
+    ]
+} 

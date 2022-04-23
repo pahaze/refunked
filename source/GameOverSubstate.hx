@@ -17,7 +17,6 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		Paths.nullPathsAssets();
-		PlayState.nullPSLoadedAssets();
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
 		switch (daStage)
@@ -61,7 +60,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (controls.ACCEPT)
 		{
-			endBullshit();
+			endBull();
 		}
 
 		if (controls.BACK)
@@ -104,7 +103,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	var isEnding:Bool = false;
 
-	function endBullshit():Void
+	function endBull():Void
 	{
 		if (!isEnding)
 		{

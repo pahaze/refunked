@@ -33,6 +33,7 @@ class LoadingState extends MusicBeatState
 	
 	override function create()
 	{	
+		unloadMBSassets();
 		initSongsManifest().onComplete
 		(
 			function (lib)

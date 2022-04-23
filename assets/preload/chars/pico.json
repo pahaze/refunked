@@ -46,7 +46,7 @@
 			"AnimFPS": 24,
 			"Animation": "singLEFTmiss",
 			"AnimIndices": [],
-			"AnimName": "Pico NOTE LEFT miss"
+			"AnimName": "Pico Note Right Miss"
 		},
 		{
 			"Offsets": [210, -28],
@@ -70,7 +70,7 @@
 			"AnimFPS": 24,
 			"Animation": "singRIGHTmiss",
 			"AnimIndices": [],
-			"AnimName": "Pico Note Right Miss"
+			"AnimName": "Pico NOTE LEFT miss"
 		}
 	],
 	"CharacterAntialiasing": true,

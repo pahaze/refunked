@@ -1,2 +1,1 @@
-THIS MOD FOLDER DOES NOT ENTIRELY WORK JUST YET!!!
-DONT EXPECT MUCH OUT OF IT RIGHT NOW!!!
+Put your mods here! They can go into the normal data/songs/etc folders, or they can go in their own!

@@ -82,6 +82,31 @@ class Song
 		#end
 	}
 
+	public static function loadFromModJson(mod:String, jsonInput:String, ?folder:String):SwagSong
+	{
+		#if sys
+			rawJson = Utilities.getFileContents(ModSupport.modsDirectories[mod] + 'data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
+
+			while (!rawJson.endsWith("}"))
+			{
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+			}
+
+			return parseJSONshit(rawJson);
+			rawJson = null;
+		#else
+			rawJson = Utilities.getFileContents(ModSupport.modsDirectories[mod] + 'data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
+
+			while (!rawJson.endsWith("}"))
+			{
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+			}
+
+			return parseJSONshit(rawJson);
+			rawJson = null;
+		#end
+	}
+
 	public static function parseJSONshit(rawJson:String):SwagSong
 	{
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;

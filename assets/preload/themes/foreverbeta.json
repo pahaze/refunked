@@ -1,0 +1,36 @@
+{
+    "BotplayEnabled": false,
+    "ExtraEnabled": false,
+    "HealthbarEnabled": true,
+    "Healthbar": {
+        "center": true,
+        "x": "0",
+        "y": "648",
+        "dsy": "50",
+        "showP1": true,
+        "showP2": true 
+    },
+    "ScoreEnabled": true,
+    "Score": {
+        "bouncetween": false,
+        "y": "578",
+        "dsy": "100",
+        "x": "0",
+        "center": true,
+        "fontsize": "16",
+        "text": "Score: [score] // Accuracy: [accuracy]% [[noterating]] // Rank: [funnyrating]"
+    },
+    "TimebarEnabled": false,
+    "WatermarkEnabled": true,
+    "Watermark": {
+        "text": "[song] - [difficulty] - RFE v[version]",
+        "bottext": "[song] - [difficulty] - RFE v[version]",
+        "practext": "[song] - [difficulty] - RFE v[version]",
+        "pracbottext": "[song] - [difficulty] - RFE v[version]",
+        "scrolls": false,
+        "x": "5",
+        "y": "690",
+        "dsy": "690"
+    },
+    "RatingStyle": "forever"
+}

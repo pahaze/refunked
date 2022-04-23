@@ -1,93 +1,239 @@
 How RFE Lua works:
-Currently, the STAGE of the song is used only. The path assets/stages/songStage.lua will be checked. Example: song's stage is testStage, stage file will be assets/stages/testStage.lua. Currently, the normal weeks do NOT use Lua.
+Currently, the STAGE of the song is used. The path assets/stages/songStage.lua will be checked. Example: song's stage is testStage, stage file will be assets/stages/testStage.lua. Currently, the normal weeks do NOT use Lua.
+Also, modcharts are supported. They go in the song folder with the JSONs. Example: song's name is testSong, modchart file will be assets/data/testSong/modchart.lua.
+Notes are now supported. They go in assets/notes. The note type in noteTypes.txt must be the SAME name as the Lua file.
 
 Current RFE Lua auto-defined variables:
 boyfriend - Literally "boyfriend". Lol.
+
 boyfriendMidpointX - Boyfriend's X midpoint (useful for camera stuff).
+
 boyfriendMidpointY - Boyfriend's Y midpoint (useful for camera stuff).
+
 boyfriendName - Boyfriend actor/player's name.
+
+bpm - BPM of the song.
+
 crochet - Crochet from Conductor.
+
 curBeat - It's curBeat (lol).
+
+curBPM - Current BPM.
+
 curStep - It's curStep (lol).
-defaultOpponentStrumX1-4 - Default x position for each opponent strum.
-defaultPlayerStrumX1-4 - Default x position for each player strum.
+
+defaultOpponentStrumX0-3 - Default x position for each opponent strum.
+
+defaultPlayerStrumX0-3 - Default x position for each player strum.
+
+defaultOpponentStrumY0-3 - Default y position for each opponent strum.
+
+defaultPlayerStrumY0-3 - Default y position for each player strum.
+
 girlfriend - Literally "girlfriend". Lol.
+
 girlfriendName - Girlfriend actor/player's name.
+
 instLength - Length of instrumental.
+
 health - Gives health from in game.
+
 opponent - Literally "opponent". Lol.
+
 opponentMidpointX - Your opponent's X midpoint (useful for camera stuff).
+
 opponentMidpointY - Your opponent's Y midpoint (useful for camera stuff).
+
 opponentName - Opponent actor/player's name.
+
+optimized - Tells if game is optimized.
+
+notOptimized - Tells if game is NOT optimized.
+
+rootDir - Root directory of assets (works with mods).
+
 songData - Name of song (not formatted).
+
 songName - Name of song.
+
 stepCrochet - stepCrochet from Conductor.
+
 vocalsLength - Length of vocals.
 
 Current RFE Lua functions:
+addActor(actor-name) - Adds a create actor to PlayState.
+
 addBackgroundGirls(bg-girls-name) - Adds a created BG girls instance to PlayState.
-addSprite(sprite-name) - Adds a created sprite instance to PlayState (animated or not).
-addSpriteIndiceAnimation(sprite-name, label-for-animation, animation-name, indice-list(array), play-anim-on-create, loops, loops-on-create-play, framerate) - Adds an animation for a sprite by indices. Characters such as GF uses these.
-addSpritePrefixAnimation(sprite-name, label-for-animation, animation-name, play-anim-on-create, loops, loops-on-create-play, framerate) - Adds an animation for a sprite by prefix. Anything that uses an XML will likely use this.
+
+addSprite(sprite-name, is-active(bool)) - Adds a created sprite instance to PlayState (animated or not). (Set active to true for animated sprites).
+
+addSpriteIndiceAnimation(sprite-name, label-for-animation, animation-name, indice-list(array), framerate) - Adds an animation for a sprite by indices. Characters such as GF uses these.
+
+addSpritePrefixAnimation(sprite-name, label-for-animation, animation-name, framerate, loops(bool)) - Adds an animation for a sprite by prefix. Anything that uses an XML will likely use this.
+
+addToBoyfriendCamFollow(x, y) - Adds to Boyfriend's camFollow x/y position.
+
 addToBoyfriendPosition(x, y) - Adds to Boyfriend's x/y position(s).
+
 addToGirlfriendPosition(x, y) - Adds to Girlfriend's x/y position(s).
+
+addToOpponentCamFollow(x, y) - Adds to the opponent's camFollow x/y position.
+
 addToOpponentPosition(x, y) - Adds to the opponent's x/y position(s).
+
+changeActor(actor-name, new-character, add-actor, remove-old-actor, change-icon) - Changes the actor to the new character you choose.
+
 destroySprite(sprite) - Destroys a sprite.
-drainhealth(number) - Drains your health by the number.
+
+drainHealth(number) - Drains your health by the number.
+
 flipSpriteXY(sprite-name, x, y) - Flips a sprite's x/y positions.
+
 giveActorHeight(actor-name) - Returns an actor's height.
+
 giveActorWidth(actor-name) - Returns an actor's width.
+
+giveActorX(actor-name) - Returns an actor's x position.
+
+giveActorY(actor-name) - Returns an actor's Y position.
+
+giveHealth(number) - Gives you the number of health you set.
+
 giveSpriteHeight(sprite-name) - Returns a sprite's height.
+
 giveSpriteWidth(sprite-name) - Returns a sprite's width.
+
+makeActor(actor-name, isPlayer, x, y) - Makes an extra actor. Useful for switching characters.
+
 makeAnimatedPackerSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .txt file (spirit, certain background elements, etc.).
+
 makeAnimatedSparrowSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .xml file (characters, most background elements, etc.).
+
 makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 6 porting.
+
 makeSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes a simple FlxSprite. Not animated.
+
 performCameraAngleTween(tween, camera, angle, speed, ease-type) - Performs an angle tween on a(n) camera.
+
 performCameraXTween(tween, camera, x, speed, ease-type) - Performs a tween on the x position of a(n) camera.
+
 performCameraYTween(tween, camera, y, speed, ease-type) - Performs a tween on the y position of a(n) camera.
+
 performCameraZoom(camera, zoom) - Performs a camera zoom by the amount you choose. Does not go into effect until camZooming is enabled.
+
+performOpponentStrumAlphaTween(tween, strum-number, alpha, speed, ease-type) - Performs an alpha tween on the selected opponent strum.
+
 performOpponentStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected opponent strum.
+
 performOpponentStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected opponent strum.
+
 performOpponentStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected opponent strum.
+
+performPlayerStrumAlphaTween(tween, strum-number, alpha, speed, ease-type) - Performs an alpha tween on the selected player strum.
+
 performPlayerStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected player strum.
+
 performPlayerStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected player strum.
+
 performPlayerStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected player strum.
+
 performSpriteAngleTween(tween, sprite, angle, speed, ease-type) - Performs an angle tween on a(n) sprite.
+
 performSpriteXTween(tween, sprite, x, speed, ease-type) - Performs a tween on the x position of a(n) sprite.
+
 performSpriteYTween(tween, sprite, y, speed, ease-type) - Performs a tween on the y position of a(n) sprite.
+
 playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent) play an animation.
+
 playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
+
 resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
+
 setActorGraphicSize(sprite-name, x, y) - Sets an actor's graphic size (NOT the same as scale).
+
 setActorPosition(actor-name, x, y) - Sets an actor's position.
+
 setActorScale(actor-name, x, y) - Sets an actor's scale (NOT the same as graphic size).
+
 setActorScrollFactor(actor-name, x, y) - Sets an actor's scroll factor.
+
+setActorVisibility(actor-name, visible(bool)) - Sets an actor's visibilty.
+
 setBGGirlsScrollFactor(bg-girls-name, x, y) - Sets scroll factor for BG girls.
+
 setBoyfriendCamFollowPosition(x, y) - Sets camFollow positions for Boyfriend.
+
 setCameraAngle(camera, angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
+
 setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
+
 setCameraZooms(camhud-zoom, camgame-zoom) - Sets the zoom amount for the cameras.
+
 setCamPosPosition(x, y) - Sets camPos' positions.
+
 setCurStage(stage-name) - Sets curStage in PlayState.
+
 setDefaultCamZoom(zoom) - Sets the default camera zoom.
+
+setHealth(amount) - Sets the health to a certain amount.
+
 setMinimumCamZoom(zoom) - Sets the minimum zoom of the camera before it can zoom again.
+
+setNoteVisibility(player, visible(bool)) - Sets the visibilty of any notes coming.
+
 setOpponentCamFollowPosition(x, y) - Sets camFollow positions for your opponent.
+
 setOpponentStrumAlpha(strum-number, alpha) - Sets the alpha of an opponent strum.
+
+setOpponentStrumAngle(strum-number, angle) - Sets the angle of an opponent strum.
+
+setOpponentStrumX(strum-number, x) - Sets the x position of an opponent strum.
+
+setOpponentStrumY(strum-number, y) - Sets the y position of an opponent strum.
+
 setPlayerStrumAlpha(strum-number, alpha) - Sets the alpha of a player strum.
+
+setPlayerStrumAngle(strum-number, angle) - Sets the angle of a player strum.
+
+setPlayerStrumX(strum-number, x) - Sets the x position of a player strum.
+
+setPlayerStrumY(strum-number, y) - Sets the y position of a player strum.
+
+setSpriteAlpha(sprite-name, alpha) - Sets the alpha of a sprite.
+
 setSpriteCamera(sprite-name, camera) - Sets a sprite's camera.
+
 setSpriteGraphicSize(sprite-name, x, y) - Sets a sprite's graphic size (NOT the same as scale).
+
+setSpriteOrder(sprite-name, position) - Sets the position/ordering of a sprite.
+
 setSpritePosition(sprite-name, x, y) - Sets a sprite's position.
+
 setSpriteScale(sprite-name, x, y) - Sets a sprite's scale (NOT the same as graphic size).
+
 setSpriteScrollFactor(sprite-name, x, y) - Sets a sprite's scroll factor.
+
 shakeCamera(camera, intensity, duration) - Shakes the HUD camera for set duration with set intensity.
+
 updateSpriteHitbox(sprite-name) - Updates a sprite's hitbox.
 
 Current RFE Lua callbacks:
 beatHit - Checks for functions every beat hit.
+
 create - Checks for functions on stage creation.
+
 endSong - Checks for functions on song end.
+
+goodNoteHit - Used for notes, checked when a good note hit is made by the CPU or player.
+
+noteMiss - Used for notes also, checked when the player misses a note.
+
 opponentNoteHit - Checks for functions when your opponent hits a note.
+
 playerNoteHit - Checks for functions when you hit a note.
+
+postCreate - Checks for functions to run AFTER super.create().
+
 stepHit - Checks for functions every step hit.
+
 update - Checks for functions every frame.

@@ -98,9 +98,19 @@ class Paths
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
 	}
 
+	inline static public function modVoices(mod:String, song:String)
+	{
+		return ModSupport.modsDirectories[mod] + 'songs/${song.toLowerCase()}/Voices.ogg';
+	}
+
 	inline static public function voices(song:String)
 	{
 		return 'assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+	}
+
+	inline static public function modInst(mod:String, song:String)
+	{
+		return ModSupport.modsDirectories[mod] + 'songs/${song.toLowerCase()}/Inst.ogg';
 	}
 
 	inline static public function inst(song:String)
@@ -118,8 +128,24 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
+	inline static public function modSongData(mod:String, song:String, key:String) {
+		return ModSupport.modsDirectories[mod] + 'data/${song.toLowerCase()}/' + key;
+	}
+
 	inline static public function songData(song:String, key:String) {
 		return 'assets/data/${song.toLowerCase()}/' + key;
+	}
+
+	inline static public function stage(stage:String) {
+		return './assets/stages/${stage}.lua';
+	}
+
+	inline static public function modStage(mod:String, stage:String) {
+		return ModSupport.modsDirectories[mod] + 'stages/${stage}.lua';
+	}
+
+	inline static public function mod(mod:String) {
+		return ModSupport.modsDirectories[mod];
 	}
 
 	static public function getSparrowAtlas(key:String, ?library:String)
@@ -129,14 +155,17 @@ class Paths
 		PathsLoadedMap[key] = result;
 		return result;
 	}
-
-	static public function getSparrowAtlasThing(key:String)
+	
+	static public function getSparrowAtlasThing(key:String, ?mod:String)
 	{
 		var result;
 		#if sys
-			result = FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".xml"));
+			if(mod != null)
+				result = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(ModSupport.modsDirectories[mod] + key + ".png"), Utilities.getFileContents(ModSupport.modsDirectories[mod] + key + ".xml"));
+			else
+				result = FlxAtlasFrames.fromSparrow(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".xml"));
 		#else
-			// we'll get there one day 
+			// we'll get there one day
 			result = FlxAtlasFrames.fromSparrow("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".xml"));
 		#end
 		PathsLoadedMap[key] = result;
@@ -151,11 +180,14 @@ class Paths
 		return result;
 	}
 
-	static public function getPackerAtlasThing(key:String, ?library:String)
+	static public function getPackerAtlasThing(key:String, ?mod:String)
 	{
 		var result;
 		#if sys
-			result = FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".txt"));
+			if(mod != null)
+				result = FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile(ModSupport.modsDirectories[mod] + key + ".png"), Utilities.getFileContents(ModSupport.modsDirectories[mod] + key + ".txt"));
+			else
+				result = FlxAtlasFrames.fromSpriteSheetPacker(BitmapData.fromFile("assets/" + key + ".png"), Utilities.getFileContents("assets/" + key + ".txt"));
 		#else
 			// we'll get there one day 
 			result = FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".txt"));

@@ -26,6 +26,8 @@ import js.html.FileReader;
 #end
 import haxe.Json;
 import haxe.format.JsonParser;
+import preview.PreviewLoadingState;
+import preview.PreviewTheme;
 
 using StringTools;
 
@@ -219,6 +221,11 @@ class OptionsMenu extends MusicBeatState
 								Options.saveOptions();
 								grpControlsBools.members[curSelected].text = (Options.freeplayDialogue ? "< ON >" : "< OFF >");
 								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+							case 3:
+								Options.noNoteMisses = !Options.noNoteMisses;
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.noNoteMisses ? "< ON >" : "< OFF >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
 						}
 					case 1:
 						switch(curSelected) {
@@ -227,8 +234,13 @@ class OptionsMenu extends MusicBeatState
 								Options.saveOptions();
 								grpControlsBools.members[curSelected].text = (Options.gameSFW ? "< YES >" : "< NO >");
 								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
+							case 1:
+								Options.useOptimized = !Options.useOptimized;
+								Options.saveOptions();
+								grpControlsBools.members[curSelected].text = (Options.useOptimized ? "< YES >" : "< NO >");
+								grpControlsBools.members[curSelected].x = FlxG.width - grpControlsBools.members[curSelected].width - 40;
 							#if desktop
-								case 1:
+								case 2:
 									Options.enableRPC = !Options.enableRPC;
 									if(Options.enableRPC)
 										DiscordClient.initialize();
@@ -295,7 +307,7 @@ class OptionsMenu extends MusicBeatState
 
 			if(FlxG.keys.justPressed.P) {
 				PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
-				BruhLoadingState.loadAndSwitchState(new PreviewTheme());
+				PreviewLoadingState.loadAndSwitchState(new PreviewTheme());
 			}
 
 			if(FlxG.keys.justPressed.T) {
@@ -466,6 +478,8 @@ class OptionsMenu extends MusicBeatState
 		settingsBools.push((Options.middlescroll ? "< ON >" : "< OFF >"));
 		settingsStuff.push("Freeplay Dialogue");
 		settingsBools.push((Options.freeplayDialogue ? "< ON >" : "< OFF >"));
+		settingsStuff.push("No Note Misses");
+		settingsBools.push((Options.noNoteMisses ? "< ON >" : "< OFF >"));
 		
 		for (i in 0...settingsBools.length) {
 			var Text:FlxText = new FlxText(FlxG.width - 40, 122 + (32 * i), 0, settingsBools[i]);
@@ -548,6 +562,8 @@ class OptionsMenu extends MusicBeatState
 
 		settingsStuff.push("Game is Kid-friendly?");
         settingsBools.push((Options.gameSFW ? "< YES >" : "< NO >"));
+		settingsStuff.push("Optimize the game?");
+		settingsBools.push((Options.useOptimized ? "< YES >" : "< NO >"));
         #if desktop
             settingsStuff.push("Discord Rich Presence");
             settingsBools.push((Options.enableRPC ? "< ON >" : "< OFF >"));

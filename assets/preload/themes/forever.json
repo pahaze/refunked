@@ -1,14 +1,16 @@
 {
     "BotplayEnabled": false,
     "ExtraEnabled": true,
-    "Extra": {
-        "x": "1181",
-        "y": "690",
-        "dsy": "690",
-        "text": "RFE v0.9.8",
-        "fontsize": 16,
-        "center": false
-    },
+    "Extra": [
+        {
+            "x": "5",
+            "y": "690",
+            "dsy": "690",
+            "text": "[song] - [difficulty]",
+            "fontsize": 16,
+            "center": false
+        }
+    ],
     "HealthbarEnabled": true,
     "Healthbar": {
         "center": true,
@@ -31,14 +33,16 @@
     "TimebarEnabled": false,
     "WatermarkEnabled": true,
     "Watermark": {
-        "text": "[song] - [difficulty]",
-        "bottext": "[song] - [difficulty]",
-        "practext": "[song] - [difficulty]",
-        "pracbottext": "[song] - [difficulty]",
+        "text": "RFE v[version]",
+        "bottext": "RFE v[version]",
+        "practext": "RFE v[version]",
+        "pracbottext": "RFE v[version]",
         "scrolls": false,
-        "x": "5",
+        "x": "1125",
         "y": "690",
-        "dsy": "690"
+        "dsy": "690",
+        "fontsize": 16,
+        "center": false
     },
     "RatingStyle": "forever"
 }
