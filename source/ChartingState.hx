@@ -312,7 +312,23 @@ class ChartingState extends MusicBeatState
 		CSLoadedMap["stepperSpeedText"] = stepperSpeedText;
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		if(PlayState.mod != null && PlayState.mod != "") {
+			if(Utilities.checkFileExists(Paths.mod(PlayState.mod) + "data/characterList.txt")) {
+				var modCharacters:Array<String> = CoolUtil.coolTextFile(Paths.mod(PlayState.mod) + "data/characterList.txt");
+				for(i in 0...modCharacters.length) {
+					characters.insert(characters.length + i, modCharacters[i]);
+				}
+			}
+		}
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		if(PlayState.mod != null && PlayState.mod != "") {
+			if(Utilities.checkFileExists(Paths.mod(PlayState.mod) + "data/stageList.txt")) {
+				var modStages:Array<String> = CoolUtil.coolTextFile(Paths.mod(PlayState.mod) + "data/stageList.txt");
+				for(i in 0...modStages.length) {
+					stages.insert(stages.length + i, modStages[i]);
+				}
+			}
+		}
 
 		var player2DropDown = new FlxUIDropDownMenuCustom(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

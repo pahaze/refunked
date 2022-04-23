@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' ReFunked" file="ReFunked" packageName="com.pahaze.refunked" package="com.pahaze.refunked" main="Main" version="0.9.8" company="pahaze" />
+	<app title="Friday Night Funkin' ReFunked" file="ReFunked" packageName="com.pahaze.refunked" package="com.pahaze.refunked" main="Main" version="0.9.9-alpha" company="pahaze" />
 
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 
@@ -57,7 +57,8 @@
 	<assets path='example_mods' rename='mods' embed='false'/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<assets path="LICENSE" rename="NOT the license.txt" />
-	<assets path="LICENSE.old" rename="NOT the OLD license.txt" />
+	<assets path="Resources/RFELuaReference.txt" rename="resources/LuaReference.txt" />
+	<assets path="Resources/RFEDialogueReference.txt" rename="resources/DialogueReference.txt" />
 	<!-- <template path='mods' /> -->
 	
 	<assets path="CHANGELOG.md" rename='changelog.txt'/>

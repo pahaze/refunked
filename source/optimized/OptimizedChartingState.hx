@@ -312,7 +312,23 @@ class OptimizedChartingState extends MusicBeatState
 		OCSLoadedMap["stepperSpeedText"] = stepperSpeedText;
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		if(OptimizedPlayState.mod != null && OptimizedPlayState.mod != "") {
+			if(Utilities.checkFileExists(Paths.mod(OptimizedPlayState.mod) + "data/characterList.txt")) {
+				var modCharacters:Array<String> = CoolUtil.coolTextFile(Paths.mod(OptimizedPlayState.mod) + "data/characterList.txt");
+				for(i in 0...modCharacters.length) {
+					characters.insert(characters.length + i, modCharacters[i]);
+				}
+			}
+		}
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		if(OptimizedPlayState.mod != null && OptimizedPlayState.mod != "") {
+			if(Utilities.checkFileExists(Paths.mod(OptimizedPlayState.mod) + "data/stageList.txt")) {
+				var modStages:Array<String> = CoolUtil.coolTextFile(Paths.mod(OptimizedPlayState.mod) + "data/stageList.txt");
+				for(i in 0...modStages.length) {
+					stages.insert(stages.length + i, modStages[i]);
+				}
+			}
+		}
 
 		var player2DropDown = new FlxUIDropDownMenuCustom(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

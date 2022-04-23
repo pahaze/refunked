@@ -82,17 +82,38 @@ class HealthIcon extends FlxSprite
 		character = char;
 	}
 
-	public function changeIcon(char:String = 'bf', isPlayer:Bool = false) {
+	public function changeIcon(char:String = 'bf', isPlayer:Bool = false, ?mod:String = "") {
 		if(char != character) {
+			character = char;
+			
+			if(mod != null && mod != "")
+				modIcon = mod;
+			else {
+				if(Options.useOptimized) {
+					modIcon = OptimizedPlayState.mod;
+				} else {
+					modIcon = PlayState.mod;
+				}
+			}
+
 			#if sys
-				if(isModIcon && Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
-					if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png"))
-					#if sys
-						loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
-					#else
-						loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
-					#end
-					isModIcon = true;
+				if(modIcon != null && modIcon != "" && !Utilities.checkIfIsNormalChar(char)) {
+					if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
+						#if sys
+							loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
+						#else
+							loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
+						#end
+						isModIcon = true;
+					} else if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
+						#if sys
+							loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
+						#else
+							loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
+						#end
+						isModIcon = false;
+					} else
+						loadGraphic("assets/images/icons/face.png", true, 150, 150);
 				} else 
 			#end
 			if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
@@ -111,8 +132,6 @@ class HealthIcon extends FlxSprite
 			animation.add(char, [0, 1, 2], 0, false, isPlayer);
 			animation.play(char);
 			scrollFactor.set();
-
-			character = char;
 		}
 	}
 
