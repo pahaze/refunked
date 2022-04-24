@@ -198,19 +198,33 @@ class ReFunkedLua {
 			});
 			Lua_helper.add_callback(luaState, "makeAnimatedPackerSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
 				var funnySprite:FlxSprite = new FlxSprite(x, y);
-				if(PlayState.mod != null || PlayState.mod != "")
-					funnySprite.frames = Paths.getPackerAtlasThing(path, PlayState.mod);
-				else
-					funnySprite.frames = Paths.getPackerAtlasThing(path);
+				if(PlayState.mod != null || PlayState.mod != "") {
+					if(path.contains(".png"))
+						funnySprite.frames = Paths.getPackerAtlasThing(path.replace(".png", ""), PlayState.mod);
+					else
+						funnySprite.frames = Paths.getPackerAtlasThing(path, PlayState.mod);
+				} else {
+					if(path.contains(".png"))
+						funnySprite.frames = Paths.getPackerAtlasThing(path.replace(".png", ""));
+					else
+						funnySprite.frames = Paths.getPackerAtlasThing(path);
+				}
 				funnySprite.antialiasing = antialiasing;
 				PlayState.LuaSprites[spriteName] = funnySprite;
 			});
 			Lua_helper.add_callback(luaState, "makeAnimatedSparrowSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
 				var funnySprite:FlxSprite = new FlxSprite(x, y);
-				if(PlayState.mod != null || PlayState.mod != "")
-					funnySprite.frames = Paths.getSparrowAtlasThing(path, PlayState.mod);
-				else
-					funnySprite.frames = Paths.getSparrowAtlasThing(path);
+				if(PlayState.mod != null || PlayState.mod != "") {
+					if(path.contains(".png"))
+						funnySprite.frames = Paths.getSparrowAtlasThing(path.replace(".png", ""), PlayState.mod);
+					else
+						funnySprite.frames = Paths.getSparrowAtlasThing(path, PlayState.mod);
+				} else {
+					if(path.contains(".png"))
+						funnySprite.frames = Paths.getSparrowAtlasThing(path.replace(".png", ""));
+					else
+						funnySprite.frames = Paths.getSparrowAtlasThing(path);
+				}
 				funnySprite.antialiasing = antialiasing;
 				PlayState.LuaSprites[spriteName] = funnySprite;
 			});
@@ -221,7 +235,21 @@ class ReFunkedLua {
 			Lua_helper.add_callback(luaState, "makeSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
 				var funnySprite:FlxSprite = new FlxSprite(x, y);
 				// only sys for now :pls:
-				funnySprite.loadGraphic(BitmapData.fromFile(path));
+				if(path.contains("mods") || path.contains("assets")) {
+					funnySprite.loadGraphic(BitmapData.fromFile(path));
+				} else {
+					if(PlayState.mod != null || PlayState.mod != "") {
+						if(!path.contains(".png"))
+							funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path + ".png"));
+						else
+							funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path));
+					} else {
+						if(!path.contains(".png"))
+							funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path + ".png"));
+						else
+							funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path));
+					}
+				}
 				funnySprite.antialiasing = antialiasing;
 				PlayState.LuaSprites[spriteName] = funnySprite;
 			});
