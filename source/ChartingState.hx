@@ -264,7 +264,7 @@ class ChartingState extends MusicBeatState
 			trace('CHECKED!');
 		};
 
-		var check_mute_inst = new FlxUICheckBox(10, 240, null, null, "Mute Instrumental (in editor)", 100);
+		var check_mute_inst = new FlxUICheckBox(10, 275, null, null, "Mute Instrumental (in editor)", 100);
 		CSLoadedMap["check_mute_inst"] = check_mute_inst;
 		check_mute_inst.checked = false;
 		check_mute_inst.callback = function()
@@ -329,6 +329,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 		}
+		var uiStyles:Array<String> = ["normal", "pixel"];
 
 		var player2DropDown = new FlxUIDropDownMenuCustom(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -386,6 +387,22 @@ class ChartingState extends MusicBeatState
 		var stageText = new FlxText(stageDropDown.x, stageDropDown.y - 15, 0, "Stage:");
 		CSLoadedMap["stageText"] = stageText;
 
+		var uiStyleDropDown = new FlxUIDropDownMenuCustom(10, 235, FlxUIDropDownMenu.makeStrIdLabelArray(uiStyles, true), function(uiStyle:String)
+		{
+			_song.uiStyle = uiStyles[Std.parseInt(uiStyle)];
+		});
+		CSLoadedMap["uiStyleDropDown"] = uiStyleDropDown;
+		scrollBlockThing.push(uiStyleDropDown);
+
+		if(_song.uiStyle != null) {
+			uiStyleDropDown.selectedLabel = _song.uiStyle;
+		} else {
+			uiStyleDropDown.selectedLabel = "normal";
+		}
+
+		var uiStyleText = new FlxText(uiStyleDropDown.x, uiStyleDropDown.y - 15, 0, "UI Style:");
+		CSLoadedMap["uiStyle"] = uiStyleText;
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		CSLoadedMap["tab_group_song"] = tab_group_song;
 		tab_group_song.name = "Song";
@@ -402,6 +419,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperBPMText);
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(stepperSpeedText);
+		tab_group_song.add(uiStyleDropDown);
+		tab_group_song.add(uiStyleText);
 		tab_group_song.add(gfPlayerDropDown);
 		tab_group_song.add(gfPlayerText);
 		tab_group_song.add(stageDropDown);
