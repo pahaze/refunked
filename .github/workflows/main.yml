@@ -85,7 +85,8 @@ jobs:
           name: RFE-Windows
           path: export/release/windows/bin
   RFEMac:
-    runs-on: macos-latest
+    # Catalina my beloved
+    runs-on: macos-10.15
 
     steps:
       - uses: actions/checkout@v2
