@@ -218,6 +218,11 @@ class OptimizedPlayState extends MusicBeatState
 	public static var controlling:Bool = false;
 
 	// UI
+	var intro3:FlxSound;
+	var intro2:FlxSound;
+	var intro1:FlxSound;
+	var introGo:FlxSound;
+	static var prevUIStyle:String;
 	public static var uiStyle:String;
 
 	// Notes
@@ -292,6 +297,16 @@ class OptimizedPlayState extends MusicBeatState
 				uiStyle = "pixel";
 			else
 				uiStyle = "default";
+		}
+
+		if(prevUIStyle != null) {
+			if(prevUIStyle != uiStyle) {
+				UIStyleSupport.loadUIStyle(uiStyle);
+				prevUIStyle = uiStyle;
+			} else
+				prevUIStyle = uiStyle;
+		} else if(prevUIStyle == null) {
+			UIStyleSupport.loadUIStyle(uiStyle);
 		}
 		
 		if(isStoryMode) {
@@ -770,6 +785,7 @@ class OptimizedPlayState extends MusicBeatState
 				setLuaVar("defaultOpponentStrumX" + i, cpuStrums.members[i].x);
 				setLuaVar("defaultOpponentStrumY" + i, cpuStrums.members[i].y);
 			}
+			luaCallback("preSongCountdown", []);
 		#end
 
 		startedCountdown = true;
@@ -780,39 +796,22 @@ class OptimizedPlayState extends MusicBeatState
 
 		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
 		{
-			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-			introAssets.set('default', ['ready', "set", "go"]);
-			introAssets.set('pixel', ['weeb/pixelUI/ready-pixel', 'weeb/pixelUI/set-pixel', 'weeb/pixelUI/date-pixel']);
-
-			var introAlts:Array<String> = introAssets.get('default');
-			var altSuffix:String = "";
-
-			for (value in introAssets.keys())
-			{
-				if (value == uiStyle)
-				{
-					introAlts = introAssets.get(value);
-					altSuffix = '-pixel';
-				}
-			}
+			var introAlts:Array<String> = UIStyleSupport.uiStyleIntroAssets;
 
 			switch (swagCounter)
-
 			{
 				case 0:
-					switch (uiStyle) {
-						case 'pixel':
-							FlxG.sound.play(Paths.sound('intro3-pixel'), 0.6);
-						default:
-							FlxG.sound.play(Paths.sound('intro3'), 0.6);
-					}
+					intro3.play();
 				case 1:
-					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+					#if sys
+						var ready:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(introAlts[0])));
+					#else
+						var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+					#end
 					ready.scrollFactor.set();
 					ready.updateHitbox();
-
-					if (uiStyle.startsWith('pixel'))
-						ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
+					if(UIStyleSupport.uiStyleIsPixel)
+						ready.setGraphicSize(Std.int(ready.width * UIStyleSupport.uiStylePixelZoom));
 
 					ready.screenCenter();
 					add(ready);
@@ -823,18 +822,16 @@ class OptimizedPlayState extends MusicBeatState
 							ready.destroy();
 						}
 					});
-					switch (uiStyle) {
-						case 'pixel':
-							FlxG.sound.play(Paths.sound('intro2-pixel'), 0.6);
-						default:
-							FlxG.sound.play(Paths.sound('intro2'), 0.6);
-					}
+					intro2.play();
 				case 2:
-					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+					#if sys
+						var set:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(introAlts[1])));
+					#else
+						var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+					#end
 					set.scrollFactor.set();
-
-					if (uiStyle.startsWith('pixel'))
-						set.setGraphicSize(Std.int(set.width * daPixelZoom));
+					if(UIStyleSupport.uiStyleIsPixel)
+						set.setGraphicSize(Std.int(set.width * UIStyleSupport.uiStylePixelZoom));
 
 					set.screenCenter();
 					add(set);
@@ -845,18 +842,16 @@ class OptimizedPlayState extends MusicBeatState
 							set.destroy();
 						}
 					});
-					switch (uiStyle) {
-						case 'pixel':
-							FlxG.sound.play(Paths.sound('intro1-pixel'), 0.6);
-						default:
-							FlxG.sound.play(Paths.sound('intro1'), 0.6);
-					}
+					intro1.play();
 				case 3:
-					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+					#if sys
+						var go:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(introAlts[2])));
+					#else
+						var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+					#end
 					go.scrollFactor.set();
-
-					if (uiStyle.startsWith('pixel'))
-						go.setGraphicSize(Std.int(go.width * daPixelZoom));
+					if(UIStyleSupport.uiStyleIsPixel)
+						go.setGraphicSize(Std.int(go.width * UIStyleSupport.uiStylePixelZoom));
 
 					go.updateHitbox();
 
@@ -869,19 +864,16 @@ class OptimizedPlayState extends MusicBeatState
 							go.destroy();
 						}
 					});
-					switch (uiStyle) {
-						case 'pixel':
-							FlxG.sound.play(Paths.sound('introGo-pixel'), 0.6);
-							FlxG.sound.music.stop();
-						default:
-							FlxG.sound.play(Paths.sound('introGo'), 0.6);
-							FlxG.sound.music.stop();
-					}
+					introGo.play();
 				case 4:
 			}
 
 			swagCounter += 1;
 		}, 5);
+
+		#if sys
+			luaCallback("postSongCountdown", []);
+		#end
 	}
 
 	var previousFrameTime:Int = 0;
@@ -920,6 +912,12 @@ class OptimizedPlayState extends MusicBeatState
 		Conductor.changeBPM(songData.bpm);
 
 		curSong = songData.song;
+
+		// Intro stuff
+		intro3 = new FlxSound().loadStream(UIStyleSupport.sound(UIStyleSupport.uiStyleIntroSounds[2]), false, true);
+		intro2 = new FlxSound().loadStream(UIStyleSupport.sound(UIStyleSupport.uiStyleIntroSounds[1]), false, true);
+		intro1 = new FlxSound().loadStream(UIStyleSupport.sound(UIStyleSupport.uiStyleIntroSounds[0]), false, true);
+		introGo = new FlxSound().loadStream(UIStyleSupport.sound(UIStyleSupport.uiStyleIntroSounds[3]), false, true);
 
 		if(isModSong)
 			inst = new FlxSound().loadStream("./" + Paths.modInst(mod, OptimizedPlayState.SONG.song));
@@ -1669,10 +1667,18 @@ class OptimizedPlayState extends MusicBeatState
 			loadingSongText.screenCenter();
 			loadingSongText.visible = true;
 		} 
-		if (inst.length > 0 && (SONG.needsVoices ? vocals.length > 0 : inst.length > 0) && !startingSong) {
-			stuffLoaded = true;
-			OPSLoadedMap["inst"] = inst;
-			OPSLoadedMap["vocals"] = vocals;
+
+		// i am very sorry for this insane statement
+		if ((SONG.needsVoices ? (inst.length > 0 && vocals.length > 0) : inst.length > 0) &&
+		(intro3.length > 0 && intro2.length > 0 && intro1.length > 0 && introGo.length > 0) &&
+		!startingSong) {
+				stuffLoaded = true;
+				OPSLoadedMap["inst"] = inst;
+				OPSLoadedMap["intro3"] = intro3;
+				OPSLoadedMap["intro2"] = intro2;
+				OPSLoadedMap["intro1"] = intro1;
+				OPSLoadedMap["introGo"] = introGo;
+				OPSLoadedMap["vocals"] = vocals;
 			#if sys
 				setLuaVar("instLength", inst.length);
 				setLuaVar("vocalsLength", vocals.length);
@@ -1849,7 +1855,9 @@ class OptimizedPlayState extends MusicBeatState
 
 					if (daNote.isSustainNote) {
 						if (daNote.animation.curAnim.name.endsWith('end') && daNote.prevNote != null) {
-							daNote.y += daNote.prevNote.height / 1.5;
+							if(daNote.addToEndsY == null)
+								getEndAddAmt(daNote, daNote.prevNote);
+							daNote.y += daNote.addToEndsY;
 						}
 
 						if (daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= (daNote.mustPress ? playerNote.y : cpuNote.y) + Note.swagWidth / 2 && (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
@@ -1970,9 +1978,21 @@ class OptimizedPlayState extends MusicBeatState
 			keyStuff();
 
 		#if debug
-		if (FlxG.keys.justPressed.THREE)
-			endSong();
+			if (FlxG.keys.justPressed.THREE)
+				endSong();
 		#end
+
+		#if sys
+			luaCallback("postUpdate", [elapsed]);
+		#end
+	}
+
+	function getEndAddAmt(daNote:Note, prevNote:Note) {
+		var add:Float;
+		var newY:Float;
+		newY = prevNote.y - daNote.height;
+		add = newY - daNote.y;
+		daNote.addToEndsY = add;
 	}
 
 	function endSong():Void
@@ -2099,7 +2119,7 @@ class OptimizedPlayState extends MusicBeatState
 
 		if (noteDiff > Conductor.safeZoneOffset * 0.8)
 		{
-			daRating = 'shit';
+			daRating = 'awful';
 			score -= 50;
 			awfuls++;
 			accNotesToDivide++;
@@ -2140,19 +2160,14 @@ class OptimizedPlayState extends MusicBeatState
 			});
 		}
 		songScore += score;
-
-		var pixelStuffPart1:String = "";
-		var pixelStuffPart2:String = '';
-
-		if (uiStyle.startsWith('pixel'))
-		{
-			pixelStuffPart1 = 'weeb/pixelUI/';
-			pixelStuffPart2 = '-pixel';
-		}
 	
 		if(comboCount < 11) {
 			comboCount++;
-			rating.loadGraphic(Paths.image(pixelStuffPart1 + daRating + pixelStuffPart2));
+			#if sys
+				rating.loadGraphic(BitmapData.fromFile(UIStyleSupport.image(UIStyleSupport.uiStyleRatingMap[daRating])));
+			#else
+				rating.loadGraphic(Paths.image(UIStyleSupport.uiStyleRatingMap[daRating]));
+			#end
 			rating.screenCenter();
 			rating.x = coolText.x - 40;
 			rating.y -= 60;
@@ -2161,7 +2176,11 @@ class OptimizedPlayState extends MusicBeatState
 			rating.velocity.x -= FlxG.random.int(0, 10);
 			OPSLoadedMap["rating" + ratingCount + daRating] = rating;
 
-			var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelStuffPart1 + 'combo' + pixelStuffPart2));
+			#if sys
+				var comboSpr:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(UIStyleSupport.uiStyleComboAsset)));
+			#else
+				var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(UIStyleSupport.uiStyleComboAsset));
+			#end
 			comboSpr.screenCenter();
 			comboSpr.x = coolText.x;
 			comboSpr.acceleration.y = 600;
@@ -2174,17 +2193,16 @@ class OptimizedPlayState extends MusicBeatState
 				add(comboSpr);
 			add(rating);
 
-			if (!uiStyle.startsWith('pixel'))
-			{
-				rating.setGraphicSize(Std.int(rating.width * 0.7));
-				rating.antialiasing = true;
-				comboSpr.setGraphicSize(Std.int(comboSpr.width * 0.7));
-				comboSpr.antialiasing = true;
-			}
-			else
-			{
-				rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
-				comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
+			if(UIStyleSupport.uiStyleIsPixel) {
+				rating.setGraphicSize(Std.int(rating.width * UIStyleSupport.uiStylePixelZoom * UIStyleSupport.uiStyleGraphicSize));
+				rating.antialiasing = UIStyleSupport.uiStyleAntialiasing;
+				comboSpr.setGraphicSize(Std.int(comboSpr.width * UIStyleSupport.uiStylePixelZoom * UIStyleSupport.uiStyleGraphicSize));
+				comboSpr.antialiasing = UIStyleSupport.uiStyleAntialiasing;
+			} else {
+				rating.setGraphicSize(Std.int(rating.width * UIStyleSupport.uiStyleGraphicSize));
+				rating.antialiasing = UIStyleSupport.uiStyleAntialiasing;
+				comboSpr.setGraphicSize(Std.int(comboSpr.width * UIStyleSupport.uiStyleGraphicSize));
+				comboSpr.antialiasing = UIStyleSupport.uiStyleAntialiasing;
 			}
 
 			comboSpr.updateHitbox();
@@ -2203,16 +2221,20 @@ class OptimizedPlayState extends MusicBeatState
 			var daLoop:Int = 0;
 			for (i in seperatedScore)
 			{
-				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelStuffPart1 + 'num' + Std.int(i) + pixelStuffPart2));
+				#if sys
+					var numScore:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(UIStyleSupport.uiStyleNumbers[i])));
+				#else
+					var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(UIStyleSupport.uiStyleNumbers[i]));
+				#end
 				numScore.screenCenter();
 				numScore.x = coolText.x + (43 * daLoop) - 90;
 				numScore.y += 80;
 				OPSLoadedMap["numScore" + numCount + i] = numScore;
 				numCount++;
 
-				if (!uiStyle.startsWith('pixel'))
+				numScore.antialiasing = UIStyleSupport.uiStyleAntialiasing;
+				if (!UIStyleSupport.uiStyleIsPixel)
 				{
-					numScore.antialiasing = true;
 					numScore.setGraphicSize(Std.int(numScore.width * 0.5));
 				}
 				else
@@ -2538,6 +2560,10 @@ class OptimizedPlayState extends MusicBeatState
 
 	override function stepHit()
 	{
+		#if sys
+			luaCallback("preStepHit", []);
+		#end
+
 		super.stepHit();
 
 		if (inst.time > Conductor.songPosition + 20 || inst.time < Conductor.songPosition - 20)
@@ -2552,6 +2578,12 @@ class OptimizedPlayState extends MusicBeatState
 
 	override function beatHit()
 	{
+		if(beatHitCounter <= (curBeat - 1)) {
+			#if sys
+				luaCallback("preBeatHit", []);
+			#end
+		}
+
 		super.beatHit();
 
 		if(beatHitCounter > (curBeat - 1)) {

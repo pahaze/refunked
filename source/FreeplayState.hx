@@ -296,7 +296,7 @@ class FreeplayState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		} else {
-			trace("Song JSON doesn't exist!");
+			trace("Song JSON" + poop + "doesn't exist!");
 			nonExistantBG.visible = true;
 			nonExistantText.visible = true;
 			new FlxTimer().start(2, function(tmr:FlxTimer) {
@@ -332,7 +332,7 @@ class FreeplayState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		} else {
-			trace("Song JSON doesn't exist!");
+			trace("Song JSON" + poop + "doesn't exist!");
 			nonExistantBG.visible = true;
 			nonExistantText.visible = true;
 			new FlxTimer().start(2, function(tmr:FlxTimer) {

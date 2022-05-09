@@ -329,7 +329,6 @@ class Character extends FlxSprite
 		} else if(animation.getByName('idle') != null) {
 			playAnim('idle');
 		}
-		trace('CHAR ${curCharacter} DANCIN');
 	}
 
 	public function checkIdle() {

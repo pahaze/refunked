@@ -67,6 +67,8 @@ addBackgroundGirls(bg-girls-name) - Adds a created BG girls instance to PlayStat
 
 addSprite(sprite-name, is-active(bool)) - Adds a created sprite instance to PlayState (animated or not). (Set active to true for animated sprites).
 
+addSpriteFinishCallback(sprite-name, callback-name) - Adds a finishing callback for sprite animations with the name you choose.
+
 addSpriteIndiceAnimation(sprite-name, label-for-animation, animation-name, indice-list(array), framerate) - Adds an animation for a sprite by indices. Characters such as GF uses these.
 
 addSpritePrefixAnimation(sprite-name, label-for-animation, animation-name, framerate, loops(bool)) - Adds an animation for a sprite by prefix. Anything that uses an XML will likely use this.
@@ -83,6 +85,10 @@ addToOpponentPosition(x, y) - Adds to the opponent's x/y position(s).
 
 changeActor(actor-name, new-character, add-actor, remove-old-actor, change-icon) - Changes the actor to the new character you choose.
 
+changeTargetActor(actor-name, target-actor) - Changes the target actor for a character. Does not remove or add any actors in any way.
+
+destroyActor(actor) - Destroys an actor.
+
 destroySprite(sprite) - Destroys a sprite.
 
 drainHealth(number) - Drains your health by the number.
@@ -90,6 +96,10 @@ drainHealth(number) - Drains your health by the number.
 flipSpriteXY(sprite-name, x, y) - Flips a sprite's x/y positions.
 
 giveActorHeight(actor-name) - Returns an actor's height.
+
+giveActorMidpointX(actor-name) - Gives the X midpoint of an actor.
+
+giveActorMidpointY(actor-name) - Gives the Y midpoint of an actor.
 
 giveActorWidth(actor-name) - Returns an actor's width.
 
@@ -101,13 +111,23 @@ giveHealth(number) - Gives you the number of health you set.
 
 giveSpriteHeight(sprite-name) - Returns a sprite's height.
 
+giveSpriteMidpointX(sprite-name) - Gives the X midpoint of a sprite.
+
+giveSpriteMidpointY(sprite-name) - Gives the Y midpoint of a sprite.
+
 giveSpriteWidth(sprite-name) - Returns a sprite's width.
 
-makeActor(actor-name, isPlayer, x, y) - Makes an extra actor. Useful for switching characters.
+killActor(actor-name) - Kills an actor.
+
+killSprite(sprite-name) - Kills a sprite.
+
+makeActor(actor-name, isPlayer, x, y, alias) - Makes an extra actor. Useful for switching characters. The alias is what you'll use to do things with, if you supply it, otherwise, actor name is used.
 
 makeAnimatedPackerSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .txt file (spirit, certain background elements, etc.).
 
 makeAnimatedSparrowSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes an animated sprite based on a .xml file (characters, most background elements, etc.).
+
+makeGraphic(sprite-name, width, height, color) - Makes a graphic on an existing sprite.
 
 makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 6 porting.
 
@@ -147,9 +167,13 @@ playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent)
 
 playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
 
+removeSprite(sprite-name) - Removes a sprite.
+
 resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
 
 setActorGraphicSize(sprite-name, x, y) - Sets an actor's graphic size (NOT the same as scale).
+
+setActorOrder(actor-name, position) - Sets the position/ordering of an actor.
 
 setActorPosition(actor-name, x, y) - Sets an actor's position.
 
@@ -157,7 +181,7 @@ setActorScale(actor-name, x, y) - Sets an actor's scale (NOT the same as graphic
 
 setActorScrollFactor(actor-name, x, y) - Sets an actor's scroll factor.
 
-setActorVisibility(actor-name, visible(bool)) - Sets an actor's visibilty.
+setActorVisibility(actor-name, visible(bool)) - Sets an actor's visibility.
 
 setBGGirlsScrollFactor(bg-girls-name, x, y) - Sets scroll factor for BG girls.
 
@@ -166,6 +190,8 @@ setBoyfriendCamFollowPosition(x, y) - Sets camFollow positions for Boyfriend.
 setCameraAngle(camera, angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
 
 setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
+
+setCameraVisibility(camera, visible(bool)) - Sets a camera's visibility.
 
 setCameraZooms(camhud-zoom, camgame-zoom) - Sets the zoom amount for the cameras.
 
@@ -179,7 +205,7 @@ setHealth(amount) - Sets the health to a certain amount.
 
 setMinimumCamZoom(zoom) - Sets the minimum zoom of the camera before it can zoom again.
 
-setNoteVisibility(player, visible(bool)) - Sets the visibilty of any notes coming.
+setNoteVisibility(player, visible(bool)) - Sets the visibility of any notes coming.
 
 setOpponentCamFollowPosition(x, y) - Sets camFollow positions for your opponent.
 
@@ -213,6 +239,10 @@ setSpriteScale(sprite-name, x, y) - Sets a sprite's scale (NOT the same as graph
 
 setSpriteScrollFactor(sprite-name, x, y) - Sets a sprite's scroll factor.
 
+setSpriteVisibility(sprite-name, visible(bool)) - Sets a sprite's visibility.
+
+setUIElementVisibility(visible(bool)) - Sets the UI elements' visibility, the same way cutscenes do.
+
 shakeCamera(camera, intensity, duration) - Shakes the HUD camera for set duration with set intensity.
 
 updateSpriteHitbox(sprite-name) - Updates a sprite's hitbox.
@@ -224,6 +254,8 @@ create - Checks for functions on stage creation.
 
 endSong - Checks for functions on song end.
 
+finishCallback(callback) - Checks for functions when a callback is finished.
+
 goodNoteHit - Used for notes, checked when a good note hit is made by the CPU or player.
 
 noteMiss - Used for notes also, checked when the player misses a note.
@@ -234,6 +266,16 @@ playerNoteHit - Checks for functions when you hit a note.
 
 postCreate - Checks for functions to run AFTER super.create().
 
+postSongCountdown - Checks for functions to run AFTER the song countdown ends.
+
+postUpdate - Checks for functions to run AFTER super.update().
+
+preBeatHit - Checks for functions to run BEFORE super.beatHit().
+
+preSongCountdown - Checks for functions to run BEFORE the song countdown begins.
+
+preStepHit - Checks for functions to run BEFORE super.stepHit().
+
 stepHit - Checks for functions every step hit.
 
-update - Checks for functions every frame.
+update(elapsed) - Checks for functions every frame.

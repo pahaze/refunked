@@ -1,0 +1,37 @@
+{
+    "antialiasing": false,
+    "comboAsset": "weeb/pixelUI/combo-pixel",
+    "graphicSize": 0.7,
+    "introAssets": [
+        "weeb/pixelUI/ready-pixel",
+        "weeb/pixelUI/set-pixel",
+        "weeb/pixelUI/date-pixel"
+    ],
+    "introSounds": [
+        "intro1-pixel",
+        "intro2-pixel",
+        "intro3-pixel",
+        "introGo-pixel"
+    ],
+    "isPixel": true,
+    "pixelZoom": 6,
+    "noteType": "pixel",
+    "numbers": [
+        "weeb/pixelUI/num0-pixel",
+        "weeb/pixelUI/num1-pixel",
+        "weeb/pixelUI/num2-pixel",
+        "weeb/pixelUI/num3-pixel",
+        "weeb/pixelUI/num4-pixel",
+        "weeb/pixelUI/num5-pixel",
+        "weeb/pixelUI/num6-pixel",
+        "weeb/pixelUI/num7-pixel",
+        "weeb/pixelUI/num8-pixel",
+        "weeb/pixelUI/num9-pixel"
+    ],
+    "ratingAssets": [
+        "weeb/pixelUI/sick-pixel",
+        "weeb/pixelUI/good-pixel",
+        "weeb/pixelUI/bad-pixel",
+        "weeb/pixelUI/shit-pixel"
+    ]
+}

@@ -230,14 +230,11 @@ class ThemeStuff {
 		var pathToFileIg:String;
 
 		rawJsonFile = Utilities.getFileContents("./assets/themes/" + Options.themeData + ".json");
-		rawJsonFile = rawJsonFile.trim();
 		
 		while (!rawJsonFile.endsWith("}"))
 		{
 			rawJsonFile = rawJsonFile.substr(0, rawJsonFile.length - 1);
 		}
-
-		trace(rawJsonFile);
 
 		var json:ThemeJunk = cast Json.parse(rawJsonFile);
 

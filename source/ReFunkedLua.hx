@@ -2,8 +2,10 @@ import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 import openfl.display.BitmapData;
 #if sys
 import llua.Convert;
@@ -74,6 +76,14 @@ class ReFunkedLua {
 						PlayState.LuaSprites.get(spriteName).active = isActive;
 				}
 			});
+			Lua_helper.add_callback(luaState, "addSpriteFinishCallback", function(spriteName:String, callbackName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName)) {
+					PlayState.LuaSprites.get(spriteName).animation.finishCallback = function(callback:String) {
+						PlayState.PlayStateThing.luaCallback("finishCallback", [callbackName]);
+					}
+				}
+			});
 			Lua_helper.add_callback(luaState, "addSpriteIndiceAnimation", function(spriteName:String, nameForAnim:String, animationName:String, indiceList:Array<Int>, framerate:Int = 24) {
 				// Check if It Exists.
 				if(PlayState.LuaSprites.exists(spriteName)) {
@@ -111,7 +121,7 @@ class ReFunkedLua {
 				if(PlayState.ActorSprites.exists(actor)) {
 					if(PlayState.ActorSprites.exists(newChar)) {
 						if(removeOldActor)
-							PlayState.ActorSprites[actor].visible = false;
+							PlayState.PlayStateThing.remove(PlayState.ActorSprites[actor]);
 						if(addActor)
 							PlayState.PlayStateThing.add(PlayState.ActorSprites[newChar]);
 						PlayState.TargetActors[actor] = newChar;
@@ -124,6 +134,17 @@ class ReFunkedLua {
 					else if(changeIcon && actor == "boyfriend")
 						PlayState.PlayStateThing.changeIcon(newChar, true);
 				}
+			});
+			Lua_helper.add_callback(luaState, "changeTargetActor", function(actor:String, targetActor:String) {
+				// Acotre
+				if(PlayState.ActorSprites.exists(actor) && PlayState.ActorSprites.exists(targetActor)) {
+					PlayState.TargetActors[actor] = targetActor;
+				}
+			});
+			Lua_helper.add_callback(luaState, "destroyActor", function(actorName:String) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName))
+					PlayState.ActorSprites.get(actorName).destroy();
 			});
 			Lua_helper.add_callback(luaState, "destroySprite", function(spriteName:String) {
 				// Check if It Exists.
@@ -149,6 +170,18 @@ class ReFunkedLua {
 				// Check if It Exists.
 				if(PlayState.ActorSprites.exists(actorName))
 					return PlayState.ActorSprites.get(actorName).height;
+				return 0;
+			});
+			Lua_helper.add_callback(luaState, "giveActorMidpointX", function(actorName:String) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName))
+					return PlayState.ActorSprites.get(actorName).getMidpoint().x;
+				return 0;
+			});
+			Lua_helper.add_callback(luaState, "giveActorMidpointY", function(actorName:String) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName))
+					return PlayState.ActorSprites.get(actorName).getMidpoint().y;
 				return 0;
 			});
 			Lua_helper.add_callback(luaState, "giveActorWidth", function(actorName:String) {
@@ -179,21 +212,49 @@ class ReFunkedLua {
 					return PlayState.LuaSprites.get(spriteName).height;
 				return 0;
 			});
+			Lua_helper.add_callback(luaState, "giveSpriteMidpointX", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					return PlayState.LuaSprites.get(spriteName).getMidpoint().x;
+				return 0;
+			});
+			Lua_helper.add_callback(luaState, "giveSpriteMidpointY", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					return PlayState.LuaSprites.get(spriteName).getMidpoint().y;
+				return 0;
+			});
 			Lua_helper.add_callback(luaState, "giveSpriteWidth", function(spriteName:String) {
 				// Check if It Exists.
 				if(PlayState.LuaSprites.exists(spriteName))
 					return PlayState.LuaSprites.get(spriteName).width;
 				return 0;
 			});
-			Lua_helper.add_callback(luaState, "makeActor", function(actorName:String, ?isPlayer:Bool = false, ?x:Int = 0, ?y:Int = 0) {
+			Lua_helper.add_callback(luaState, "killActor", function(actorName:String) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName))
+					PlayState.ActorSprites.get(actorName).kill();
+			});
+			Lua_helper.add_callback(luaState, "killSprite", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.LuaSprites.get(spriteName).kill();
+			});
+			Lua_helper.add_callback(luaState, "makeActor", function(actorName:String, ?isPlayer:Bool = false, ?x:Int = 0, ?y:Int = 0, ?alias:String) {
 				if(isPlayer) {
 					var funnyActor:Boyfriend;
 					funnyActor = new Boyfriend(x, y, actorName);
-					PlayState.ActorSprites[actorName] = funnyActor;
+					if(alias != null)
+						PlayState.ActorSprites[alias] = funnyActor;
+					else
+						PlayState.ActorSprites[actorName] = funnyActor;
 				} else {
 					var funnyActor:Character;
 					funnyActor = new Character(x, y, actorName);
-					PlayState.ActorSprites[actorName] = funnyActor;
+					if(alias != null)
+						PlayState.ActorSprites[alias] = funnyActor;
+					else
+						PlayState.ActorSprites[actorName] = funnyActor;
 				}
 			});
 			Lua_helper.add_callback(luaState, "makeAnimatedPackerSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
@@ -228,26 +289,33 @@ class ReFunkedLua {
 				funnySprite.antialiasing = antialiasing;
 				PlayState.LuaSprites[spriteName] = funnySprite;
 			});
+			Lua_helper.add_callback(luaState, "makeGraphic", function(spriteName:String, width:Int, height:Int, color:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.LuaSprites[spriteName].makeGraphic(width, height, FlxColor.fromString(color));
+			});
 			Lua_helper.add_callback(luaState, "makePixelBackgroundGirls", function(girlsName:String, x:Int, y:Int) {
 				var funnyBGGirls:BackgroundGirls = new BackgroundGirls(x, y);
 				PlayState.LuaBackgroundGirls[girlsName] = funnyBGGirls;
 			});
-			Lua_helper.add_callback(luaState, "makeSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
+			Lua_helper.add_callback(luaState, "makeSprite", function(spriteName:String, ?path:String, x:Int, y:Int, antialiasing:Bool) {
 				var funnySprite:FlxSprite = new FlxSprite(x, y);
 				// only sys for now :pls:
-				if(path.contains("mods") || path.contains("assets")) {
-					funnySprite.loadGraphic(BitmapData.fromFile(path));
-				} else {
-					if(PlayState.mod != null || PlayState.mod != "") {
-						if(!path.contains(".png"))
-							funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path + ".png"));
-						else
-							funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path));
+				if(path != null) {
+					if(path.contains("mods") || path.contains("assets")) {
+						funnySprite.loadGraphic(BitmapData.fromFile(path));
 					} else {
-						if(!path.contains(".png"))
-							funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path + ".png"));
-						else
-							funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path));
+						if(PlayState.mod != null || PlayState.mod != "") {
+							if(!path.contains(".png"))
+								funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path + ".png"));
+							else
+								funnySprite.loadGraphic(BitmapData.fromFile(Paths.mod(PlayState.mod) + path));
+						} else {
+							if(!path.contains(".png"))
+								funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path + ".png"));
+							else
+								funnySprite.loadGraphic(BitmapData.fromFile("assets/" + path));
+						}
 					}
 				}
 				funnySprite.antialiasing = antialiasing;
@@ -483,6 +551,11 @@ class ReFunkedLua {
 				if(PlayState.LuaSprites.exists(spriteName))
 					PlayState.LuaSprites.get(spriteName).animation.play(animation);
 			});
+			Lua_helper.add_callback(luaState, "removeSprite", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.PlayStateThing.remove(PlayState.LuaSprites.get(spriteName));
+			});
 			Lua_helper.add_callback(luaState, "resetCameraPosition", function(x:Float, ?y:Float) {
 				if(y != null) {
 					PlayState.camFollow.x = x;
@@ -499,6 +572,14 @@ class ReFunkedLua {
 						PlayState.ActorSprites.get(actorName).setGraphicSize(x, y);
 					else
 						PlayState.ActorSprites.get(actorName).setGraphicSize(x);
+				}
+			});
+			Lua_helper.add_callback(luaState, "setActorOrder", function(actorName:String, order:Int) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName)) {
+					var funnyActor:FlxSprite = PlayState.ActorSprites.get(actorName);
+					PlayState.PlayStateThing.remove(funnyActor, true);
+					PlayState.PlayStateThing.insert(order, funnyActor);
 				}
 			});
 			Lua_helper.add_callback(luaState, "setActorPosition", function(actorName:String, x:Float, y:Float) {
@@ -553,6 +634,9 @@ class ReFunkedLua {
 					PlayState.camFollow.x = x;
 				}
 				PlayState.camFollowSet = true;
+			});
+			Lua_helper.add_callback(luaState, "setCameraVisibility", function(camera:String, visible:Bool) {
+				returnCamera(camera).visible = visible;
 			});
 			Lua_helper.add_callback(luaState, "setCameraZooms", function(camHUD:Float, ?camGame:Float) {
 				if(camGame != null) {
@@ -708,6 +792,17 @@ class ReFunkedLua {
 				if(PlayState.LuaSprites.exists(spriteName))
 					PlayState.LuaSprites.get(spriteName).scrollFactor.set(x, y);
 			});
+			Lua_helper.add_callback(luaState, "setSpriteVisibility", function(spriteName:String, visible:Bool) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.LuaSprites.get(spriteName).visible = visible;
+			});
+			Lua_helper.add_callback(luaState, "setUIElementVisibility", function(visible:Bool) {
+				if(visible)
+					PlayState.PlayStateThing.makeStuffVisibleLol();
+				else
+					PlayState.PlayStateThing.makeStuffInvisibleLol();
+			});
 			Lua_helper.add_callback(luaState, "shakeCamera", function(camera:String, intensity:Float, duration:Float) {
 				returnCamera(camera).shake(intensity, duration);
 			});
@@ -756,7 +851,7 @@ class ReFunkedLua {
 		PlayState.LuaTweens[tween] = funnyTween;
 	}
 
-	public function returnCamera(cam:String) {
+	public function returnCamera(cam:String):FlxCamera {
 		switch(cam.toLowerCase()) {
 			case "camhud":
 				return PlayState.PlayStateThing.camHUD;
@@ -767,6 +862,7 @@ class ReFunkedLua {
 			default:
 				return PlayState.PlayStateThing.camGame;
 		}
+		return PlayState.PlayStateThing.camGame;
 	}
 
 	public function returnEase(ease:String) {

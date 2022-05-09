@@ -1,3 +1,4 @@
 normal
+altNote
 gfSing
 pixel

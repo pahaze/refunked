@@ -539,6 +539,14 @@ class ChartingState extends MusicBeatState
 	function addNoteUI():Void
 	{
 		var notes:Array<String> = CoolUtil.coolTextFile("assets/notes/noteTypes.txt");
+		if(PlayState.mod != null && PlayState.mod != "") {
+			if(Utilities.checkFileExists(Paths.mod(PlayState.mod) + "notes/noteTypes.txt")) {
+				var modNotes:Array<String> = CoolUtil.coolTextFile(Paths.mod(PlayState.mod) + "notes/noteTypes.txt");
+				for(i in 0...modNotes.length) {
+					notes.insert(notes.length + i, modNotes[i]);
+				}
+			}
+		}
 
 		var tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';

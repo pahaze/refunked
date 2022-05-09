@@ -1,0 +1,36 @@
+{
+    "antialiasing": true,
+    "comboAsset": "combo",
+    "graphicSize": 0.7,
+    "introAssets": [
+        "ready",
+        "set",
+        "go"
+    ],
+    "introSounds": [
+        "intro1",
+        "intro2",
+        "intro3",
+        "introGo"
+    ],
+    "isPixel": false,
+    "noteType": "normal",
+    "numbers": [
+        "num0",
+        "num1",
+        "num2",
+        "num3",
+        "num4",
+        "num5",
+        "num6",
+        "num7",
+        "num8",
+        "num9"
+    ],
+    "ratingAssets": [
+        "sick",
+        "good",
+        "bad",
+        "shit"
+    ]
+}
