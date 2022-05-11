@@ -533,7 +533,7 @@ class PreviewTheme extends MusicBeatState {
 
 			{
 				case 0:
-					FlxG.sound.play(Paths.sound('previewSounds/intro3'), 0.6);
+					FlxG.sound.play(Paths.sound('intro3'), 0.6);
 				case 1:
 					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
 					ready.scrollFactor.set();
@@ -548,7 +548,7 @@ class PreviewTheme extends MusicBeatState {
 							ready.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('previewSounds/intro2'), 0.6);
+					FlxG.sound.play(Paths.sound('intro2'), 0.6);
 				case 2:
 					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 					set.scrollFactor.set();
@@ -562,7 +562,7 @@ class PreviewTheme extends MusicBeatState {
 							set.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('previewSounds/intro1'), 0.6);
+					FlxG.sound.play(Paths.sound('intro1'), 0.6);
 				case 3:
 					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
 					go.scrollFactor.set();
@@ -578,7 +578,7 @@ class PreviewTheme extends MusicBeatState {
 							go.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('previewSounds/introGo'), 0.6);
+					FlxG.sound.play(Paths.sound('introGo'), 0.6);
 					FlxG.sound.music.stop();
 				case 4:
 					returnText.visible = true;
