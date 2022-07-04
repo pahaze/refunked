@@ -1,57 +1,95 @@
 {
     "AccuracyTextEnabled": true,
     "AccuracyText": {
-        "x": "39",
-        "y": "622",
-        "dsy": "84",
-        "text": "Accuracy: [accuracy]% ([noterating])"
+        "customization": {
+            "border": {
+                "size": 3
+            },
+            "fontsize": 20
+        },
+        "text": [
+            "Accuracy: [accuracy]% ([noterating])",
+            "Accuracy: [accuracy]% ([noterating])",
+            "Accuracy: [accuracy]% ([noterating])",
+            "Accuracy: [accuracy]% ([noterating])"
+        ],
+        "x": [39, 39, 39, 39],
+        "y": [622, 84, 622, 84]
     },
-    "BotplayEnabled": false,
-    "ExtraEnabled": false,
     "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true
-    },
     "MissTextEnabled": true,
     "MissText": {
-        "x": "39",
-        "y": "648",
-        "dsy": "58",
-        "text": "Misses: [misses]"
+        "customization": {
+            "border": {
+                "size": 3
+            },
+            "fontsize": 20
+        },
+        "text": [
+            "Misses: [misses]",
+            "Misses: [misses]",
+            "Misses: [misses]",
+            "Misses: [misses]"
+        ],
+        "x": [39, 39, 39, 39],
+        "y": [648, 58, 648, 58]
     },
     "NPSTextEnabled": true,
     "NPSText": {
-        "x": "39",
-        "y": "596",
-        "dsy": "110",
-        "text": "NPS: [nps] (Max: [maxnps])"
+        "customization": {
+            "border": {
+                "size": 3
+            },
+            "fontsize": 20
+        },
+        "text": [
+            "NPS: [nps] (Max: [maxnps])",
+            "NPS: [nps] (Max: [maxnps])",
+            "NPS: [nps] (Max: [maxnps])",
+            "NPS: [nps] (Max: [maxnps])"
+        ],
+        "x": [39, 39, 39, 39],
+        "y": [596, 110, 596, 110]
     },
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "674",
-        "dsy": "32",
-        "x": "39",
-        "border": "3",
-        "fontsize": "20",
-        "text": "Score: [score]"
+        "customization": {
+            "border": {
+                "size": 3
+            },
+            "fontsize": 20
+        },
+        "text": [
+            "Score: [score]",
+            "Score: [score]",
+            "Score: [score]",
+            "Score: [score]"
+        ],
+        "x": [39, 39, 39, 39],
+        "y": [674, 32, 674, 32]
     },
     "TimebarEnabled": true,
     "Timebar": {
-        "x": "0",
-        "y": "10",
-        "dsy": "693",
-        "center": true,
-        "text": "[song]",
+        "center": [true, false],
+        "colors": ["GRAY", "LIME"],
+        "image": "healthBar",
         "style": "kadeold",
-        "fontsize": "16",
-        "bouncetween": true,
-        "bouncetweenscale": 1.1
+        "text": {
+            "bouncetween": {
+                "enabled": true,
+                "scale": 1.2
+            },
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "[song]",
+                "[song]",
+                "[song]",
+                "[song]"
+            ]
+        },
+        "y": [27, 693, 27, 693]
     },
     "WatermarkEnabled": false
 }

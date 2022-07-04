@@ -48,13 +48,13 @@ class FreeplayState extends MusicBeatState
 	var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
-	var curSelected:Int = 0;
+	static var curSelected:Int = 0;
 	static var curDifficulty:Int = 1;
-	var curDifficultyText:String = "";
+	static var curDifficultyText:String = "";
 	static var diffsAvailable:Map<String, Array<String>> = new Map<String, Array<String>>();
 
-	var scoreText:FlxText;
-	var diffText:FlxText;
+	static var scoreText:FlxText;
+	static var diffText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
 
@@ -102,6 +102,9 @@ class FreeplayState extends MusicBeatState
 			// Updating Discord Rich Presence
 			DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
+
+		if (!FlxG.sound.music.playing)
+			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 
 		readVanillaWeeks();
 		readModWeeks();
@@ -272,8 +275,10 @@ class FreeplayState extends MusicBeatState
 
 	function loadModSong(poop:String) {
 		if(Utilities.checkFileExists(Paths.modSongData(songs[curSelected].mod, songs[curSelected].songData.toLowerCase(), poop + ".json"))) {
-			unloadLoadedAssets();
-			unloadMBSassets();
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				unloadLoadedAssets();
+				unloadMBSassets();
+			});
 			if(Options.useOptimized) {
 				OptimizedPlayState.SONG = Song.loadFromModJson(songs[curSelected].mod, poop, songs[curSelected].songData.toLowerCase());
 				OptimizedPlayState.isStoryMode = false;
@@ -308,8 +313,10 @@ class FreeplayState extends MusicBeatState
 
 	function loadSong(poop:String) {
 		if(Utilities.checkFileExists(Paths.songData(songs[curSelected].songData.toLowerCase(), poop + ".json"))) {
-			unloadLoadedAssets();
-			unloadMBSassets();
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				unloadLoadedAssets();
+				unloadMBSassets();
+			});
 			if(Options.useOptimized) {
 				OptimizedPlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songData.toLowerCase());
 				OptimizedPlayState.isStoryMode = false;
@@ -382,20 +389,18 @@ class FreeplayState extends MusicBeatState
 		if (curSelected >= songs.length)
 			curSelected = 0;
 
-		if(diffsAvailable[songs[curSelected].songData][curDifficulty] != null) {
+		if(diffsAvailable[songs[curSelected].songData][curDifficulty] != null && diffsAvailable[songs[curSelected].songData][curDifficulty] != "") {
+			curDifficultyText = diffsAvailable[songs[curSelected].songData][curDifficulty];
 			diffText.text = diffsAvailable[songs[curSelected].songData][curDifficulty];
 		} else {
 			curDifficulty = 0;
-			curDifficultyText = diffsAvailable[songs[curSelected].songData][curDifficulty];
-			diffText.text = diffsAvailable[songs[curSelected].songData][curDifficulty];
+			// ¯\_(ツ)_/¯
+			curDifficultyText = diffsAvailable[songs[curSelected].songData][0];
+			diffText.text = diffsAvailable[songs[curSelected].songData][0];
 		}
 
 		#if !switch
 			intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficultyText);
-		#end
-
-		#if PRELOAD_ALL
-			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 		#end
 
 		var bullStuff:Int = 0;
@@ -469,6 +474,8 @@ class FreeplayState extends MusicBeatState
 						addWeek(songDatas, songNames, weekNumber, multiSongDiffs, areModSongs, mod, characterIcons);
 					}
 				}
+				
+				json = null;
 			} else {
 				trace('MOD ${i} FREEPLAY LISTS DONT EXIST!');
 			}
@@ -524,6 +531,8 @@ class FreeplayState extends MusicBeatState
 				addWeek(songDatas, songNames, weekNumber, multiSongDiffs, areModSongs, mod, characterIcons);
 			}
 		}
+
+		json = null;
 	}
 }
 

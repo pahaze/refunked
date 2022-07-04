@@ -1,26 +1,18 @@
 {
-    "TimebarEnabled": false,
-    "BotplayEnabled": false,
-    "WatermarkEnabled": false,
-    "ExtraEnabled": false,
+    "HealthbarEnabled": true,
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "688",
-        "dsy": "688",
-        "x": "0",
-        "center": true,
-        "fontsize": "20",
-        "text": "Score: [score] | Misses: [misses] | Accuracy: [accuracy]% ([noterating])"
-    },
-    "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true 
+        "center": [true, false],
+        "customization": {
+            "fontsize": 22
+        },
+        "text": [
+            "Score: [score] | Misses: [misses] | Accuracy: [accuracy]% ([noterating])",
+            "Score: [score] | Misses: [misses] | Accuracy: [accuracy]% ([noterating])",
+            "Score: [score] | Misses: [misses] | Accuracy: [accuracy]% ([noterating])",
+            "Score: [score] | Misses: [misses] | Accuracy: [accuracy]% ([noterating])"
+        ],
+        "y": [684, 684, 684, 684]
     },
     "RatingStyle": "RFE"
 }

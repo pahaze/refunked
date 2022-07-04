@@ -21,6 +21,7 @@ class PreviewNote extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:PreviewNote;
+	public var noteType:String;
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
@@ -32,6 +33,13 @@ class PreviewNote extends FlxSprite
 	public static var GREEN_NOTE:Int = 2;
 	public static var BLUE_NOTE:Int = 1;
 	public static var RED_NOTE:Int = 3;
+
+	// this is for later Ignore It
+	var noteJson:String = "assets/notes/normal.json";
+	
+	public var endStrumAdded:Bool = false;
+	public var baseStrumAdded:Bool = false;
+	public var strumAdd:Int = 0;
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:PreviewNote, ?sustainNote:Bool = false)
 	{

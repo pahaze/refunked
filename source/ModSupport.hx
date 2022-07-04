@@ -42,18 +42,16 @@ class ModSupport {
 	}
 
 	public static function loadModsFolders() {
-		#if desktop
-			resetModStuff();
-			var folders:Array<String> = Utilities.readFolder("./mods");
-			for(i in 0...folders.length) {
-				if(Utilities.checkFolderExists("./mods/" + folders[i]) && !checkIfNormModFolder(folders[i])) {
-					modsDirectories[folders[i]] = "mods/" + folders[i] + "/";
-					mods[i] = folders[i];
-					modsLoaded++;
-				}
+		resetModStuff();
+		var folders:Array<String> = Utilities.readFolder("./mods");
+		for(i in 0...folders.length) {
+			if(Utilities.checkFolderExists("./mods/" + folders[i]) && !checkIfNormModFolder(folders[i])) {
+				modsDirectories[folders[i]] = "mods/" + folders[i] + "/";
+				mods[i] = folders[i];
+				modsLoaded++;
 			}
-			addNormalModDir(folders.length + 1);
-		#end
+		}
+		addNormalModDir(folders.length + 1);
 	}
 
 	public static function resetModStuff() {

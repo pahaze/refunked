@@ -6,6 +6,7 @@ import Discord.DiscordClient;
 import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
+import Song.GameOver;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -98,17 +99,22 @@ class ChartingState extends MusicBeatState
 			storyWeek = PlayState.storyWeek;
 		} else {
 			_song = {
-				song: 'Test',
-				songName: 'Test',
+				song: 'Untitled',
+				songName: 'Untitled',
 				notes: [],
 				bpm: 150,
 				needsVoices: true,
+				gameOver: {
+					boyfriend: 'bf',
+					deathAnim: 'firstDeath',
+					deathFinishAnim: 'deathConfirm'
+				},
 				player1: 'bf',
 				player2: 'dad',
 				gfPlayer: 'gf',
 				stage: 'stage',
 				speed: 1,
-				uiStyle: 'default',
+				uiStyle: 'normal',
 				validScore: false
 			};
 			storyWeek = 7;
@@ -334,6 +340,7 @@ class ChartingState extends MusicBeatState
 		var player2DropDown = new FlxUIDropDownMenuCustom(140, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player2 = characters[Std.parseInt(character)];
+			updateHeads();
 		});
 		CSLoadedMap["player2DropDown"] = player2DropDown;
 
@@ -361,6 +368,7 @@ class ChartingState extends MusicBeatState
 		var player1DropDown = new FlxUIDropDownMenuCustom(10, 165, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
+			updateHeads();
 		});
 		CSLoadedMap["player1DropDown"] = player1DropDown;
 		scrollBlockThing.push(player1DropDown);
@@ -917,7 +925,11 @@ class ChartingState extends MusicBeatState
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(inst.length / 1000, 2))
 			+ "\nSection: "
-			+ curSection;
+			+ curSection
+			+ "\ncurBeat: "
+			+ curBeat
+			+ "\ncurStep: "
+			+ curStep;
 		super.update(elapsed);
 	}
 

@@ -1,24 +1,17 @@
 {
-    "BotplayEnabled": false,
-    "ExtraEnabled": false,
     "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true
-    },
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "678",
-        "dsy": "80",
-        "x": "750.5",
-        "fontsize": "16",
-        "text": "Score: [score]"
-    },
-    "TimebarEnabled": false,
-    "WatermarkEnabled": false
+        "customization": {
+            "fontsize": 16
+        },
+        "text": [
+            "Score: [score]",
+            "Score: [score]",
+            "Score: [score]",
+            "Score: [score]"
+        ],
+        "x": [750.5, 750.5, 750.5, 750.5],
+        "y": [678, 109, 678, 109]
+    }
 }

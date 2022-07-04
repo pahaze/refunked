@@ -4,20 +4,16 @@ import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#else
-import js.html.XMLHttpRequest;
-import js.html.XMLHttpRequestResponseType;
-import js.html.Response;
-import js.html.FileReader;
-#end
 
 using StringTools;
 
-typedef SwagSong =
-{
+typedef GameOver = {
+	var boyfriend:String;
+	var deathAnim:String;
+	var deathFinishAnim:String;
+}
+
+typedef SwagSong = {
 	var song:String;
 	var songName:String;
 	var notes:Array<SwagSection>;
@@ -27,15 +23,16 @@ typedef SwagSong =
 	var stage:String;
 	var uiStyle:String;
 
+	var gameOver:GameOver;
 	var player1:String;
 	var player2:String;
 	var gfPlayer:String;
 	var validScore:Bool;
 }
 
-class Song
-{
+class Song {
 	public static var rawJson:String;
+	public static var swagSong:SwagSong;
 	public var song:String;
 	public var songName:String;
 	public var notes:Array<SwagSection>;
@@ -48,8 +45,13 @@ class Song
 	public var player2:String = 'dad';
 	public var gfPlayer:String = 'gf';
 
-	public function new(song, notes, bpm, stage, songName)
-	{
+	// Game Over
+	/// WIP
+	public var gameOverBF:String = 'bf';
+	public var gameOverAnim:String = 'firstDeath';
+	public var gameOverFinishAnim:String = 'deathConfirm';
+
+	public function new(song, notes, bpm, stage, songName) {
 		this.song = song;
 		this.notes = notes;
 		this.bpm = bpm;
@@ -57,60 +59,36 @@ class Song
 		this.songName = songName;
 	}
 
-	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
-	{
-		#if sys
-			rawJson = Utilities.getFileContents('assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
-
-			while (!rawJson.endsWith("}"))
-			{
-				rawJson = rawJson.substr(0, rawJson.length - 1);
-			}
-
-			return parseJSONshit(rawJson);
-			rawJson = null;
-		#else
-			rawJson = Utilities.getFileContents('./assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
-
-			while (!rawJson.endsWith("}"))
-			{
-				rawJson = rawJson.substr(0, rawJson.length - 1);
-			}
-
-			return parseJSONshit(rawJson);
-			rawJson = null;
-		#end
+	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong {
+		rawJson = Utilities.getFileContents('./assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
+		
+		while (!rawJson.endsWith("}")) {
+			rawJson = rawJson.substr(0, rawJson.length - 1);
+		}
+		
+		return parseSongJSON(rawJson);
+		rawJson = null;
+		swagSong = null;
 	}
 
 	public static function loadFromModJson(mod:String, jsonInput:String, ?folder:String):SwagSong
 	{
-		#if sys
-			rawJson = Utilities.getFileContents(ModSupport.modsDirectories[mod] + 'data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
+		rawJson = Utilities.getFileContents(ModSupport.modsDirectories[mod] + 'data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
+		
+		while (!rawJson.endsWith("}")) {
+			rawJson = rawJson.substr(0, rawJson.length - 1);
+		}
+		
+		return parseSongJSON(rawJson);
 
-			while (!rawJson.endsWith("}"))
-			{
-				rawJson = rawJson.substr(0, rawJson.length - 1);
-			}
-
-			return parseJSONshit(rawJson);
-			rawJson = null;
-		#else
-			rawJson = Utilities.getFileContents(ModSupport.modsDirectories[mod] + 'data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json');
-
-			while (!rawJson.endsWith("}"))
-			{
-				rawJson = rawJson.substr(0, rawJson.length - 1);
-			}
-
-			return parseJSONshit(rawJson);
-			rawJson = null;
-		#end
+		rawJson = null;
+		swagSong = null;
 	}
 
-	public static function parseJSONshit(rawJson:String):SwagSong
+	public static function parseSongJSON(rawJson:String):SwagSong
 	{
-		var swagShit:SwagSong = cast Json.parse(rawJson).song;
-		swagShit.validScore = true;
-		return swagShit;
+		swagSong = cast Json.parse(rawJson).song;
+		swagSong.validScore = true;
+		return swagSong;
 	}
 }

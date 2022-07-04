@@ -1,76 +1,105 @@
 {
-    "BotplayEnabled": false,
-    "ExtraEnabled": true,
-    "Extra": [
+    "ExtraTextEnabled": true,
+    "ExtraText": [
         {
-            "x": "0",
-            "y": "22",
-            "dsy": "678",
-            "text": "[song] - [difficulty] ([min]:[sec])",
-            "bottext": "[song] - [difficulty] (BOT)",
-            "fontsize": 16,
-            "centerX": true
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "Highest Combo: [maxcombo]",
+                "Highest Combo: [maxcombo]",
+                "Highest Combo: [maxcombo]",
+                "Highest Combo: [maxcombo]"
+            ],
+            "y": [320, 320, 320, 320]
         },
         {
-            "y": "320",
-            "dsy": "320",
-            "text": "Highest Combo: [maxcombo]",
-            "fontsize": 16
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "Sicks: [sicks]",
+                "Sicks: [sicks]",
+                "Sicks: [sicks]",
+                "Sicks: [sicks]"
+            ],
+            "y": [336, 336, 336, 336]
         },
         {
-            "y": "336",
-            "dsy": "336",
-            "text": "Sicks: [sicks]",
-            "fontsize": 16
+            "center": [false, true],
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "Goods: [goods]",
+                "Goods: [goods]",
+                "Goods: [goods]",
+                "Goods: [goods]"
+            ]
         },
         {
-            "text": "Goods: [goods]",
-            "fontsize": 16,
-            "centerY": true
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "Bads: [bads]",
+                "Bads: [bads]",
+                "Bads: [bads]",
+                "Bads: [bads]"
+            ],
+            "y": [368, 368, 368, 368]
         },
         {
-            "y": "368",
-            "dsy": "368",
-            "text": "Bads: [bads]",
-            "fontsize": 16
-        },
-        {
-            "y": "384",
-            "dsy": "384",
-            "text": "Awfuls: [awfuls]",
-            "fontsize": 16
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "Awfuls: [awfuls]",
+                "Awfuls: [awfuls]",
+                "Awfuls: [awfuls]",
+                "Awfuls: [awfuls]"
+            ],
+            "y": [384, 384, 384, 384]
         }
     ],
     "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true 
-    },
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "578",
-        "dsy": "100",
-        "x": "0",
-        "center": true,
-        "fontsize": "16",
-        "text": "Misses: [misses] | Accuracy: [accuracy]% | Score: [score] | [noterating] - [funnyrating]"
+        "center": [true, false],
+        "customization": {
+            "fontsize": 16
+        },
+        "text": [
+            "Misses: [misses] | Accuracy: [accuracy]% | Score: [score] | [noterating] - [funnyrating]",
+            "Misses: [misses] | Accuracy: [accuracy]% | Score: [score] | [noterating] - [funnyrating]",
+            "Misses: [misses] | Accuracy: [accuracy]% | Score: [score] | [noterating] - [funnyrating]",
+            "Misses: [misses] | Accuracy: [accuracy]% | Score: [score] | [noterating] - [funnyrating]"
+        ],
+        "y": [598, 120, 598, 120]
     },
     "TimebarEnabled": true,
     "Timebar": {
-        "x": "0",
-        "y": "1",
-        "dsy": "699",
-        "center": true,
+        "center": [true, false],
+        "colors": ["BLACK", "CYAN"],
+        "image": "leatherTimeBar",
         "style": "leather",
-        "fontsize": "16",
-        "bouncetween": true,
-        "bouncetweenscale": 1.1
+        "text": {
+            "bouncetween": {
+                "enabled": true,
+                "scale": 1.2
+            },
+            "center": [true, false],
+            "customization": {
+                "fontsize": 16
+            },
+            "text": [
+                "[song] - [difficulty] ([min]:[sec])",
+                "[song] - [difficulty] ([min]:[sec]) (BOT)",
+                "[song] - [difficulty] ([min]:[sec]) (PRACTICE)",
+                "[song] - [difficulty] ([min]:[sec]) (BOT, PRACTICE)"
+            ]
+        },
+        "y": [1, 699, 1, 699]
     },
-    "WatermarkEnabled": false,
     "RatingStyle": "leather"
 }

@@ -6,6 +6,7 @@ import Discord.DiscordClient;
 import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
+import Song.GameOver;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -98,17 +99,22 @@ class OptimizedChartingState extends MusicBeatState
 			storyWeek = OptimizedPlayState.storyWeek;
 		} else {
 			_song = {
-				song: 'Test',
-				songName: 'Test',
+				song: 'Untitled',
+				songName: 'Untitled',
 				notes: [],
 				bpm: 150,
 				needsVoices: true,
+				gameOver: {
+					boyfriend: 'bf',
+					deathAnim: 'firstDeath',
+					deathFinishAnim: 'deathConfirm'
+				},
 				player1: 'bf',
 				player2: 'dad',
 				gfPlayer: 'gf',
 				stage: 'stage',
 				speed: 1,
-				uiStyle: 'default',
+				uiStyle: 'normal',
 				validScore: false
 			};
 			storyWeek = 7;

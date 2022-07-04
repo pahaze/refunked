@@ -44,46 +44,11 @@ class HealthIcon extends FlxSprite
 			}
 		}
 
-		#if sys
-			if(modIcon != null && modIcon != "" && !Utilities.checkIfIsNormalChar(char)) {
-				if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
-					#if sys
-						loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
-					#else
-						loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
-					#end
-					isModIcon = true;
-				} else if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
-					#if sys
-						loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
-					#else
-						loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
-					#end
-					isModIcon = false;
-				} else
-					loadGraphic("assets/images/icons/face.png", true, 150, 150);
-			} else 
-		#end
-		if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png"))
-			#if sys
-				loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
-			#else
-				loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
-			#end
-		else
-			loadGraphic("assets/images/icons/face.png", true, 150, 150);
-
-		antialiasing = true;
-
-		animation.add(char, [0, 1, 2], 0, false, isPlayer);
-		animation.play(char);
-		scrollFactor.set();
-
-		character = char;
+		changeIcon(char, isPlayer, modIcon);
 	}
 
 	public function changeIcon(char:String = 'bf', isPlayer:Bool = false, ?mod:String = "") {
-		if(char != character) {
+		if(character != char) {
 			character = char;
 			
 			if(mod != null && mod != "")
@@ -96,36 +61,19 @@ class HealthIcon extends FlxSprite
 				}
 			}
 
+			var path:String = "";
+			if(modIcon != null && modIcon != "")
+				path = Paths.mod(modIcon) + 'images/icons/${char}.png';
+			if(!Utilities.checkFileExists(path))
+				path = 'assets/images/icons/${char}.png';
+			if(!Utilities.checkFileExists(path))
+				path = 'assets/images/icons/face.png';
+
 			#if sys
-				if(modIcon != null && modIcon != "" && !Utilities.checkIfIsNormalChar(char)) {
-					if(Utilities.checkFileExists(Paths.mod(modIcon) + "images/icons/" + char + ".png")) {
-						#if sys
-							loadGraphic(BitmapData.fromFile(Paths.mod(modIcon) + "images/icons/" + char + ".png"), true, 150, 150);
-						#else
-							loadGraphic(Paths.mod(modIcon) + "images/icons/" + char + ".png", true, 150, 150);
-						#end
-						isModIcon = true;
-					} else if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
-						#if sys
-							loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
-						#else
-							loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
-						#end
-						isModIcon = false;
-					} else
-						loadGraphic("assets/images/icons/face.png", true, 150, 150);
-				} else 
+				loadGraphic(BitmapData.fromFile(path), true, 150, 150);
+			#else
+				loadGraphic(Std.string(path), true, 150, 150);
 			#end
-			if(Utilities.checkFileExists("./assets/images/icons/" + char + ".png")) {
-				#if sys
-					loadGraphic(BitmapData.fromFile("assets/images/icons/" + char + ".png"), true, 150, 150);
-				#else
-					loadGraphic("assets/images/icons/" + char + ".png", true, 150, 150);
-				#end
-				isModIcon = false;
-			} else {
-				loadGraphic("assets/images/icons/face.png", true, 150, 150);
-			}
 
 			antialiasing = true;
 

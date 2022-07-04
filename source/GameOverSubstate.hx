@@ -7,15 +7,13 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
-class GameOverSubstate extends MusicBeatSubstate
-{
+class GameOverSubstate extends MusicBeatSubstate {
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
 
 	var stageSuffix:String = "";
 
-	public function new(x:Float, y:Float)
-	{
+	public function new(x:Float, y:Float) {
 		Paths.nullPathsAssets();
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
@@ -54,17 +52,13 @@ class GameOverSubstate extends MusicBeatSubstate
 			bf.playAnim('firstDeath');
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (controls.ACCEPT)
-		{
 			endBull();
-		}
 
-		if (controls.BACK)
-		{
+		if (controls.BACK) {
 			FlxG.sound.music.stop();
 
 			remove(camFollow);
@@ -76,26 +70,22 @@ class GameOverSubstate extends MusicBeatSubstate
 				FlxG.switchState(new FreeplayState());
 		}
 
-		if (bf != null && bf.animation.curAnim != null)
-		{
+		if (bf != null && bf.animation.curAnim != null) {
 			if(bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 				FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		}
 
-		if (bf != null && bf.animation.curAnim != null)
-		{
+		if (bf != null && bf.animation.curAnim != null) {
 			if(bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 				FlxG.sound.playMusic(Paths.music('gameOver' + stageSuffix));
 		}
 
-		if (FlxG.sound.music.playing)
-		{
+		if (FlxG.sound.music.playing) {
 			Conductor.songPosition = FlxG.sound.music.time;
 		}
 	}
 
-	override function beatHit()
-	{
+	override function beatHit() {
 		super.beatHit();
 
 		FlxG.log.add('beat');
@@ -103,16 +93,13 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	var isEnding:Bool = false;
 
-	function endBull():Void
-	{
-		if (!isEnding)
-		{
+	function endBull():Void {
+		if (!isEnding) {
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
-			new FlxTimer().start(0.7, function(tmr:FlxTimer)
-			{
+			new FlxTimer().start(0.7, function(tmr:FlxTimer) {
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
 					remove(camFollow);

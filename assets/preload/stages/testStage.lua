@@ -29,13 +29,3 @@ function create()
     -- addSprite adds the sprite to the game (needed).
     addSprite("stagecurtains", false)
 end
-
--- endSong runs any functions when the song ends.
-function endSong()
-    -- destroySprite destroys a sprite to free memory
-    destroySprite("bg")
-    -- destroySprite destroys a sprite to free memory
-    destroySprite("stagefront")
-    -- destroySprite destroys a sprite to free memory
-    destroySprite("stagecurtains")
-end

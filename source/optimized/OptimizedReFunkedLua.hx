@@ -48,8 +48,8 @@ class OptimizedReFunkedLua {
 			setVar('girlfriendName', OptimizedPlayState.SONG.gfPlayer);
 			setVar('opponent', 'opponent');
 			setVar('opponentName', OptimizedPlayState.SONG.player2);
-			setVar('optimized', true);
-			setVar('notOptimized', false);
+			setVar('optimized', Options.useOptimized);
+			setVar('notOptimized', !Options.useOptimized);
 			if(OptimizedPlayState.isModSong)
 				setVar('rootDir', ModSupport.modsDirectories[OptimizedPlayState.mod]);
 			else
@@ -250,17 +250,84 @@ class OptimizedReFunkedLua {
 					}));
 				}
 			});
+			Lua_helper.add_callback(luaState, "performUIElementAlphaTween", function(tweenName:String, elementName:String, Alpha:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(OptimizedPlayState.LuaTweens.exists(tweenName) && OptimizedPlayState.UIElements.exists(elementName) && OptimizedPlayState.UIElements[elementName] != null) {
+					OptimizedPlayState.LuaTweens.set(tweenName, FlxTween.tween(OptimizedPlayState.UIElements.get(elementName), {alpha: Alpha}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							OptimizedPlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementAngleTween", function(tweenName:String, elementName:String, Angle:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(OptimizedPlayState.LuaTweens.exists(tweenName) && OptimizedPlayState.UIElements.exists(elementName) && OptimizedPlayState.UIElements[elementName] != null) {
+					OptimizedPlayState.LuaTweens.set(tweenName, FlxTween.tween(OptimizedPlayState.UIElements.get(elementName), {angle: Angle}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							OptimizedPlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementXTween", function(tweenName:String, elementName:String, X:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(OptimizedPlayState.LuaTweens.exists(tweenName) && OptimizedPlayState.UIElements.exists(elementName) && OptimizedPlayState.UIElements[elementName] != null) {
+					OptimizedPlayState.LuaTweens.set(tweenName, FlxTween.tween(OptimizedPlayState.UIElements.get(elementName), {x: X}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							OptimizedPlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementYTween", function(tweenName:String, elementName:String, Y:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(OptimizedPlayState.LuaTweens.exists(tweenName) && OptimizedPlayState.UIElements.exists(elementName) && OptimizedPlayState.UIElements[elementName] != null) {
+					OptimizedPlayState.LuaTweens.set(tweenName, FlxTween.tween(OptimizedPlayState.UIElements.get(elementName), {y: Y}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							OptimizedPlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementsAlphaTween", function(Alpha:Float, ?speed:Float = 1, ?easeType:String) {
+				for(element in OptimizedPlayState.UIElements.keys()) {
+					// Check if It Exists.
+					removeRemakeTween(element);
+					if(OptimizedPlayState.LuaTweens.exists(element) && OptimizedPlayState.UIElements.exists(element) && OptimizedPlayState.UIElements[element] != null) {
+						OptimizedPlayState.LuaTweens.set(element, FlxTween.tween(OptimizedPlayState.UIElements.get(element), {alpha: Alpha}, speed, {
+							ease: returnEase(easeType),
+							onComplete: function(twn:FlxTween) {
+								OptimizedPlayState.LuaTweens.remove(element);
+							}
+						}));
+					}
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementsAngleTween", function(Angle:Float, ?speed:Float = 1, ?easeType:String) {
+				for(element in OptimizedPlayState.UIElements.keys()) {
+					// Check if It Exists.
+					removeRemakeTween(element);
+					if(OptimizedPlayState.LuaTweens.exists(element) && OptimizedPlayState.UIElements.exists(element) && OptimizedPlayState.UIElements[element] != null) {
+						OptimizedPlayState.LuaTweens.set(element, FlxTween.tween(OptimizedPlayState.UIElements.get(element), {angle: Angle}, speed, {
+							ease: returnEase(easeType),
+							onComplete: function(twn:FlxTween) {
+								OptimizedPlayState.LuaTweens.remove(element);
+							}
+						}));
+					}
+				}
+			});
 			Lua_helper.add_callback(luaState, "setCameraAngle", function(camera:String, angle:Float) {
 				returnCamera(camera).angle = angle;
-			});
-			Lua_helper.add_callback(luaState, "setCameraPosition", function(x:Float, ?y:Float) {
-				if(y != null) {
-					OptimizedPlayState.camFollow.x = x;
-					OptimizedPlayState.camFollow.y = y;
-				} else {
-					OptimizedPlayState.camFollow.x = x;
-				}
-				OptimizedPlayState.camFollowSet = true;
 			});
 			Lua_helper.add_callback(luaState, "setCameraZooms", function(camHUD:Float, ?camGame:Float) {
 				if(camGame != null) {
@@ -269,6 +336,9 @@ class OptimizedReFunkedLua {
 				} else {
 					OptimizedPlayState.OptimizedPlayStateThing.camHUDZoom = camHUD;
 				}
+			});
+			Lua_helper.add_callback(luaState, "setCurSongName", function(songName:String) {
+				OptimizedPlayState.songName = songName;
 			});
 			Lua_helper.add_callback(luaState, "setCurStage", function(stageName:String) {
 				if(stageName != null)
@@ -349,6 +419,49 @@ class OptimizedReFunkedLua {
 					strumNumber = 3;
 				if(OptimizedPlayState.OptimizedPlayStateThing.playerStrums.members[strumNumber] != null)
 					OptimizedPlayState.OptimizedPlayStateThing.playerStrums.members[strumNumber].y = y;
+			});
+			Lua_helper.add_callback(luaState, "setUIElementAlpha", function(element:String, alpha:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].alpha = alpha;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementAngle", function(element:String, angle:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].angle = angle;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementX", function(element:String, x:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].x = x;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementY", function(element:String, y:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].y = y;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementVisibility", function(element:String, visible:Bool) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].visible = visible;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsAlpha", function(alpha:Float) {
+				for(element in PlayState.UIElements) {
+					if(element != null)
+						element.alpha = alpha;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsAngle", function(angle:Float) {
+				for(element in PlayState.UIElements) {
+					if(element != null)
+						element.angle = angle;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsVisibility", function(visible:Bool) {
+				if(visible)
+					PlayState.PlayStateThing.makeStuffVisibleLol();
+				else
+					PlayState.PlayStateThing.makeStuffInvisibleLol();
 			});
 			Lua_helper.add_callback(luaState, "shakeCamera", function(camera:String, intensity:Float, duration:Float) {
 				returnCamera(camera).shake(intensity, duration);

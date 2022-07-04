@@ -370,8 +370,10 @@ class StoryMenuState extends MusicBeatState
 
 				grpWeekText.members[curWeek].startFlashing();
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
-				unloadLoadedAssets();
-				unloadMBSassets();
+				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+					unloadLoadedAssets();
+					unloadMBSassets();
+				});
 				stopspamming = true;
 			}
 

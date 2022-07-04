@@ -36,6 +36,8 @@ girlfriendName - Girlfriend actor/player's name.
 
 instLength - Length of instrumental.
 
+instPosition - Current position of instrumental.
+
 health - Gives health from in game.
 
 opponent - Literally "opponent". Lol.
@@ -56,12 +58,18 @@ songData - Name of song (not formatted).
 
 songName - Name of song.
 
+songPosition - Position of song gave by Conductor.
+
 stepCrochet - stepCrochet from Conductor.
 
 vocalsLength - Length of vocals.
 
+vocalsPosition - Current position of vocals.
+
 Current RFE Lua functions:
 addActor(actor-name) - Adds a create actor to PlayState.
+
+addActorFinishCallback(actor-name, callback-name) - Adds a finishing callback for an actor's animations with the name you choose.
 
 addBackgroundGirls(bg-girls-name) - Adds a created BG girls instance to PlayState.
 
@@ -83,9 +91,11 @@ addToOpponentCamFollow(x, y) - Adds to the opponent's camFollow x/y position.
 
 addToOpponentPosition(x, y) - Adds to the opponent's x/y position(s).
 
+centerSpriteXY(sprite-name, x(bool), y(bool)) - Centers a sprite on the x/y axis.
+
 changeActor(actor-name, new-character, add-actor, remove-old-actor, change-icon) - Changes the actor to the new character you choose.
 
-changeTargetActor(actor-name, target-actor) - Changes the target actor for a character. Does not remove or add any actors in any way.
+changeTargetActor(actor-name, target-actor, change-icon) - Changes the target actor for a character. Does not remove or add any actors in any way.
 
 destroyActor(actor) - Destroys an actor.
 
@@ -117,6 +127,10 @@ giveSpriteMidpointY(sprite-name) - Gives the Y midpoint of a sprite.
 
 giveSpriteWidth(sprite-name) - Returns a sprite's width.
 
+giveActorX(sprite-name) - Returns a sprite's x position.
+
+giveActorY(sprite-name) - Returns a sprite's Y position.
+
 killActor(actor-name) - Kills an actor.
 
 killSprite(sprite-name) - Kills a sprite.
@@ -133,39 +147,53 @@ makePixelBackgroundGirls(bg-girls-name, x, y) - Self explanatory. Made for Week 
 
 makeSprite(sprite-name, path-to-image, x, y, antialiasing) - Makes a simple FlxSprite. Not animated.
 
-performCameraAngleTween(tween, camera, angle, speed, ease-type) - Performs an angle tween on a(n) camera.
+performCameraAngleTween(tween-name, camera-name, angle, speed, ease-type) - Performs an angle tween on a(n) camera.
 
-performCameraXTween(tween, camera, x, speed, ease-type) - Performs a tween on the x position of a(n) camera.
+performCameraXTween(tween-name, camera-name, x, speed, ease-type) - Performs a tween on the x position of a(n) camera.
 
-performCameraYTween(tween, camera, y, speed, ease-type) - Performs a tween on the y position of a(n) camera.
+performCameraYTween(tween-name, camera-name, y, speed, ease-type) - Performs a tween on the y position of a(n) camera.
 
-performCameraZoom(camera, zoom) - Performs a camera zoom by the amount you choose. Does not go into effect until camZooming is enabled.
+performCameraZoom(camera-name, zoom) - Performs a camera zoom by the amount you choose. Does not go into effect until camZooming is enabled.
 
-performOpponentStrumAlphaTween(tween, strum-number, alpha, speed, ease-type) - Performs an alpha tween on the selected opponent strum.
+performOpponentStrumAlphaTween(tween-name, strum-name-number, alpha, speed, ease-type) - Performs an alpha tween on the selected opponent strum.
 
-performOpponentStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected opponent strum.
+performOpponentStrumAngleTween(tween-name, strum-name-number, angle, speed, ease-type) - Performs an angle tween on the selected opponent strum.
 
-performOpponentStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected opponent strum.
+performOpponentStrumXTween(tween-name, strum-name-number, x, speed, ease-type) - Performs a tween on the x position of the selected opponent strum.
 
-performOpponentStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected opponent strum.
+performOpponentStrumYTween(tween-name, strum-name-number, y, speed, ease-type) - Performs a tween on the y position of the selected opponent strum.
 
-performPlayerStrumAlphaTween(tween, strum-number, alpha, speed, ease-type) - Performs an alpha tween on the selected player strum.
+performPlayerStrumAlphaTween(tween-name, strum-name-number, alpha, speed, ease-type) - Performs an alpha tween on the selected player strum.
 
-performPlayerStrumAngleTween(tween, strum-number, angle, speed, ease-type) - Performs an angle tween on the selected player strum.
+performPlayerStrumAngleTween(tween-name, strum-name-number, angle, speed, ease-type) - Performs an angle tween on the selected player strum.
 
-performPlayerStrumXTween(tween, strum-number, x, speed, ease-type) - Performs a tween on the x position of the selected player strum.
+performPlayerStrumXTween(tween-name, strum-name-number, x, speed, ease-type) - Performs a tween on the x position of the selected player strum.
 
-performPlayerStrumYTween(tween, strum-number, y, speed, ease-type) - Performs a tween on the y position of the selected player strum.
+performPlayerStrumYTween(tween-name, strum-name-number, y, speed, ease-type) - Performs a tween on the y position of the selected player strum.
 
-performSpriteAngleTween(tween, sprite, angle, speed, ease-type) - Performs an angle tween on a(n) sprite.
+performSpriteAlphaTween(tween-name, sprite-name, alpha, speed, ease-type) - Performs an alpha tween on a(n) sprite.
 
-performSpriteXTween(tween, sprite, x, speed, ease-type) - Performs a tween on the x position of a(n) sprite.
+performSpriteAngleTween(tween-name, sprite-name, angle, speed, ease-type) - Performs an angle tween on a(n) sprite.
 
-performSpriteYTween(tween, sprite, y, speed, ease-type) - Performs a tween on the y position of a(n) sprite.
+performSpriteXTween(tween-name, sprite-name, x, speed, ease-type) - Performs a tween on the x position of a(n) sprite.
 
-playActorAnimation(actor-name, animation) - Makes an actor (bf, gf, or opponent) play an animation.
+performSpriteYTween(tween-name, sprite-name, y, speed, ease-type) - Performs a tween on the y position of a(n) sprite.
 
-playSpriteAnimation(sprite-name, animation) - Makes a sprite play an animation.
+performUIElementAlphaTween(tween-name, element-name, alpha, speed, ease-type) - Performs an alpha tween on a(n) UI element.
+
+performUIElementAngleTween(tween-name, element-name, angle, speed, ease-type) - Performs an angle tween on a(n) UI element.
+
+performUIElementXTween(tween-name, element-name, x, speed, ease-type) - Performs a tween on the x position of a(n) UI element.
+
+performUIElementYTween(tween-name, element-name, y, speed, ease-type) - Performs a tween on the y position of a(n) UI element.
+
+performUIElementsAlphaTween(alpha, speed, ease-type) - Performs an alpha tween on all UI elements.
+
+performUIElementsAngleTween(angle, speed, ease-type) - Performs an angle tween on all UI elements.
+
+playActorAnimation(actor-name, animation, forced(bool)) - Makes an actor (bf, gf, or opponent) play an animation.
+
+playSpriteAnimation(sprite-name, animation, forced(bool)) - Makes a sprite play an animation.
 
 removeSprite(sprite-name) - Removes a sprite.
 
@@ -181,21 +209,27 @@ setActorScale(actor-name, x, y) - Sets an actor's scale (NOT the same as graphic
 
 setActorScrollFactor(actor-name, x, y) - Sets an actor's scroll factor.
 
+setActorSpeed(actor-name, speed(int)) - Sets an actor's speed (how often they dance (or bop)).
+
 setActorVisibility(actor-name, visible(bool)) - Sets an actor's visibility.
 
 setBGGirlsScrollFactor(bg-girls-name, x, y) - Sets scroll factor for BG girls.
 
 setBoyfriendCamFollowPosition(x, y) - Sets camFollow positions for Boyfriend.
 
-setCameraAngle(camera, angle) - Sets the angle of the HUD camera (notes, healthbar, etc.).
+setCameraAngle(camera-name, angle) - Sets the angle of a camera (notes, healthbar, etc.).
+
+setCameraBGColor(camera-name, color) - Sets the background color of a camera.
 
 setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
 
-setCameraVisibility(camera, visible(bool)) - Sets a camera's visibility.
+setCameraVisibility(camera-name, visible(bool)) - Sets a camera's visibility.
 
 setCameraZooms(camhud-zoom, camgame-zoom) - Sets the zoom amount for the cameras.
 
 setCamPosPosition(x, y) - Sets camPos' positions.
+
+setCurSongName(song-name) - Sets the current song name (any characters).
 
 setCurStage(stage-name) - Sets curStage in PlayState.
 
@@ -227,7 +261,11 @@ setPlayerStrumY(strum-number, y) - Sets the y position of a player strum.
 
 setSpriteAlpha(sprite-name, alpha) - Sets the alpha of a sprite.
 
-setSpriteCamera(sprite-name, camera) - Sets a sprite's camera.
+setSpriteAngle(sprite-name, angle) - Sets the angle of a sprite.
+
+setSpriteBlendMode(sprite-name, blend-mode) - Sets the blend mode of a sprite.
+
+setSpriteCamera(sprite-name, camera-name) - Sets a sprite's camera.
 
 setSpriteGraphicSize(sprite-name, x, y) - Sets a sprite's graphic size (NOT the same as scale).
 
@@ -241,28 +279,44 @@ setSpriteScrollFactor(sprite-name, x, y) - Sets a sprite's scroll factor.
 
 setSpriteVisibility(sprite-name, visible(bool)) - Sets a sprite's visibility.
 
-setUIElementVisibility(visible(bool)) - Sets the UI elements' visibility, the same way cutscenes do.
+setUIElementAlpha(element-number, alpha) - Sets the alpha of a single UI element.
 
-shakeCamera(camera, intensity, duration) - Shakes the HUD camera for set duration with set intensity.
+setUIElementAngle(element-number, angle) - Sets the angle of a single UI element.
+
+setUIElementX(element-number, x) - Sets the x position of a single UI element.
+
+setUIElementY(element-number, y) - Sets the y position of a single UI element.
+
+setUIElementVisibility(element-name, visible(bool)) - Sets a single UI element's visibility.
+
+setUIElementsAlpha(alpha) - Sets the UI elements' alpha values.
+
+setUIElementsAngle(angle) - Sets the UI elements' angle values.
+
+setUIElementsVisibility(visible(bool)) - Sets the UI elements' visibility, the same way cutscenes do.
+
+shakeCamera(camera-name, intensity, duration) - Shakes the given camera for set duration with set intensity.
 
 updateSpriteHitbox(sprite-name) - Updates a sprite's hitbox.
 
 Current RFE Lua callbacks:
 beatHit - Checks for functions every beat hit.
 
+actorAnimFinishCallback(callback) - Checks for functions when an actor's animation is finished.
+
 create - Checks for functions on stage creation.
 
 endSong - Checks for functions on song end.
 
-finishCallback(callback) - Checks for functions when a callback is finished.
+spriteAnimFinishCallback(callback) - Checks for functions when a sprite's animation is finished.
 
-goodNoteHit - Used for notes, checked when a good note hit is made by the CPU or player.
+goodNoteHit(noteData, isSustainNote, mustPress, noteType, noteID) - Used for notes, checked when a good note hit is made by the CPU or player.
 
-noteMiss - Used for notes also, checked when the player misses a note.
+noteMiss(noteData, isSustainNote, mustPress, noteType, noteID) - Used for notes also, checked when the player misses a note (whether it's by late timing or tapping when no notes are there).
 
-opponentNoteHit - Checks for functions when your opponent hits a note.
+opponentNoteHit(noteData, isSustainNote, mustPress, noteType, noteID) - Checks for functions when your opponent hits a note.
 
-playerNoteHit - Checks for functions when you hit a note.
+playerNoteHit(noteData, isSustainNote, mustPress, noteType, noteID) - Checks for functions when you hit a note.
 
 postCreate - Checks for functions to run AFTER super.create().
 

@@ -119,6 +119,8 @@ class OptimizedPauseSubState extends MusicBeatSubstate
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 
+		OptimizedPlayState.OptimizedPlayStateThing.setIconXValues();
+
 		super.update(elapsed);
 
 		var upP = controls.UP_P;

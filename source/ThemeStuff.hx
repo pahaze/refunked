@@ -229,7 +229,7 @@ class ThemeStuff {
 		var rawJsonFile:String;
 		var pathToFileIg:String;
 
-		rawJsonFile = Utilities.getFileContents("./assets/themes/" + Options.themeData + ".json");
+		rawJsonFile = Utilities.getFileContents("./assets/themes/psych.json");
 		
 		while (!rawJsonFile.endsWith("}"))
 		{

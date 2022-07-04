@@ -14,6 +14,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import lime.app.Application;
 
 using StringTools;
@@ -52,9 +53,7 @@ class MainMenuState extends MusicBeatState
 		ModSupport.loadModsFolders();
 
 		if (!FlxG.sound.music.playing)
-		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
-		}
 
 		persistentUpdate = persistentDraw = true;
 
@@ -183,25 +182,21 @@ class MainMenuState extends MusicBeatState
 						{
 							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 							{
-								unloadLoadedAssets();
-								unloadMBSassets();
+								new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+									unloadLoadedAssets();
+									unloadMBSassets();
+								});
 
 								var daChoice:String = optionStuff[curSelected];
 								switch (daChoice)
 								{
 									case 'story mode':
-										FlxTransitionableState.skipNextTransIn = true;
-										FlxTransitionableState.skipNextTransOut = true;
 										FlxG.switchState(new StoryMenuState());
 										trace("Story Menu Selected");
 									case 'freeplay':
-										FlxTransitionableState.skipNextTransIn = true;
-										FlxTransitionableState.skipNextTransOut = true;
 										FlxG.switchState(new FreeplayState());
 										trace("Freeplay Menu Selected");
 									case 'options':
-										FlxTransitionableState.skipNextTransIn = true;
-										FlxTransitionableState.skipNextTransOut = true;
 										FlxG.switchState(new OptionsMenu());
 								}
 							});

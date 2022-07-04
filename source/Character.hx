@@ -45,9 +45,11 @@ class Character extends FlxSprite
 
 	public var isPlayer:Bool = false;
 	public var isModChar:Bool = false;
+	public var isSpecialAnim:Bool = false;
 	public var IdleDancing:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var holdTimer:Float = 0;
+	public var speed:Int = 1;
 
 	var rawJson:String = "";
 	var charPath:String = "";
@@ -86,8 +88,7 @@ class Character extends FlxSprite
 					rawJson = rawJson.trim();
 				#end
 
-				while (!rawJson.endsWith("}"))
-				{
+				while (!rawJson.endsWith("}")) {
 					rawJson = rawJson.substr(0, rawJson.length - 1);
 				}
 
@@ -286,29 +287,33 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!isPlayer && animation.curAnim != null)
-		{
-			if (animation.curAnim.name.startsWith('sing'))
+		if(!isSpecialAnim) {
+			if (!isPlayer && animation.curAnim != null)
 			{
-				holdTimer += elapsed;
-			}
+				if (animation.curAnim.name.startsWith('sing'))
+				{
+					holdTimer += elapsed;
+				}
 
-			var dadVar:Float = 4;
+				var dadVar:Float = 4;
 
-			if (curCharacter == 'dad')
-				dadVar = 6.1;
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
-			{
-				dance();
-				holdTimer = 0;
+				if (curCharacter == 'dad')
+					dadVar = 6.1;
+
+				if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001) {
+					dance();
+					holdTimer = 0;
+				}
 			}
-		}
-		if(animation.curAnim != null) {
-			switch (curCharacter)
-			{
-				case 'gf':
-					if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
-						playAnim('danceRight');
+			if(animation.curAnim != null) {
+				if (IdleDancing && (animation.curAnim.name != "danceLeft" && animation.curAnim.name != "danceRight") && animation.curAnim.finished) {
+					playAnim('danceRight');
+				}
+			}
+		} else {
+			if(animation.curAnim != null) {
+				if(animation.curAnim.finished)
+					isSpecialAnim = false;
 			}
 		}
 
@@ -334,6 +339,10 @@ class Character extends FlxSprite
 	public function checkIdle() {
 		if(animation.getByName('danceLeft') != null && animation.getByName('danceRight') != null) {
 			IdleDancing = true;
+			speed = 1;
+		} else {
+			IdleDancing = false;
+			speed = 2;
 		}
 	}
 

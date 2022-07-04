@@ -1,43 +1,57 @@
 {
     "BotplayEnabled": true,
     "Botplay": {
-        "text": "(I Can't Play) Mode is ON",
-        "x": "403",
-        "dsy": "110",
-        "y": "83",
-        "fontsize": "16"
+        "center": [true, false],
+        "customization": {
+            "border": {
+                "size": 1.25
+            },
+            "fontsize": 16
+        },
+        "text": [
+            "(I Can't Play) Mode is ON",
+            "(I Can't Play) Mode is ON",
+            "(I Can't Play) Mode is ON",
+            "(I Can't Play) Mode is ON"
+        ],
+        "y": [677, 139, 677, 139]
     },
-    "ExtraEnabled": false,
     "HealthbarEnabled": true,
-    "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true
-    },
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "0",
-        "dsy": "90",
-        "x": "495",
-        "fontsize": "16",
-        "text": "Score: [score] // Misses: [misses] // Rank: [funnyrating]"
+        "center": [true, false],
+        "customization": {
+            "fontsize": 16
+        },
+        "text": [
+            "Score: [score] // Misses: [misses] // Rank: [funnyrating]",
+            "Score: [score] // Misses: [misses] // Rank: [funnyrating]",
+            "Score: [score] // Misses: [misses] // Rank: [funnyrating]",
+            "Score: [score] // Misses: [misses] // Rank: [funnyrating]"
+        ],
+        "y": [0, 119, 0, 119]
     },
     "TimebarEnabled": true,
     "Timebar": {
-        "x": "434",
-        "y": "20",
-        "dsy": "675",
-        "text": " [min]:[sec]",
-        "textOnly": true,
-        "fontsize": "32",
-        "style": "psych",
-        "bouncetween": true,
-        "bouncetweenscale": 1.1
+        "text": {
+            "bouncetween": {
+                "enabled": true,
+                "scale": 1.2
+            },
+            "center": [true, false],
+            "customization": {
+                "border": {
+                    "size": 2
+                },
+                "fontsize": 32
+            },
+            "text": [
+                "[min]:[sec]",
+                "[min]:[sec]",
+                "[min]:[sec]",
+                "[min]:[sec]"
+            ]
+        }
     },
-    "WatermarkEnabled": false,
     "RatingStyle": "tr1ngle"
 }

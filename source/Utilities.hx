@@ -1,5 +1,6 @@
 package;
 
+import flixel.text.FlxText;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -7,6 +8,10 @@ import sys.FileSystem;
 import js.html.XMLHttpRequest;
 import js.html.XMLHttpRequestResponseType;
 import js.html.Response;
+import js.html.DOMParser;
+import js.html.HTMLCollection;
+import js.html.SupportedType;
+import js.html.HTMLDocument;
 import js.html.FileReader;
 #end
 
@@ -28,9 +33,9 @@ class Utilities {
     		return false;
     	}
 
-		// this sadly has to be the same for now idk how to use js
+		// since web is the same...
 		public static function checkFolderExists(uh:String):Bool {
-			return false;
+			return checkFileExists(uh);
 		}
 
     	public static function getFileContents(uh:String):String {
@@ -40,10 +45,37 @@ class Utilities {
     		return bloob.responseText;
 	    }
 
+		// This is awful. I HATE HAXE!!!
 		public static function readFolder(uh:String):Array<String> {
-			return [""];
+			var bloob = new XMLHttpRequest();
+    		bloob.open('GET', uh, false);
+    		bloob.send(null);
+			var bloobDOMParser = new DOMParser();
+			var bloobPreParse = bloobDOMParser.parseFromString(bloob.responseText, SupportedType.TEXT_HTML).getElementsByTagName("td");
+			var bloobPostParse:Array<HTMLCollection> = [];
+			var bloobArray:Array<String> = [];
+			for (i in 0...bloobPreParse.length) {
+				bloobPostParse.push(bloobPreParse[i].getElementsByTagName("a"));
+				for(j in 0...bloobPostParse.length) {
+					if(bloobPostParse[i][j] != null) {
+						if(bloobPostParse[i][j].innerHTML != null) {
+							bloobArray.push(bloobPostParse[i][j].innerHTML);
+						}
+					}
+				}
+			}
+			if(bloobArray.contains("../"))
+				bloobArray.remove("../");
+			for(i in 0...bloobArray.length) {
+				while(bloobArray[i].endsWith("/")) {
+					bloobArray[i] = bloobArray[i].substr(0, bloobArray[i].length - 1);
+				}
+				// Safety in case of files in folder. This is already messy enough...
+				bloobArray[i] = StringTools.replace(bloobArray[i], ".", "");
+			}
+			trace(bloobArray);
+			return bloobArray;
 		}
-		
 	#end
     #if desktop
 		public static function checkFileExists(uh:String):Bool {
@@ -279,4 +311,36 @@ class Utilities {
         }
         return "stage";
     }
+
+	public static function getBorderStyle(style:String):FlxTextBorderStyle {
+        switch(style.toLowerCase()) {
+            case "none":
+                return FlxTextBorderStyle.NONE;
+			case "outline":
+				return FlxTextBorderStyle.OUTLINE;
+			case "outline_fast" | "outlinefast":
+				return FlxTextBorderStyle.OUTLINE_FAST;
+			case "shadow":
+				return FlxTextBorderStyle.SHADOW;
+            default:
+                return FlxTextBorderStyle.NONE;
+        }
+        return FlxTextBorderStyle.NONE;
+    }
+
+	public static function getTextAlignment(align:String):FlxTextAlign {
+		switch(align.toLowerCase()) {
+			case "center":
+				return FlxTextAlign.CENTER;
+			case "justify":
+				return FlxTextAlign.JUSTIFY;
+			case "left":
+				return FlxTextAlign.LEFT;
+			case "right":
+				return FlxTextAlign.RIGHT;
+			default:
+				return FlxTextAlign.CENTER;
+		}
+        return FlxTextAlign.CENTER;
+	}
 }

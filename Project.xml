@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' ReFunked" file="ReFunked" packageName="com.pahaze.refunked" package="com.pahaze.refunked" main="Main" version="0.9.9-alpha" company="pahaze" />
+	<app title="Friday Night Funkin' ReFunked" file="ReFunked" packageName="com.pahaze.refunked" package="com.pahaze.refunked" main="Main" version="0.99-alpha-next" company="pahaze" />
 
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 

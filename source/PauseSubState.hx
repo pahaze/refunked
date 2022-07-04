@@ -118,6 +118,8 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
+		
+		PlayState.PlayStateThing.setIconXValues();
 
 		super.update(elapsed);
 
@@ -126,20 +128,15 @@ class PauseSubState extends MusicBeatSubstate
 		var accepted = controls.ACCEPT;
 
 		if (upP)
-		{
 			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
 
-		if (accepted)
-		{
+		if (downP)
+			changeSelection(1);
+
+		if (accepted) {
 			var daSelected:String = menuItems[curSelected];
 
-			switch (daSelected)
-			{
+			switch (daSelected) {
 				case "Resume":
 					close();
 				case "Restart Song":

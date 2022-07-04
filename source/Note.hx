@@ -36,7 +36,9 @@ class Note extends FlxSprite
 	// this is for later Ignore It
 	var noteJson:String = "assets/notes/normal.json";
 	
-	public var addToEndsY:Null<Float>;
+	public var endStrumAdded:Bool = false;
+	public var baseStrumAdded:Bool = false;
+	public var strumAdd:Int = 0;
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?noteType:String = "normal", ?sustainNote:Bool = false)
 	{
@@ -127,8 +129,9 @@ class Note extends FlxSprite
 
 		if (isSustainNote && prevNote != null)
 		{
+			// why did i even change this to angle i forgor 
 			if(Options.downscroll)
-				angle = 180;
+				flipY = true;
 
 			noteScore * 0.2;
 			alpha = 0.6;
@@ -158,8 +161,7 @@ class Note extends FlxSprite
 					x += 30;
 			}
 
-			if (prevNote.isSustainNote)
-			{
+			if (prevNote.isSustainNote) {
 				switch (prevNote.noteData)
 				{
 					case 0:
@@ -187,6 +189,7 @@ class Note extends FlxSprite
 
 		if (mustPress)
 		{
+			// ngl hitting notes early feels Good
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
 				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
 				canBeHit = true;

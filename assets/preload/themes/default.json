@@ -1,35 +1,39 @@
 {
-    "BotplayEnabled": false,
     "HealthbarEnabled": true,
     "Healthbar": {
-        "center": true,
-        "x": "0",
-        "y": "648",
-        "dsy": "50",
-        "showP1": true,
-        "showP2": true 
+        "center": [true, false]
     },
     "ScoreEnabled": true,
     "Score": {
-        "bouncetween": false,
-        "y": "578",
-        "dsy": "100",
-        "x": "0",
-        "center": true,
-        "fontsize": "20",
-        "text": "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)"
+        "bouncetween": {
+            "enabled": false
+        },
+        "center": [true, false],
+        "customization": {
+            "fontsize": 20
+        },
+        "text": [
+            "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)",
+            "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)",
+            "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)",
+            "Score: [score] | Misses: [misses] | Accuracy: [noterating] ([accuracy]%)"
+        ],
+        "y": [598, 120, 598, 120]
     },
-    "TimebarEnabled": false,
     "WatermarkEnabled": true,
     "Watermark": {
-        "text": "[song] [difficulty] | [min]:[sec] left | FNF RFE",
-        "bottext": "Watching [randomdev] play [song] on [difficulty] | [min]:[sec] left | FNF RFE",
-        "practext": "Practicing [song] on [difficulty] | [min]:[sec] left | FNF RFE",
-        "pracbottext": "Watching [randomdev] practice [song] on [difficulty] for some reason | [min]:[sec] left | FNF RFE",
+        "customization": {
+            "fontsize": 16
+        },
         "scrolls": true,
-        "x": "4",
-        "y": "698",
-        "dsy": "698"
+        "text": [
+            "[song] [difficulty] | [min]:[sec] left | FNF RFE",
+            "Watching [randomdev] play [song] on [difficulty] | [min]:[sec] left | FNF RFE",
+            "Practicing [song] on [difficulty] | [min]:[sec] left | FNF RFE",
+            "Watching [randomdev] practice [song] on [difficulty] for some reason | [min]:[sec] left | FNF RFE"
+        ],
+        "x": [4, 4, 4, 4],
+        "y": [698, 698, 698, 698]
     },
     "RatingStyle": "RFE"
 }

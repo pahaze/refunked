@@ -48,8 +48,8 @@ class ReFunkedLua {
 			setVar('girlfriendName', PlayState.SONG.gfPlayer);
 			setVar('opponent', 'opponent');
 			setVar('opponentName', PlayState.SONG.player2);
-			setVar('optimized', false);
-			setVar('notOptimized', true);
+			setVar('optimized', Options.useOptimized);
+			setVar('notOptimized', !Options.useOptimized);
 			if(PlayState.isModSong)
 				setVar('rootDir', ModSupport.modsDirectories[PlayState.mod]);
 			else
@@ -62,6 +62,14 @@ class ReFunkedLua {
 				// Check if It Exists.
 				if(PlayState.ActorSprites.exists(actorName))
 					PlayState.PlayStateThing.add(PlayState.ActorSprites.get(actorName));
+			});
+			Lua_helper.add_callback(luaState, "addActorFinishCallback", function(actorName:String, callbackName:String) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName)) {
+					PlayState.ActorSprites.get(actorName).animation.finishCallback = function(callback:String) {
+						PlayState.PlayStateThing.luaCallback("actorAnimFinishCallback", [callbackName]);
+					}
+				}
 			});
 			Lua_helper.add_callback(luaState, "addBackgroundGirls", function(spriteName:String) {
 				// Check if It Exists.
@@ -80,7 +88,7 @@ class ReFunkedLua {
 				// Check if It Exists.
 				if(PlayState.LuaSprites.exists(spriteName)) {
 					PlayState.LuaSprites.get(spriteName).animation.finishCallback = function(callback:String) {
-						PlayState.PlayStateThing.luaCallback("finishCallback", [callbackName]);
+						PlayState.PlayStateThing.luaCallback("spriteAnimFinishCallback", [callbackName]);
 					}
 				}
 			});
@@ -116,30 +124,50 @@ class ReFunkedLua {
 				PlayState.OpponentPositionAdd[0] = x;
 				PlayState.OpponentPositionAdd[1] = y;
 			});
+			Lua_helper.add_callback(luaState, "centerSpriteXY", function(spriteName:String, x:Bool, y:Bool = false) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName)) {
+					if(x)
+						PlayState.LuaSprites.get(spriteName).screenCenter(X);
+					if(y)
+						PlayState.LuaSprites.get(spriteName).screenCenter(Y);
+				}
+			});
 			Lua_helper.add_callback(luaState, "changeActor", function(actor:String, newChar:String, ?removeOldActor:Bool = true, ?addActor:Bool = true, ?changeIcon:Bool = true) {
 				// char
 				if(PlayState.ActorSprites.exists(actor)) {
 					if(PlayState.ActorSprites.exists(newChar)) {
 						if(removeOldActor)
-							PlayState.PlayStateThing.remove(PlayState.ActorSprites[actor]);
+							PlayState.PlayStateThing.remove(PlayState.ActorSprites[PlayState.TargetActors[actor]]);
 						if(addActor)
-							PlayState.PlayStateThing.add(PlayState.ActorSprites[newChar]);
+							PlayState.PlayStateThing.add(PlayState.ActorSprites[PlayState.TargetActors[newChar]]);
 						PlayState.TargetActors[actor] = newChar;
+					} else if(newChar == PlayState.ActorSprites[actor].curCharacter) {
+						if(removeOldActor)
+							PlayState.PlayStateThing.remove(PlayState.ActorSprites[PlayState.TargetActors[actor]]);
+						if(addActor)
+							PlayState.PlayStateThing.add(PlayState.ActorSprites[actor]);
+						PlayState.TargetActors[actor] = actor;
 					} else {
 						PlayState.ActorSprites[actor].changeCharacter(newChar, false);
 					}
 					// icon
-					if(changeIcon && (actor == "opponent" || actor == "dad"))
+					if(changeIcon && actor != "boyfriend")
 						PlayState.PlayStateThing.changeIcon(newChar, false);
 					else if(changeIcon && actor == "boyfriend")
 						PlayState.PlayStateThing.changeIcon(newChar, true);
 				}
 			});
-			Lua_helper.add_callback(luaState, "changeTargetActor", function(actor:String, targetActor:String) {
+			Lua_helper.add_callback(luaState, "changeTargetActor", function(actor:String, targetActor:String, ?changeIcon:Bool = false) {
 				// Acotre
 				if(PlayState.ActorSprites.exists(actor) && PlayState.ActorSprites.exists(targetActor)) {
 					PlayState.TargetActors[actor] = targetActor;
 				}
+				// icon
+				if(changeIcon && actor != "boyfriend")
+					PlayState.PlayStateThing.changeIcon(targetActor, false);
+				else if(changeIcon && actor == "boyfriend")
+					PlayState.PlayStateThing.changeIcon(targetActor, true);
 			});
 			Lua_helper.add_callback(luaState, "destroyActor", function(actorName:String) {
 				// Check if It Exists.
@@ -230,6 +258,18 @@ class ReFunkedLua {
 					return PlayState.LuaSprites.get(spriteName).width;
 				return 0;
 			});
+			Lua_helper.add_callback(luaState, "giveSpriteX", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					return PlayState.LuaSprites.get(spriteName).x;
+				return 0;
+			});
+			Lua_helper.add_callback(luaState, "giveSpriteY", function(spriteName:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					return PlayState.LuaSprites.get(spriteName).y;
+				return 0;
+			});
 			Lua_helper.add_callback(luaState, "killActor", function(actorName:String) {
 				// Check if It Exists.
 				if(PlayState.ActorSprites.exists(actorName))
@@ -244,17 +284,23 @@ class ReFunkedLua {
 				if(isPlayer) {
 					var funnyActor:Boyfriend;
 					funnyActor = new Boyfriend(x, y, actorName);
-					if(alias != null)
+					if(alias != null) {
 						PlayState.ActorSprites[alias] = funnyActor;
-					else
+						PlayState.TargetActors[alias] = alias;
+					} else {
 						PlayState.ActorSprites[actorName] = funnyActor;
+						PlayState.TargetActors[actorName] = actorName;
+					}
 				} else {
 					var funnyActor:Character;
 					funnyActor = new Character(x, y, actorName);
-					if(alias != null)
+					if(alias != null) {
 						PlayState.ActorSprites[alias] = funnyActor;
-					else
+						PlayState.TargetActors[alias] = alias;
+					} else {
 						PlayState.ActorSprites[actorName] = funnyActor;
+						PlayState.TargetActors[actorName] = actorName;
+					}
 				}
 			});
 			Lua_helper.add_callback(luaState, "makeAnimatedPackerSprite", function(spriteName:String, path:String, x:Int, y:Int, antialiasing:Bool) {
@@ -505,10 +551,22 @@ class ReFunkedLua {
 					}));
 				}
 			});
+			Lua_helper.add_callback(luaState, "performSpriteAlphaTween", function(tweenName:String, spriteName:String, Alpha:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName) && PlayState.LuaSprites[spriteName] != null) {
+					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.LuaSprites.get(spriteName), {alpha: Alpha}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							PlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
 			Lua_helper.add_callback(luaState, "performSpriteAngleTween", function(tweenName:String, spriteName:String, Angle:Float, ?speed:Float = 1, ?easeType:String) {
 				// Check if It Exists.
 				removeRemakeTween(tweenName);
-				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName)) {
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName) && PlayState.LuaSprites[spriteName] != null) {
 					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.LuaSprites.get(spriteName), {angle: Angle}, speed, {
 						ease: returnEase(easeType),
 						onComplete: function(twn:FlxTween) {
@@ -520,7 +578,7 @@ class ReFunkedLua {
 			Lua_helper.add_callback(luaState, "performSpriteXTween", function(tweenName:String, spriteName:String, X:Float, ?speed:Float = 1, ?easeType:String) {
 				// Check if It Exists.
 				removeRemakeTween(tweenName);
-				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName)) {
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName) && PlayState.LuaSprites[spriteName] != null) {
 					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.LuaSprites.get(spriteName), {x: X}, speed, {
 						ease: returnEase(easeType),
 						onComplete: function(twn:FlxTween) {
@@ -532,7 +590,7 @@ class ReFunkedLua {
 			Lua_helper.add_callback(luaState, "performSpriteYTween", function(tweenName:String, spriteName:String, Y:Float, ?speed:Float = 1, ?easeType:String) {
 				// Check if It Exists.
 				removeRemakeTween(tweenName);
-				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName)) {
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.LuaSprites.exists(spriteName) && PlayState.LuaSprites[spriteName] != null) {
 					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.LuaSprites.get(spriteName), {y: Y}, speed, {
 						ease: returnEase(easeType),
 						onComplete: function(twn:FlxTween) {
@@ -541,15 +599,93 @@ class ReFunkedLua {
 					}));
 				}
 			});
+			Lua_helper.add_callback(luaState, "performUIElementAlphaTween", function(tweenName:String, elementName:String, Alpha:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.UIElements.exists(elementName) && PlayState.UIElements[elementName] != null) {
+					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.UIElements.get(elementName), {alpha: Alpha}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							PlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementAngleTween", function(tweenName:String, elementName:String, Angle:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.UIElements.exists(elementName) && PlayState.UIElements[elementName] != null) {
+					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.UIElements.get(elementName), {angle: Angle}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							PlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementXTween", function(tweenName:String, elementName:String, X:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.UIElements.exists(elementName) && PlayState.UIElements[elementName] != null) {
+					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.UIElements.get(elementName), {x: X}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							PlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementYTween", function(tweenName:String, elementName:String, Y:Float, ?speed:Float = 1, ?easeType:String) {
+				// Check if It Exists.
+				removeRemakeTween(tweenName);
+				if(PlayState.LuaTweens.exists(tweenName) && PlayState.UIElements.exists(elementName) && PlayState.UIElements[elementName] != null) {
+					PlayState.LuaTweens.set(tweenName, FlxTween.tween(PlayState.UIElements.get(elementName), {y: Y}, speed, {
+						ease: returnEase(easeType),
+						onComplete: function(twn:FlxTween) {
+							PlayState.LuaTweens.remove(tweenName);
+						}
+					}));
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementsAlphaTween", function(Alpha:Float, ?speed:Float = 1, ?easeType:String) {
+				for(element in PlayState.UIElements.keys()) {
+					// Check if It Exists.
+					removeRemakeTween(element);
+					if(PlayState.LuaTweens.exists(element) && PlayState.UIElements.exists(element) && PlayState.UIElements[element] != null) {
+						PlayState.LuaTweens.set(element, FlxTween.tween(PlayState.UIElements.get(element), {alpha: Alpha}, speed, {
+							ease: returnEase(easeType),
+							onComplete: function(twn:FlxTween) {
+								PlayState.LuaTweens.remove(element);
+							}
+						}));
+					}
+				}
+			});
+			Lua_helper.add_callback(luaState, "performUIElementsAngleTween", function(Angle:Float, ?speed:Float = 1, ?easeType:String) {
+				for(element in PlayState.UIElements.keys()) {
+					// Check if It Exists.
+					removeRemakeTween(element);
+					if(PlayState.LuaTweens.exists(element) && PlayState.UIElements.exists(element) && PlayState.UIElements[element] != null) {
+						PlayState.LuaTweens.set(element, FlxTween.tween(PlayState.UIElements.get(element), {angle: Angle}, speed, {
+							ease: returnEase(easeType),
+							onComplete: function(twn:FlxTween) {
+								PlayState.LuaTweens.remove(element);
+							}
+						}));
+					}
+				}
+			});
 			Lua_helper.add_callback(luaState, "playActorAnimation", function(actorName:String, animation:String, ?forced:Bool = false) {
 				// Check if It Exists.
-				if(PlayState.ActorSprites.exists(actorName))
+				if(PlayState.ActorSprites.exists(actorName)) {
+					PlayState.ActorSprites.get(actorName).isSpecialAnim = true;
 					PlayState.ActorSprites.get(actorName).playAnim(animation, forced);
+				}
 			});
-			Lua_helper.add_callback(luaState, "playSpriteAnimation", function(spriteName:String, animation:String) {
+			Lua_helper.add_callback(luaState, "playSpriteAnimation", function(spriteName:String, animation:String, ?forced:Bool = false) {
 				// Check if It Exists.
 				if(PlayState.LuaSprites.exists(spriteName))
-					PlayState.LuaSprites.get(spriteName).animation.play(animation);
+					PlayState.LuaSprites.get(spriteName).animation.play(animation, forced);
 			});
 			Lua_helper.add_callback(luaState, "removeSprite", function(spriteName:String) {
 				// Check if It Exists.
@@ -609,6 +745,11 @@ class ReFunkedLua {
 						PlayState.ActorSprites.get(actorName).scrollFactor.set(x);
 				}
 			});
+			Lua_helper.add_callback(luaState, "setActorSpeed", function(actorName:String, ?speed:Int) {
+				// Check if It Exists.
+				if(PlayState.ActorSprites.exists(actorName))
+					PlayState.ActorSprites.get(actorName).speed = speed;
+			});
 			Lua_helper.add_callback(luaState, "setActorVisibility", function(actorName:String, ?visible:Bool = true) {
 				// Check if It Exists.
 				if(PlayState.ActorSprites.exists(actorName))
@@ -625,6 +766,9 @@ class ReFunkedLua {
 			});
 			Lua_helper.add_callback(luaState, "setCameraAngle", function(camera:String, angle:Float) {
 				returnCamera(camera).angle = angle;
+			});
+			Lua_helper.add_callback(luaState, "setCameraBGColor", function(camera:String, color:String) {
+				returnCamera(camera).bgColor = FlxColor.fromString(color);
 			});
 			Lua_helper.add_callback(luaState, "setCameraPosition", function(x:Float, ?y:Float) {
 				if(y != null) {
@@ -649,6 +793,9 @@ class ReFunkedLua {
 			Lua_helper.add_callback(luaState, "setCamPosPosition", function(x:Float, y:Float) {
 				PlayState.camPosSet["x"] = x;
 				PlayState.camPosSet["y"] = y;
+			});
+			Lua_helper.add_callback(luaState, "setCurSongName", function(songName:String) {
+				PlayState.songName = songName;
 			});
 			Lua_helper.add_callback(luaState, "setCurStage", function(stageName:String) {
 				if(stageName != null)
@@ -742,6 +889,16 @@ class ReFunkedLua {
 				if(PlayState.LuaSprites.exists(spriteName))
 					PlayState.LuaSprites.get(spriteName).alpha = alpha;
 			});
+			Lua_helper.add_callback(luaState, "setSpriteAngle", function(spriteName:String, angle:Float) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.LuaSprites.get(spriteName).angle = angle;
+			});
+			Lua_helper.add_callback(luaState, "setSpriteBlendMode", function(spriteName:String, mode:String) {
+				// Check if It Exists.
+				if(PlayState.LuaSprites.exists(spriteName))
+					PlayState.LuaSprites.get(spriteName).blend = mode;
+			});
 			Lua_helper.add_callback(luaState, "setSpriteCamera", function(spriteName:String, camera:String) {
 				// Check if It Exists.
 				if(PlayState.LuaSprites.exists(spriteName))
@@ -797,7 +954,44 @@ class ReFunkedLua {
 				if(PlayState.LuaSprites.exists(spriteName))
 					PlayState.LuaSprites.get(spriteName).visible = visible;
 			});
-			Lua_helper.add_callback(luaState, "setUIElementVisibility", function(visible:Bool) {
+			Lua_helper.add_callback(luaState, "setUIElementAlpha", function(element:String, alpha:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].alpha = alpha;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementAngle", function(element:String, angle:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].angle = angle;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementX", function(element:String, x:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].x = x;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementY", function(element:String, y:Float) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].y = y;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementVisibility", function(element:String, visible:Bool) {
+				if(PlayState.UIElements.exists(element)) {
+					PlayState.UIElements[element].visible = visible;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsAlpha", function(alpha:Float) {
+				for(element in PlayState.UIElements) {
+					if(element != null)
+						element.alpha = alpha;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsAngle", function(angle:Float) {
+				for(element in PlayState.UIElements) {
+					if(element != null)
+						element.angle = angle;
+				}
+			});
+			Lua_helper.add_callback(luaState, "setUIElementsVisibility", function(visible:Bool) {
 				if(visible)
 					PlayState.PlayStateThing.makeStuffVisibleLol();
 				else
@@ -867,12 +1061,30 @@ class ReFunkedLua {
 
 	public function returnEase(ease:String) {
 		switch(ease.toLowerCase()) {
+			case "backin":
+				return FlxEase.backIn;
+			case "backinout":
+				return FlxEase.backInOut;
+			case "backout":
+				return FlxEase.backOut;
+			case "bouncein":
+				return FlxEase.bounceIn;
+			case "bounceinout":
+				return FlxEase.bounceInOut;
+			case "bounceout":
+				return FlxEase.bounceOut;
 			case "circin":
 				return FlxEase.circIn;
 			case "circinout":
 				return FlxEase.circInOut;
 			case "circout":
 				return FlxEase.circOut;
+			case "cubein":
+				return FlxEase.cubeIn;
+			case "cubeinout":
+				return FlxEase.cubeInOut;
+			case "cubeout":
+				return FlxEase.cubeOut;
 			case "linear":
 				return FlxEase.linear;
 		}

@@ -63,6 +63,8 @@ class TitleState extends MusicBeatState
 		PlayerSettings.init();
 		Options.loadOptions();
 		
+		FlxG.fixedTimestep = false;
+		
 		if (FlxG.save.data.weekUnlocked != null)
 		{
 			if (StoryMenuState.weekUnlocked.length < 4)
@@ -301,7 +303,6 @@ class TitleState extends MusicBeatState
 
 		FlxTween.tween(credTextStuff, {y: credTextStuff.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
-		FlxG.fixedTimestep = false;
 		FlxG.mouse.visible = false;
 
 		if (initialized)

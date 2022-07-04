@@ -59,7 +59,7 @@ class UIStyleSupport {
         "sick" => "sick",
         "good" => "good",
         "bad" => "bad",
-        "shit" => "shit"
+        "awful" => "shit"
     ];
     public static var uiStyleSoundDirectory:String = "assets/shared/sounds/";
 
