@@ -6,6 +6,8 @@ This is the repository for the "ReFunked" engine of Friday Night Funkin' (AKA "F
 
 Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
 
+Note 2: The engine is archived for the foreseeable future. 0.99-alpha-next is the latest version. Thank you for your interest in the engine.
+
 ## Credits
 
 - [pahaze (me)](https://github.com/pahaze) - Programmer
