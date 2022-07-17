@@ -239,11 +239,9 @@ class OptimizedPlayState extends MusicBeatState
 	{
 		destroyLuaObjects();
 		unloadMBSassets();
+		nullOPSLoadedAssets();
 		OPSLoadedMap = new Map<String, Dynamic>();
 		OptimizedPlayStateThing = this;
-
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
 
 		FlxG.fixedTimestep = false;
 
@@ -1542,9 +1540,11 @@ class OptimizedPlayState extends MusicBeatState
 		}
 
 		cpuStrums.forEach(function(spr:FlxSprite) {
-			if(spr.animation.finished) {
-				spr.animation.play('static');
-				spr.centerOffsets();
+			if(spr != null && spr.animation != null) {
+				if(spr.animation.finished) {
+					spr.animation.play('static');
+					spr.centerOffsets();
+				}
 			}
 		});
 
@@ -1558,9 +1558,11 @@ class OptimizedPlayState extends MusicBeatState
 			#end
 		} else {
 			playerStrums.forEach(function(spr:FlxSprite) {
-				if(spr.animation.finished) {
-					spr.animation.play('static');
-					spr.centerOffsets();
+				if(spr != null && spr.animation != null) {
+					if(spr.animation.finished) {
+						spr.animation.play('static');
+						spr.centerOffsets();
+					}
 				}
 			});
 			#if debug
@@ -1644,7 +1646,6 @@ class OptimizedPlayState extends MusicBeatState
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
-				nullOPSLoadedAssets();
 			});
 
 			#if desktop
@@ -1854,7 +1855,6 @@ class OptimizedPlayState extends MusicBeatState
 				vocals.stop();
 			unloadLoadedAssets();
 			unloadMBSassets();
-			nullOPSLoadedAssets();
 		}
 
 		if (controls.CHEAT)
@@ -2215,6 +2215,9 @@ class OptimizedPlayState extends MusicBeatState
 			#end
 		}
 
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
+
 		if (isStoryMode)
 		{
 			campaignScore += songScore;
@@ -2232,7 +2235,6 @@ class OptimizedPlayState extends MusicBeatState
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
-					nullOPSLoadedAssets();
 				});
 
 				StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
@@ -2264,7 +2266,6 @@ class OptimizedPlayState extends MusicBeatState
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
-					nullOPSLoadedAssets();
 				});
 			}
 		} else {
@@ -2281,7 +2282,6 @@ class OptimizedPlayState extends MusicBeatState
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
-				nullOPSLoadedAssets();
 			});
 		}
 	}

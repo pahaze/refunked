@@ -279,11 +279,9 @@ class PlayState extends MusicBeatState {
 	{
 		destroyLuaObjects();
 		unloadMBSassets();
+		nullPSLoadedAssets();
 		PSLoadedMap = new Map<String, Dynamic>();
 		PlayStateThing = this;
-
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
 
 		FlxG.fixedTimestep = false;
 
@@ -2161,9 +2159,11 @@ class PlayState extends MusicBeatState {
 		}
 
 		cpuStrums.forEach(function(spr:FlxSprite) {
-			if(spr.animation.finished) {
-				spr.animation.play('static');
-				spr.centerOffsets();
+			if(spr != null && spr.animation != null) {
+				if(spr.animation.finished) {
+					spr.animation.play('static');
+					spr.centerOffsets();
+				}
 			}
 		});
 
@@ -2177,9 +2177,11 @@ class PlayState extends MusicBeatState {
 			#end
 		} else {
 			playerStrums.forEach(function(spr:FlxSprite) {
-				if(spr.animation.finished) {
-					spr.animation.play('static');
-					spr.centerOffsets();
+				if(spr != null && spr.animation != null) {
+					if(spr.animation.finished) {
+						spr.animation.play('static');
+						spr.centerOffsets();
+					}
 				}
 			});
 			#if debug
@@ -2263,7 +2265,6 @@ class PlayState extends MusicBeatState {
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
-				nullPSLoadedAssets();
 			});
 
 			#if desktop
@@ -2520,7 +2521,6 @@ class PlayState extends MusicBeatState {
 				vocals.stop();
 			unloadLoadedAssets();
 			unloadMBSassets();
-			nullPSLoadedAssets();
 		}
 
 		if (controls.CHEAT) {
@@ -2904,6 +2904,9 @@ class PlayState extends MusicBeatState {
 			#end
 		}
 
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
+
 		if (isStoryMode)
 		{
 			campaignScore += songScore;
@@ -2921,7 +2924,6 @@ class PlayState extends MusicBeatState {
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
-					nullPSLoadedAssets();
 				});
 
 				StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
@@ -2965,7 +2967,6 @@ class PlayState extends MusicBeatState {
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
-					nullPSLoadedAssets();
 				});
 			}
 		} else {
@@ -2980,7 +2981,6 @@ class PlayState extends MusicBeatState {
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
-				nullPSLoadedAssets();
 			});
 		}
 	}
