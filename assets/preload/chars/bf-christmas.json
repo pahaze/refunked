@@ -84,6 +84,7 @@
 	"CharacterAntialiasing": true,
 	"CharacterImage": "images/characters/bfChristmas",
 	"CharacterPosition": [0, 350],
+	"CharacterCameraAdd": [0, -100],
 	"CharacterFlipX": true,
 	"CharacterScale": 1
 }

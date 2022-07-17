@@ -24,6 +24,7 @@ typedef CharJunk = {
 	var CharacterImage:String;
 	var CharacterScale:Float;
 	var CharacterPosition:Array<Float>;
+	var CharacterCameraAdd:Null<Array<Int>>;
 	var CharacterFlipX:Bool;
 	var CharacterAntialiasing:Bool;
 }
@@ -50,6 +51,8 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 	public var holdTimer:Float = 0;
 	public var speed:Int = 1;
+
+	public var cameraAdd:Array<Int> = [];
 
 	var rawJson:String = "";
 	var charPath:String = "";
@@ -121,6 +124,10 @@ class Character extends FlxSprite
 
 				flipX = json.CharacterFlipX;
 				CharPositionUse = json.CharacterPosition;
+				if(json.CharacterCameraAdd != null)
+					cameraAdd = json.CharacterCameraAdd;
+				else
+					cameraAdd = [0, 0];
 
 				if(json.anims != null && json.anims.length > 0) {
 					for(anim in json.anims) {

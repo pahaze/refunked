@@ -43,6 +43,7 @@ class OptimizedReFunkedLua {
 			setVar('bpm', OptimizedPlayState.SONG.bpm);
 			setVar('crochet', Conductor.crochet);
 			setVar('curBeat', 0);
+			setVar('curBPM', Conductor.bpm);
 			setVar('curStep', 0);
 			setVar('girlfriend', 'girlfriend');
 			setVar('girlfriendName', OptimizedPlayState.SONG.gfPlayer);

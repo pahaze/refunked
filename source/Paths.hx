@@ -22,7 +22,6 @@ class Paths
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
 	static var currentLevel:String;
-	static var PathsLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	static public function setCurrentLevel(name:String)
 	{
@@ -152,7 +151,6 @@ class Paths
 	{
 		var result;
 		result = FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
-		PathsLoadedMap[key] = result;
 		return result;
 	}
 	
@@ -168,7 +166,6 @@ class Paths
 			// we'll get there one day
 			result = FlxAtlasFrames.fromSparrow("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".xml"));
 		#end
-		PathsLoadedMap[key] = result;
 		return result;
 	}
 
@@ -176,7 +173,6 @@ class Paths
 	{
 		var result;
 		result = FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
-		PathsLoadedMap[key] = result;
 		return result;
 	}
 
@@ -192,18 +188,6 @@ class Paths
 			// we'll get there one day 
 			result = FlxAtlasFrames.fromSpriteSheetPacker("assets/" + key + ".png", Utilities.getFileContents("./assets/" + key + ".txt"));
 		#end
-		PathsLoadedMap[key] = result;
 		return result;
-	}
-
-	static public function nullPathsAssets():Void
-	{
-		if(PathsLoadedMap != null) {
-			for(sprite in PathsLoadedMap) {
-				sprite = null;
-			}
-		}
-		PathsLoadedMap = null;
-		PathsLoadedMap = new Map<String, Dynamic>();
 	}
 }

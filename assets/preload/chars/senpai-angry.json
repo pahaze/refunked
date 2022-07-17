@@ -43,6 +43,7 @@
 	],
 	"CharacterAntialiasing": false,
 	"CharacterImage": "images/characters/senpai",
+	"CharacterCameraAdd": [-250, -330],
 	"CharacterPosition": [0, 0],
 	"CharacterFlipX": false,
 	"CharacterScale": 6

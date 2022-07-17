@@ -170,9 +170,6 @@ class PreviewTheme extends MusicBeatState {
 
     override public function create()
     {
-		OptionsMenu.nullOMLoadedAssets();
-		Paths.nullPathsAssets();
-		nullPTLoadedAssets();
 		PTLoadedMap = new Map<String, Dynamic>();
 
 		transIn = FlxTransitionableState.defaultTransIn;
@@ -742,8 +739,11 @@ class PreviewTheme extends MusicBeatState {
 
         if (controls.BACK) {
 			FlxG.switchState(new OptionsMenu());
-            unloadLoadedAssets();
-            unloadMBSassets();
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				unloadLoadedAssets();
+				unloadMBSassets();
+				nullPTLoadedAssets();
+			});
 			inst.stop();
 			vocals.stop();
         }
@@ -1675,8 +1675,11 @@ class PreviewTheme extends MusicBeatState {
 			vocals.volume = 0;
 		}
 
-        unloadLoadedAssets();
-        unloadMBSassets();
+		new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+			unloadLoadedAssets();
+			unloadMBSassets();
+			nullPTLoadedAssets();
+		});
 
         FlxG.switchState(new OptionsMenu());
     }

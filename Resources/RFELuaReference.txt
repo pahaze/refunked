@@ -197,7 +197,7 @@ playSpriteAnimation(sprite-name, animation, forced(bool)) - Makes a sprite play 
 
 removeSprite(sprite-name) - Removes a sprite.
 
-resetCameraPosition(x, y) - Removes the positioning set for camFollow by setCameraPosition().
+resetCameraPosition(x, y, snap(bool)) - Removes the positioning set for camFollow by setCameraPosition().
 
 setActorGraphicSize(sprite-name, x, y) - Sets an actor's graphic size (NOT the same as scale).
 
@@ -221,7 +221,7 @@ setCameraAngle(camera-name, angle) - Sets the angle of a camera (notes, healthba
 
 setCameraBGColor(camera-name, color) - Sets the background color of a camera.
 
-setCameraPosition(x, y) - Sets camFollow's position and keeps it there.
+setCameraPosition(x, y, snap(bool)) - Sets camFollow's position and keeps it there.
 
 setCameraVisibility(camera-name, visible(bool)) - Sets a camera's visibility.
 

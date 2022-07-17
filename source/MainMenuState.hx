@@ -42,13 +42,6 @@ class MainMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 		
-		FreeplayState.nullFPLoadedAssets();
-		OptionsMenu.nullOMLoadedAssets();
-		Paths.nullPathsAssets();
-		PlayState.nullPSLoadedAssets();
-		StoryMenuState.nullSMSLoadedAssets();
-		TitleState.nullTSLoadedAssets();
-		nullMMLoadedAssets();
 		MMLoadedMap = new Map<String, Dynamic>();
 		ModSupport.loadModsFolders();
 
@@ -147,6 +140,11 @@ class MainMenuState extends MusicBeatState
 			if (controls.BACK)
 			{
 				FlxG.switchState(new TitleState());
+				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+					unloadLoadedAssets();
+					unloadMBSassets();
+					nullMMLoadedAssets();
+				});
 			}
 
 			if (controls.ACCEPT)
@@ -185,6 +183,7 @@ class MainMenuState extends MusicBeatState
 								new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 									unloadLoadedAssets();
 									unloadMBSassets();
+									nullMMLoadedAssets();
 								});
 
 								var daChoice:String = optionStuff[curSelected];

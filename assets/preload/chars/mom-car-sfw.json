@@ -44,6 +44,7 @@
 	"CharacterAntialiasing": true,
 	"CharacterImage": "images/characters/momCarSFW",
 	"CharacterPosition": [0, 0],
+	"CharacterCameraAdd": [0, 100],
 	"CharacterFlipX": false,
 	"CharacterScale": 1
 }

@@ -73,7 +73,6 @@ class MusicBeatState extends FlxUIState
 
 	public function beatHit():Void
 	{
-		//do literally nothing dumbass
 	}
 
 	override function add(Object:flixel.FlxBasic):flixel.FlxBasic

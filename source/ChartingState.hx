@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -28,6 +29,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.events.Event;
@@ -40,6 +42,8 @@ using StringTools;
 
 class ChartingState extends MusicBeatState
 {
+	var cameraPosition:FlxObject;
+
 	var _file:FileReference;
 	var UI_box:FlxUITabMenu;
 
@@ -85,9 +89,6 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
-		Paths.nullPathsAssets();
-		PlayState.nullPSLoadedAssets();
-		nullCSLoadedAssets();
 		CSLoadedMap = new Map<String, Dynamic>();
 		curSection = lastSection;
 
@@ -204,14 +205,17 @@ class ChartingState extends MusicBeatState
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		bpmTxt = new FlxText(1000, 50, 0, "", 16);
+		bpmTxt = new FlxText(975, 50, 0, "", 16);
 		bpmTxt.scrollFactor.set();
 		add(bpmTxt);
 		CSLoadedMap["bpmTxt"] = bpmTxt;
 
-		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(FlxG.width / 2), 4);
+		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(GRID_SIZE * 8), 4);
 		add(strumLine);
 		CSLoadedMap["strumLine"] = strumLine;
+
+		cameraPosition = new FlxObject(0, 0, 1, 1);
+		cameraPosition.setPosition(strumLine.x + (GRID_SIZE * 8));
 
 		dummyArrow = new FlxSprite().makeGraphic(GRID_SIZE, GRID_SIZE);
 		add(dummyArrow);
@@ -226,7 +230,7 @@ class ChartingState extends MusicBeatState
 		UI_box = new FlxUITabMenu(null, tabs, true);
 
 		UI_box.resize(300, 400);
-		UI_box.x = FlxG.width / 2;
+		UI_box.x = (FlxG.width / 2) + (GRID_SIZE / 2);
 		UI_box.y = 20;
 		add(UI_box);
 		CSLoadedMap["UI_box"] = UI_box;
@@ -441,7 +445,7 @@ class ChartingState extends MusicBeatState
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
 
-		FlxG.camera.follow(strumLine);
+		FlxG.camera.follow(cameraPosition);
 	}
 
 	function fixStoryWeek(broStage:String) {
@@ -725,6 +729,7 @@ class ChartingState extends MusicBeatState
 		#end
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
+		cameraPosition.y = strumLine.y;
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{
@@ -803,6 +808,9 @@ class ChartingState extends MusicBeatState
 			} else {
 				FlxG.switchState(new PlayState());
 			}
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				nullCSLoadedAssets();
+			});
 		}
 
 		if (FlxG.keys.justPressed.E)
@@ -921,7 +929,8 @@ class ChartingState extends MusicBeatState
 		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 			changeSection(curSection - shiftThing);
 
-		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
+		bpmTxt.text = bpmTxt.text = Std.string("Current Pos: "
+			+ FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(inst.length / 1000, 2))
 			+ "\nSection: "

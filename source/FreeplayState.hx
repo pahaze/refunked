@@ -87,14 +87,10 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		nullFPLoadedAssets();
 		diffsAvailable = new Map<String, Array<String>>();
 		FPLoadedMap = new Map<String, Dynamic>();
 		unloadMBSassets();
-		MainMenuState.nullMMLoadedAssets();
-		PlayState.nullPSLoadedAssets();
 		PlayState.SONG = null;
-		OptimizedPlayState.nullOPSLoadedAssets();
 		OptimizedPlayState.SONG = null;
 		rawJson = null;
 
@@ -245,6 +241,11 @@ class FreeplayState extends MusicBeatState
 		if (controls.BACK)
 		{
 			FlxG.switchState(new MainMenuState());
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				unloadLoadedAssets();
+				unloadMBSassets();
+				nullFPLoadedAssets();
+			});
 		}
 
 		if (accepted)
@@ -278,6 +279,7 @@ class FreeplayState extends MusicBeatState
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
+				nullFPLoadedAssets();
 			});
 			if(Options.useOptimized) {
 				OptimizedPlayState.SONG = Song.loadFromModJson(songs[curSelected].mod, poop, songs[curSelected].songData.toLowerCase());
@@ -301,7 +303,7 @@ class FreeplayState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		} else {
-			trace("Song JSON" + poop + "doesn't exist!");
+			trace("Song JSON " + poop + " doesn't exist!");
 			nonExistantBG.visible = true;
 			nonExistantText.visible = true;
 			new FlxTimer().start(2, function(tmr:FlxTimer) {
@@ -316,6 +318,7 @@ class FreeplayState extends MusicBeatState
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
+				nullFPLoadedAssets();
 			});
 			if(Options.useOptimized) {
 				OptimizedPlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songData.toLowerCase());

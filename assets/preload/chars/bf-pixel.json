@@ -75,6 +75,7 @@
 	],
 	"CharacterAntialiasing": false,
 	"CharacterImage": "images/characters/bfPixel",
+	"CharacterCameraAdd": [-160, -160],
 	"CharacterPosition": [0, 350],
 	"CharacterFlipX": true,
 	"CharacterScale": 6

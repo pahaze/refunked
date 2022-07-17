@@ -13,6 +13,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import lime.utils.Assets;
 import openfl.Lib;
 #if sys
@@ -68,17 +69,14 @@ class OptionsMenu extends MusicBeatState
 	var keybindAlphaText:FlxText = null;
 
 	// Memory
+	var OMLoadedAssets:Array<Dynamic> = [];
 	static var OMLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
 	var textCounter:Int = 0;
 
 	override function create()
 	{
-		MainMenuState.nullMMLoadedAssets();
 		Options.loadOptions();
-		Paths.nullPathsAssets();
-		PreviewTheme.nullPTLoadedAssets();
 		loadThemes();
-		nullOMLoadedAssets();
 		OMLoadedMap = new Map<String, Dynamic>();
 
 		settingsTabs.push("Gameplay");
@@ -194,6 +192,11 @@ class OptionsMenu extends MusicBeatState
 				Options.saveOptions();
 				Options.reloadControls();
 				FlxG.switchState(new MainMenuState());
+				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+					unloadLoadedAssets();
+					unloadMBSassets();
+					nullOMLoadedAssets();
+				});
 			}
 
 			if (controls.UP_P)
@@ -308,6 +311,11 @@ class OptionsMenu extends MusicBeatState
 			if(FlxG.keys.justPressed.P) {
 				PreviewTheme.SONG = Song.loadFromJson('test-hard', 'test');
 				PreviewLoadingState.loadAndSwitchState(new PreviewTheme());
+				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+					unloadLoadedAssets();
+					unloadMBSassets();
+					nullOMLoadedAssets();
+				});
 			}
 
 			if(FlxG.keys.justPressed.T) {
@@ -590,6 +598,20 @@ class OptionsMenu extends MusicBeatState
 			grpControls.add(Text);
 			OMLoadedMap["text" + i + settingsStuff[i] + textCounter] = Text;
 			textCounter++;
+		}
+	}
+
+	override function add(Object:flixel.FlxBasic):flixel.FlxBasic
+	{
+		OMLoadedAssets.insert(OMLoadedAssets.length, Object);
+		return super.add(Object);
+	}
+
+	function unloadLoadedAssets():Void
+	{
+		for (asset in OMLoadedAssets)
+		{
+			remove(asset);
 		}
 	}
 

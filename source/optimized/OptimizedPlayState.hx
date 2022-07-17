@@ -147,7 +147,6 @@ class OptimizedPlayState extends MusicBeatState
 	var scrollVersion:Int;
 	var songLength:Float = 0;
 	var songPercentage:Float = 0;
-	var tempText:String;
 	var themeBounceTweens:Map<OptimizedThemeText, FlxTween> = new Map<OptimizedThemeText, FlxTween>();
 	var themeScrollTweens:Map<OptimizedThemeText, FlxTween> = new Map<OptimizedThemeText, FlxTween>();
 	public var timeBar:FlxBar;
@@ -188,15 +187,11 @@ class OptimizedPlayState extends MusicBeatState
 
 	// Memory related stuff
 	var comboCount:Int = 0;
-	var dunceCount:Int = 0;
 	var loadingSongAlphaScreen:FlxSprite;
 	var loadingSongText:FlxText;
-	var numCount:Int = 0;
 	private var OPSLoadedAssets:Array<FlxBasic> = [];
 	static var OPSLoadedMap:Map<String, Dynamic> = new Map<String, Dynamic>();
-	var ratingCount:Int = 0;
 	var stuffLoaded:Bool = false;
-	var useNote:FlxSprite;
 
 	// Mods!
 	public static var isModSong:Bool = false;
@@ -243,11 +238,7 @@ class OptimizedPlayState extends MusicBeatState
 	override public function create()
 	{
 		destroyLuaObjects();
-		nullOPSLoadedAssets();
 		unloadMBSassets();
-		FreeplayState.nullFPLoadedAssets();
-		Paths.nullPathsAssets();
-		StoryMenuState.nullSMSLoadedAssets();
 		OPSLoadedMap = new Map<String, Dynamic>();
 		OptimizedPlayStateThing = this;
 
@@ -352,9 +343,7 @@ class OptimizedPlayState extends MusicBeatState
 		add(strumLineNotes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
-		UIElements["playerstrums"] = playerStrums;
 		cpuStrums = new FlxTypedGroup<FlxSprite>();
-		UIElements["cpustrums"] = cpuStrums;
 
 		loadingSongAlphaScreen = new FlxSprite(-600,-600).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		loadingSongAlphaScreen.visible = false;
@@ -875,7 +864,7 @@ class OptimizedPlayState extends MusicBeatState
 			if(Options.middlescroll)
 				cpuStrums.members[i].visible = false;
 			else
-				UIElements["cpunote" + i] = playerStrums.members[i];
+				UIElements["cpunote" + i] = cpuStrums.members[i];
 		}
 		#if sys
 			for(i in 0...playerStrums.length) {
@@ -1326,8 +1315,13 @@ class OptimizedPlayState extends MusicBeatState
 			setLuaVar('curBeat', curBeat);
 			setLuaVar('curStep', curStep);
 			setLuaVar('health', health);
-			setLuaVar('songPosition', Conductor.songPosition);
-			luaCallback("update", []);
+			if(stuffLoaded) {
+				setLuaVar('instPosition', inst.time);
+				setLuaVar('songPosition', FlxMath.roundDecimal(Conductor.songPosition, 0));
+				setLuaVar('songPositionExact', Conductor.songPosition);
+				setLuaVar('vocalsPosition', vocals.time);
+			}
+			luaCallback("update", [elapsed]);
 		#end
 
 		if (FlxG.keys.justPressed.NINE) {
@@ -1484,25 +1478,61 @@ class OptimizedPlayState extends MusicBeatState
 
 		funnyRating = Utilities.calculateThemeRating(accuracyThing, ThemeSupport.RatingStyle);
 
-		for(i in 0...UITexts.length) {
-			tempText = replaceStageVarsInTheme(UITexts[i].texts[gameMode]);
-			if(UITexts[i].text != tempText)
-				UITexts[i].text = tempText;
-			if(UITexts[i].center[0])
-				UITexts[i].screenCenter(X);
-			if(UITexts[i].center[1])
-				UITexts[i].screenCenter(Y);
-			if(UITexts[i].fromWidth)
-				checkUITextX(UITexts[i]);
-			if(UITexts[i].fromHeight)
-				checkUITextY(UITexts[i]);
-		}
-
 		botplaySine += 180 * elapsed;
 		var alpher:Float = 1 - Math.sin(botplaySine / 180);
-		for(i in 0...UITexts.length) {
-			if(!inCutscene && UITexts[i].fades) {
-				UITexts[i].alpha = alpher;
+		
+		// beeg statement
+		if(!inCutscene && stuffLoaded) {
+			for(i in 0...UITexts.length) {
+				var tempText:String = replaceStageVarsInTheme(UITexts[i].texts[gameMode]);
+				if(UITexts[i].text != tempText) {
+					UITexts[i].text = tempText;
+					if(UITexts[i].center[0])
+						UITexts[i].screenCenter(X);
+					if(UITexts[i].center[1])
+						UITexts[i].screenCenter(Y);
+					if(UITexts[i].fromWidth)
+						checkUITextX(UITexts[i]);
+					if(UITexts[i].fromHeight)
+						checkUITextY(UITexts[i]);
+				}
+
+				if(UITexts[i].fades)
+					UITexts[i].alpha = alpher;
+
+				if(UITexts[i].scrolls) {
+					if(UITexts[i].x == UITexts[i].ogX) {
+						UITexts[i].inPlace = true;
+						if(themeScrollTweens[UITexts[i]] != null)
+							themeScrollTweens[UITexts[i]].cancel();
+						new FlxTimer().start(5, function(tmr:FlxTimer) {
+							UITexts[i].inPlace = false;
+							if(!paused) {
+								if(UITexts[i].x < UITexts[i].ogX + 1 && UITexts[i].x > UITexts[i].ogX - 1)
+									UITexts[i].x = UITexts[i].x - 1;
+							}
+						});
+					}
+					if(UITexts[i].inPlace == false) {
+						if(UITexts[i].x < -1280) {
+							UITexts[i].x = FlxG.width;
+						} else {
+							if(themeScrollTweens[UITexts[i]] != null)
+								themeScrollTweens[UITexts[i]].cancel();
+							themeScrollTweens[UITexts[i]] = FlxTween.tween(UITexts[i], {x: UITexts[i].x - 1}, (elapsed < 0.01 ? (elapsed / 2) / 10 : elapsed / 10));
+						}
+					}
+				}
+				
+				if(UITexts[i].bounceTweenEnabled && UITexts[i].bounceTweenType.toLowerCase() == "beathit") {
+					if(themeBounceTweens[UITexts[i]] != null) 
+						themeBounceTweens[UITexts[i]].cancel();
+					themeBounceTweens[UITexts[i]] = FlxTween.tween(UITexts[i].scale, {x: 1, y: 1}, (elapsed < 0.01 ? ((elapsed < 0.005 ? elapsed * 3 : elapsed * 2)) * 9 : elapsed * 9), {
+						onComplete: function(bruh:FlxTween) {
+							themeBounceTweens[UITexts[i]] = null;
+						}
+					});
+				}
 			}
 		}
 
@@ -1609,50 +1639,17 @@ class OptimizedPlayState extends MusicBeatState
 		{
 			inst.stop();
 			vocals.stop();
+			endingSong = true;
 			FlxG.switchState(new OptimizedChartingState());
+			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+				unloadLoadedAssets();
+				unloadMBSassets();
+				nullOPSLoadedAssets();
+			});
 
 			#if desktop
 				DiscordClient.changePresence("Chart Editor", null, null, true);
 			#end
-		}
-
-		if(!inCutscene && stuffLoaded) {
-			for(i in 0...UITexts.length)
-				if(UITexts[i].scrolls) {
-					if(UITexts[i].x == UITexts[i].ogX) {
-						UITexts[i].inPlace = true;
-						if(themeScrollTweens[UITexts[i]] != null)
-							themeScrollTweens[UITexts[i]].cancel();
-						new FlxTimer().start(5, function(tmr:FlxTimer) {
-							UITexts[i].inPlace = false;
-							if(!paused) {
-								if(UITexts[i].x < UITexts[i].ogX + 1 && UITexts[i].x > UITexts[i].ogX - 1)
-									UITexts[i].x = UITexts[i].x - 1;
-							}
-						});
-					}
-					if(UITexts[i].inPlace == false) {
-						if(UITexts[i].x < -1280) {
-							UITexts[i].x = FlxG.width;
-						} else {
-							if(themeScrollTweens[UITexts[i]] != null)
-								themeScrollTweens[UITexts[i]].cancel();
-							themeScrollTweens[UITexts[i]] = FlxTween.tween(UITexts[i], {x: UITexts[i].x - 1}, (elapsed < 0.01 ? (elapsed / 2) / 10 : elapsed / 10));
-						}
-					}
-				}
-		}
-
-		for(i in 0...UITexts.length) {
-			if(UITexts[i].bounceTweenEnabled && UITexts[i].bounceTweenType.toLowerCase() == "beathit") {
-				if(themeBounceTweens[UITexts[i]] != null) 
-					themeBounceTweens[UITexts[i]].cancel();
-				themeBounceTweens[UITexts[i]] = FlxTween.tween(UITexts[i].scale, {x: 1, y: 1}, (elapsed < 0.01 ? ((elapsed < 0.005 ? elapsed * 3 : elapsed * 2)) * 9 : elapsed * 9), {
-					onComplete: function(bruh:FlxTween) {
-						themeBounceTweens[UITexts[i]] = null;
-					}
-				});
-			}
 		}
 
 		if(ThemeSupport.HealthbarEnabled && ThemeSupport.Healthbar.showIcons[0]) {
@@ -1717,17 +1714,17 @@ class OptimizedPlayState extends MusicBeatState
 					}
 				default:
 					if (healthBar.percent > 80) {
-							if(ThemeSupport.Healthbar.showIcons[0]) {
+						if(ThemeSupport.Healthbar.showIcons[0]) {
 							iconP1.animation.curAnim.curFrame = 2;
 						}
 						if(ThemeSupport.Healthbar.showIcons[1]) {
 							iconP2.animation.curAnim.curFrame = 1;
-							}
+						}
 					} else if(healthBar.percent < 20) {
 						if(ThemeSupport.Healthbar.showIcons[0]) {
 							iconP1.animation.curAnim.curFrame = 1;
 						}
-							if(ThemeSupport.Healthbar.showIcons[1]) {
+						if(ThemeSupport.Healthbar.showIcons[1]) {
 							iconP2.animation.curAnim.curFrame = 2;
 						}
 					} else {
@@ -1786,20 +1783,22 @@ class OptimizedPlayState extends MusicBeatState
 		}
 		else
 		{
-			Conductor.songPosition += FlxG.elapsed * 1000;
+			if(!endingSong) {
+				Conductor.songPosition += FlxG.elapsed * 1000;
 
-			if (!paused)
-			{
-				songTime += FlxG.game.ticks - previousFrameTime;
-				previousFrameTime = FlxG.game.ticks;
-
-				if (Conductor.lastSongPos != Conductor.songPosition)
+				if (!paused)
 				{
-					songTime = (songTime + Conductor.songPosition) / 2;
-					Conductor.lastSongPos = Conductor.songPosition;
-				}
+					songTime += FlxG.game.ticks - previousFrameTime;
+					previousFrameTime = FlxG.game.ticks;
 
-				songPercentage = (Conductor.songPosition / songLength);
+					if (Conductor.lastSongPos != Conductor.songPosition)
+					{
+						songTime = (songTime + Conductor.songPosition) / 2;
+						Conductor.lastSongPos = Conductor.songPosition;
+					}
+
+					songPercentage = (Conductor.songPosition / songLength);
+				}
 			}
 		}
 
@@ -1833,6 +1832,7 @@ class OptimizedPlayState extends MusicBeatState
 		FlxG.watch.addQuick("elapsed", elapsed);
 		FlxG.watch.addQuick("beatStuff", curBeat);
 		FlxG.watch.addQuick("stepStuff", curStep);
+		FlxG.watch.addQuick("songPosition", Conductor.songPosition);
 
 		// RESET = Quick Game Over Screen
 		if (controls.RESET && stuffLoaded && !inCutscene)
@@ -1854,6 +1854,7 @@ class OptimizedPlayState extends MusicBeatState
 				vocals.stop();
 			unloadLoadedAssets();
 			unloadMBSassets();
+			nullOPSLoadedAssets();
 		}
 
 		if (controls.CHEAT)
@@ -1894,10 +1895,7 @@ class OptimizedPlayState extends MusicBeatState
 				notes.add(dunceNote);
 
 				var index:Int = unspawnNotes.indexOf(dunceNote);
-				unspawnNotes.shift();
-				dunceCount++;
-
-				OPSLoadedMap.set("dunceNote" + index + dunceCount, dunceNote);
+				unspawnNotes.splice(index, 1);
 			}
 		}
 
@@ -1919,7 +1917,7 @@ class OptimizedPlayState extends MusicBeatState
 					daNote.active = true;
 				}
 
-				useNote = (daNote.mustPress ? playerStrums.members[daNote.noteData] : cpuStrums.members[daNote.noteData]);
+				var useNote:FlxSprite = (daNote.mustPress ? playerStrums.members[daNote.noteData] : cpuStrums.members[daNote.noteData]);
 				
 				daNote.x = useNote.x;
 				if(!daNote.isSustainNote)
@@ -1967,8 +1965,8 @@ class OptimizedPlayState extends MusicBeatState
 
 					#if sys
 						if(daNote.noteType != "normal" && daNote.noteType != "pixel") {
-							luaCallback("goodNoteHit", [daNote.noteData, daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
-							luaCallback("opponentNoteHit", [daNote.noteData, daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
+							luaCallback("goodNoteHit", [Math.abs(daNote.noteData), daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
+							luaCallback("opponentNoteHit", [Math.abs(daNote.noteData), daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
 						} else {
 					#end
 						var altAnim:String = "";
@@ -2021,10 +2019,10 @@ class OptimizedPlayState extends MusicBeatState
 					{
 						#if sys
 							if(daNote.noteType != "normal" && daNote.noteType != "pixel") {
-								luaCallback("noteMiss", [daNote.noteData, daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
+								luaCallback("noteMiss", [Math.abs(daNote.noteData), daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
 							} else {
 						#end
-							luaCallback("noteMiss", [daNote.noteData, daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
+							luaCallback("noteMiss", [Math.abs(daNote.noteData), daNote.isSustainNote, daNote.mustPress, daNote.noteType, daNote.ID]);
 							health -= 0.0475;
 							misses++;
 							accNotesTotal++;
@@ -2234,6 +2232,7 @@ class OptimizedPlayState extends MusicBeatState
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
+					nullOPSLoadedAssets();
 				});
 
 				StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
@@ -2265,6 +2264,7 @@ class OptimizedPlayState extends MusicBeatState
 				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 					unloadLoadedAssets();
 					unloadMBSassets();
+					nullOPSLoadedAssets();
 				});
 			}
 		} else {
@@ -2281,6 +2281,7 @@ class OptimizedPlayState extends MusicBeatState
 			new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
 				unloadLoadedAssets();
 				unloadMBSassets();
+				nullOPSLoadedAssets();
 			});
 		}
 	}
@@ -2360,7 +2361,6 @@ class OptimizedPlayState extends MusicBeatState
 			rating.acceleration.y = 550;
 			rating.velocity.y -= FlxG.random.int(140, 175);
 			rating.velocity.x -= FlxG.random.int(0, 10);
-			OPSLoadedMap["rating" + ratingCount + daRating] = rating;
 
 			#if sys
 				var comboSpr:FlxSprite = new FlxSprite().loadGraphic(BitmapData.fromFile(UIStyleSupport.image(UIStyleSupport.uiStyleComboAsset)));
@@ -2372,8 +2372,6 @@ class OptimizedPlayState extends MusicBeatState
 			comboSpr.acceleration.y = 600;
 			comboSpr.velocity.y -= 150;
 			comboSpr.velocity.x += FlxG.random.int(1, 10);
-			OPSLoadedMap["comboSpr" + ratingCount + daRating] = comboSpr;
-			ratingCount++;
 
 			if(combo >= 10)
 				add(comboSpr);
@@ -2415,8 +2413,6 @@ class OptimizedPlayState extends MusicBeatState
 				numScore.screenCenter();
 				numScore.x = coolText.x + (43 * daLoop) - 90;
 				numScore.y += 80;
-				OPSLoadedMap["numScore" + numCount + i] = numScore;
-				numCount++;
 
 				numScore.antialiasing = UIStyleSupport.uiStyleAntialiasing;
 				if (!UIStyleSupport.uiStyleIsPixel)

@@ -21,7 +21,6 @@ class OptimizedGameOverSubstate extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float)
 	{
-		Paths.nullPathsAssets();
 		if(OptimizedPlayState.uiStyle == "pixel")
 			stageSuffix = "-pixel";
 

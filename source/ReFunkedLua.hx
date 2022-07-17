@@ -43,6 +43,7 @@ class ReFunkedLua {
 			setVar('bpm', PlayState.SONG.bpm);
 			setVar('crochet', Conductor.crochet);
 			setVar('curBeat', 0);
+			setVar('curBPM', Conductor.bpm);
 			setVar('curStep', 0);
 			setVar('girlfriend', 'girlfriend');
 			setVar('girlfriendName', PlayState.SONG.gfPlayer);
@@ -692,12 +693,18 @@ class ReFunkedLua {
 				if(PlayState.LuaSprites.exists(spriteName))
 					PlayState.PlayStateThing.remove(PlayState.LuaSprites.get(spriteName));
 			});
-			Lua_helper.add_callback(luaState, "resetCameraPosition", function(x:Float, ?y:Float) {
+			Lua_helper.add_callback(luaState, "resetCameraPosition", function(x:Float, ?y:Float, ?snap:Bool = false) {
 				if(y != null) {
-					PlayState.camFollow.x = x;
-					PlayState.camFollow.y = y;
+					PlayState.camFollowPoint.x = x;
+					PlayState.camFollowPoint.y = y;
+					if(snap) {
+						PlayState.camFollow.x = x;
+						PlayState.camFollow.y = y;
+					}
 				} else {
-					PlayState.camFollow.x = x;
+					PlayState.camFollowPoint.x = x;
+					if(snap)
+						PlayState.camFollow.x = x;
 				}
 				PlayState.camFollowSet = false;
 			});
@@ -770,12 +777,18 @@ class ReFunkedLua {
 			Lua_helper.add_callback(luaState, "setCameraBGColor", function(camera:String, color:String) {
 				returnCamera(camera).bgColor = FlxColor.fromString(color);
 			});
-			Lua_helper.add_callback(luaState, "setCameraPosition", function(x:Float, ?y:Float) {
+			Lua_helper.add_callback(luaState, "setCameraPosition", function(x:Float, ?y:Float, ?snap:Bool) {
 				if(y != null) {
-					PlayState.camFollow.x = x;
-					PlayState.camFollow.y = y;
+					PlayState.camFollowPoint.x = x;
+					PlayState.camFollowPoint.y = y;
+					if(snap) {
+						PlayState.camFollow.x = x;
+						PlayState.camFollow.y = y;
+					}
 				} else {
-					PlayState.camFollow.x = x;
+					PlayState.camFollowPoint.x = x;
+					if(snap)
+						PlayState.camFollow.x = x;
 				}
 				PlayState.camFollowSet = true;
 			});

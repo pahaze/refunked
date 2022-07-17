@@ -50,8 +50,6 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		unloadMBSassets();
-		nullTSLoadedAssets();
-		Paths.nullPathsAssets();
 		TSLoadedMap = new Map<String, Dynamic>();
 
 		curWacky = FlxG.random.getObject(getIntroTextStuff());
@@ -62,8 +60,6 @@ class TitleState extends MusicBeatState
 		Options.checkControls();
 		PlayerSettings.init();
 		Options.loadOptions();
-		
-		FlxG.fixedTimestep = false;
 		
 		if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -374,9 +370,12 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
-				unloadLoadedAssets();
-				unloadMBSassets();
 				FlxG.switchState(new MainMenuState());
+				new FlxTimer().start(transOut.duration, function(tmr:FlxTimer) {
+					unloadLoadedAssets();
+					unloadMBSassets();
+					nullTSLoadedAssets();
+				});
 			});
 		}
 

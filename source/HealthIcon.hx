@@ -45,6 +45,7 @@ class HealthIcon extends FlxSprite
 		}
 
 		changeIcon(char, isPlayer, modIcon);
+		scrollFactor.set();
 	}
 
 	public function changeIcon(char:String = 'bf', isPlayer:Bool = false, ?mod:String = "") {
@@ -79,7 +80,6 @@ class HealthIcon extends FlxSprite
 
 			animation.add(char, [0, 1, 2], 0, false, isPlayer);
 			animation.play(char);
-			scrollFactor.set();
 		}
 	}
 
