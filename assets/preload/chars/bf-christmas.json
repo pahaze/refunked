@@ -1,0 +1,90 @@
+{
+	"Anims": [
+		{
+			"Offsets": [-3, -1],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "BF idle dance"
+		},
+		{
+			"Offsets": [12, -6],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE LEFT0"
+		},
+		{
+			"Offsets": [-10, -50],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE DOWN0"
+		},
+		{
+			"Offsets": [-29, 27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE UP0"
+		},
+		{
+			"Offsets": [-38, -7],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE RIGHT0"
+		},
+		{
+			"Offsets": [12, 24],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFTmiss",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE LEFT MISS"
+		},
+		{
+			"Offsets": [-11, -19],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWNmiss",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE DOWN MISS"
+		},
+		{
+			"Offsets": [-29, 27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUPmiss",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE UP MISS"
+		},
+		{
+			"Offsets": [-30, 21],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHTmiss",
+			"AnimIndices": [],
+			"AnimPrefix": "BF NOTE RIGHT MISS"
+		},
+		{
+			"Offsets": [-3, 5],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "hey",
+			"AnimIndices": [],
+			"AnimPrefix": "BF HEY"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "characters/bfChristmas",
+	"CharacterPositionOffsets": [0, 350],
+	"CharacterCameraOffsets": [0, -100],
+	"CharacterFlipX": true,
+	"CharacterScale": 1
+}

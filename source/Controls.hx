@@ -4,10 +4,8 @@ import flixel.FlxG;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
-import flixel.input.actions.FlxActionInputDigital;
 import flixel.input.actions.FlxActionManager;
 import flixel.input.actions.FlxActionSet;
-import flixel.input.gamepad.FlxGamepadButton;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 
@@ -493,15 +491,16 @@ class Controls extends FlxActionSet
 			removeKeyboard();
 
 		keyboardScheme = scheme;
+		var keyboardMap = Options.keybindMap;
 		
 		#if (haxe >= "4.0.0")
 		switch (scheme)
 		{
 			case Solo:
-				inline bindKeys(Control.UP, [W, FlxKey.UP]);
-				inline bindKeys(Control.DOWN, [S, FlxKey.DOWN]);
-				inline bindKeys(Control.LEFT, [A, FlxKey.LEFT]);
-				inline bindKeys(Control.RIGHT, [D, FlxKey.RIGHT]);
+				inline bindKeys(Control.UP, keyboardMap.get("UP"));
+				inline bindKeys(Control.DOWN, keyboardMap.get("DOWN"));
+				inline bindKeys(Control.LEFT, keyboardMap.get("LEFT"));
+				inline bindKeys(Control.RIGHT, keyboardMap.get("RIGHT"));
 				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
@@ -531,10 +530,10 @@ class Controls extends FlxActionSet
 		switch (scheme)
 		{
 			case Solo:
-				bindKeys(Control.UP, [W, FlxKey.UP]);
-				bindKeys(Control.DOWN, [S, FlxKey.DOWN]);
-				bindKeys(Control.LEFT, [A, FlxKey.LEFT]);
-				bindKeys(Control.RIGHT, [D, FlxKey.RIGHT]);
+				bindKeys(Control.UP, keyboardMap.get("UP"));
+				bindKeys(Control.DOWN, keyboardMap.get("DOWN"));
+				bindKeys(Control.LEFT, keyboardMap.get("LEFT"));
+				bindKeys(Control.RIGHT, keyboardMap.get("RIGHT"));
 				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);

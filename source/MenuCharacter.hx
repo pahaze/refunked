@@ -1,19 +1,16 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
-class MenuCharacter extends FlxSprite
-{
+class MenuCharacter extends FlxSprite {
 	public var character:String;
 
-	public function new(x:Float, character:String = 'bf')
-	{
+	public function new(x:Float, character:String = 'bf') {
 		super(x);
 
 		this.character = character;
 
-		var tex = Paths.getSparrowAtlas('campaign_menu_UI_characters');
+		var tex = Paths.getSparrowAtlas('storymenu/campaign_menu_UI_characters');
 		frames = tex;
 
 		animation.addByPrefix('bf', "BF idle dance white", 24);
@@ -25,7 +22,7 @@ class MenuCharacter extends FlxSprite
 		animation.addByPrefix('mom', "Mom Idle BLACK LINES", 24);
 		animation.addByPrefix('parents-christmas', "Parent Christmas Idle", 24);
 		animation.addByPrefix('senpai', "SENPAI idle Black Lines", 24);
-		// Parent Christmas Idle
+		animation.addByPrefix('tankman', "Tankman Menu BLACK", 24);
 
 		animation.play(character);
 		updateHitbox();

@@ -1,0 +1,49 @@
+{
+	"Anims": [
+		{
+			"Offsets": [-10, 10],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "Dad Sing Note LEFT"
+		},
+		{
+			"Offsets": [0, -30],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "Dad Sing Note DOWN"
+		},
+		{
+			"Offsets": [-6, 50],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "Dad Sing Note UP"
+		},
+		{
+			"Offsets": [0, 27],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "Dad Sing Note RIGHT"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "Dad idle dance"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "characters/DADDY_DEAREST",
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}

@@ -1,0 +1,49 @@
+{
+	"Anims": [
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "empty idle"
+		},
+        {
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "empty idle"
+		},
+        {
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "empty idle"
+		},
+        {
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "empty idle"
+		},
+        {
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "empty idle"
+		}
+	],
+	"CharacterAntialiasing": false,
+	"CharacterImage": "characters/empty",
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}

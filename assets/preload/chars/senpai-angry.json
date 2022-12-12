@@ -1,0 +1,50 @@
+{
+	"Anims": [
+		{
+			"Offsets": [40, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "Angry Senpai LEFT NOTE"
+		},
+		{
+			"Offsets": [14, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "Angry Senpai DOWN NOTE"
+		},
+		{
+			"Offsets": [5, 37],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "Angry Senpai UP NOTE"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "Angry Senpai RIGHT NOTE"
+		},
+		{
+			"Offsets": [2, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "Angry Senpai Idle"
+		}
+	],
+	"CharacterAntialiasing": false,
+	"CharacterImage": "characters/senpai",
+	"CharacterCameraOffsets": [-250, -330],
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 6
+}

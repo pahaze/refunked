@@ -1,0 +1,49 @@
+{
+	"Anims": [
+		{
+			"Offsets": [-200, -280],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "left_"
+		},
+		{
+			"Offsets": [170, 110],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "spirit down_"
+		},
+		{
+			"Offsets": [-220, -240],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "up_"
+		},
+		{
+			"Offsets": [-220, -280],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "right_"
+		},
+		{
+			"Offsets": [-218, -280],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "idle spirit_"
+		}
+	],
+	"CharacterAntialiasing": false,
+	"CharacterImage": "characters/spirit",
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterFlipX": false,
+	"CharacterScale": 6
+}

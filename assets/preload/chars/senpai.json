@@ -1,0 +1,50 @@
+{
+	"Anims": [
+		{
+			"Offsets": [40, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "SENPAI LEFT NOTE"
+		},
+		{
+			"Offsets": [14, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "SENPAI DOWN NOTE"
+		},
+		{
+			"Offsets": [5, 37],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "SENPAI UP NOTE"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "SENPAI RIGHT NOTE"
+		},
+		{
+			"Offsets": [1, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "Senpai Idle"
+		}
+	],
+	"CharacterAntialiasing": false,
+	"CharacterImage": "characters/senpai",
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterCameraOffsets": [-250, -330],
+	"CharacterFlipX": false,
+	"CharacterScale": 6
+}

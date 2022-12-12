@@ -1,0 +1,19 @@
+diff --color -Naur a/source/Controls.hx b/source/Controls.hx
+--- a/source/Controls.hx	2022-12-12 17:40:20.352955537 -0500
++++ b/source/Controls.hx	2022-12-12 17:41:09.813370242 -0500
+@@ -404,15 +404,9 @@
+ 		{
+ 			case null:
+ 				// add all
+-				#if (haxe >= "4.0.0")
+-				for (gamepad in controls.gamepadsAdded)
+-					if (!gamepadsAdded.contains(gamepad))
+-						gamepadsAdded.push(gamepad);
+-				#else
+ 				for (gamepad in controls.gamepadsAdded)
+ 					if (gamepadsAdded.indexOf(gamepad) == -1)
+ 					  gamepadsAdded.push(gamepad);
+-				#end
+ 
+ 				mergeKeyboardScheme(controls.keyboardScheme);
+ 

@@ -1,12 +1,13 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
-class BackgroundDancer extends FlxSprite
-{
-	public function new(x:Float, y:Float)
-	{
+class BackgroundDancer extends FlxSprite {
+	// Dance --
+	var danceDir:Bool = false;
+	// -- Dance
+
+	public function new(x:Float, y:Float) {
 		super(x, y);
 
 		frames = Paths.getSparrowAtlas("limo/limoDancer");
@@ -16,10 +17,7 @@ class BackgroundDancer extends FlxSprite
 		antialiasing = true;
 	}
 
-	var danceDir:Bool = false;
-
-	public function dance():Void
-	{
+	public function dance():Void {
 		danceDir = !danceDir;
 
 		if (danceDir)

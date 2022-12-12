@@ -1,89 +1,79 @@
-# Friday Night Funkin
+# <img src="art/icon64.png" align="center"> Friday Night Funkin' ReFunked </img>
 
-This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
+This is the repository for the "ReFunked" engine of Friday Night Funkin' (AKA "FNF RFE"/"Friday Night Funkin' ReFunked"), an open source rhythm game. The engine was created to attempt to stomp out bugs and make the open source game better as much as possible. No competition with other engines is intended.
 
-Play the Ludum Dare prototype here: https://ninja-muffin24.itch.io/friday-night-funkin
-Play the Newgrounds one here: https://www.newgrounds.com/portal/view/770371
-Support the project on the itch.io page: https://ninja-muffin24.itch.io/funkin
+Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS. 
 
-IF YOU MAKE A MOD AND DISTRIBUTE A MODIFIED / RECOMPILED VERSION, YOU MUST OPEN SOURCE YOUR MOD AS WELL
+## Credits
 
-## Credits / shoutouts
+- [pahaze (me)](https://github.com/pahaze) - Programmer
+- [CryptoCANINE](https://github.com/CryptoCANINE) - Programmer
+- [ShadowMario](https://github.com/ShadowMario) - creator of Pysch Engine (themes based off of engine in game, some code from engine used for accuracy, FlxDropDown menu borrowed, some higher FPS code (camera, zooms, icons, etc) borrowed (I plan to move to my own code later))
 
-- [ninjamuffin99 (me!)](https://twitter.com/ninja_muffin99) - Programmer
-- [PhantomArcade3K](https://twitter.com/phantomarcade3k) and [Evilsk8r](https://twitter.com/evilsk8r) - Art
-- [Kawaisprite](https://twitter.com/kawaisprite) - Musician
+\- and any other contributors
 
-This game was made with love to Newgrounds and its community. Extra love to Tom Fulp.
+## Help
 
-## Build instructions
+None of the main developers are part of the FNF community, nor do we plan to be, as we solely do this for fun and nothing more. However, if you need help, open an issue and we'll gladly assist as much as we can.
 
-THESE INSTRUCTIONS ARE FOR COMPILING THE GAME'S SOURCE CODE!!!
+## Plans
 
-IF YOU WANT TO JUST DOWNLOAD AND INSTALL AND PLAY THE GAME NORMALLY, GO TO ITCH.IO TO DOWNLOAD THE GAME FOR PC, MAC, AND LINUX!!
+These will be added later. This rewrite intends on fixing a lot of the bugs in the master branch.
 
-https://ninja-muffin24.itch.io/funkin
+## Build instuctions (Linux/HTML5)
 
-IF YOU WANT TO COMPILE THE GAME YOURSELF, CONTINUE READING!!!
+First things first, you need to install Haxe. Be sure Linux is up to date. For experienced users, just be sure you're up to date on each Haxe library and Haxe itself. If not, continue reading on. For this example, we'll be using Ubuntu 22.04 LTS.
 
-### Installing the Required Programs
-
-First, you need to install Haxe and HaxeFlixel. I'm too lazy to write and keep updated with that setup (which is pretty simple). 
-1. [Install Haxe 4.1.5](https://haxe.org/download/version/4.1.5/) (Download 4.1.5 instead of 4.2.0 because 4.2.0 is broken and is not working with gits properly...)
-2. [Install HaxeFlixel](https://haxeflixel.com/documentation/install-haxeflixel/) after downloading Haxe
-
-Other installations you'd need are the additional libraries, a fully updated list will be in `Project.xml` in the project root. Currently, these are all of the things you need to install:
-```
-flixel
-flixel-addons
-flixel-ui
-hscript
-newgrounds
-```
-So for each of those type `haxelib install [library]` so shit like `haxelib install newgrounds`
-
-You'll also need to install a couple things that involve Gits. To do this, you need to do a few things first.
-1. Download [git-scm](https://git-scm.com/downloads). Works for Windows, Mac, and Linux, just select your build.
-2. Follow instructions to install the application properly.
-3. Run `haxelib git polymod https://github.com/larsiusprime/polymod.git` to install Polymod.
-4. Run `haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc` to install Discord RPC.
-
-You should have everything ready for compiling the game! Follow the guide below to continue!
-
-At the moment, you can optionally fix the transition bug in songs with zoomed-out cameras.
-- Run `haxelib git flixel-addons https://github.com/HaxeFlixel/flixel-addons` in the terminal/command-prompt.
-
-### Ignored files
-
-I gitignore the API keys for the game so that no one can nab them and post fake high scores on the leaderboards. But because of that the game
-doesn't compile without it.
-
-Just make a file in `/source` and call it `APIStuff.hx`, and copy & paste this into it
-
-```haxe
-package;
-
-class APIStuff
-{
-	public static var API:String = "";
-	public static var EncKey:String = "";
-}
+First, the repository needs to be added and Haxe be installed. (We're using an external repository instead of the one already in apt due to it being outdated.)
 
 ```
+sudo add-apt-repository ppa:haxe/releases
+sudo apt-get update
+sudo apt-get install haxe
+mkdir ~/haxelib
+haxelib setup ~/haxelib
+```
 
-and you should be good to go there.
+This sets up Haxe for us to now install things we need, next thing being HaxeFlixel. Before you can install HaxeFlixel, you need `lime`, `openfl`, and finally `flixel` itself
 
-### Compiling game
-NOTE: If you see any messages relating to deprecated packages, ignore them. They're just warnings that don't affect compiling
+```
+haxelib install lime
+haxelib install openfl
+haxelib install flixel
+```
 
-Once you have all those installed, it's pretty easy to compile the game. You just need to run `lime test html5 -debug` in the root of the project to build and run the HTML5 version. (command prompt navigation guide can be found here: [https://ninjamuffin99.newgrounds.com/news/post/1090480](https://ninjamuffin99.newgrounds.com/news/post/1090480))
-To run it from your desktop (Windows, Mac, Linux) it can be a bit more involved. For Linux, you only need to open a terminal in the project directory and run `lime test linux -debug` and then run the executable file in export/release/linux/bin. For Windows, you need to install Visual Studio Community 2019. While installing VSC, don't click on any of the options to install workloads. Instead, go to the individual components tab and choose the following:
-* MSVC v142 - VS 2019 C++ x64/x86 build tools
-* Windows SDK (10.0.17763.0)
+After those three install, run this:
 
-Once that is done you can open up a command line in the project's directory and run `lime test windows -debug`. Once that command finishes (it takes forever even on a higher end PC), you can run FNF from the .exe file under export\release\windows\bin
-As for Mac, 'lime test mac -debug' should work, if not the internet surely has a guide on how to compile Haxe stuff for Mac.
+```
+haxelib run lime setup flixel
+```
 
-### Additional guides
+This allows us to easily get addons, ui, demos, templates, tools, or whatever Flixel would ever need. Now, just for convenience, run this:
 
-- [Command line basics](https://ninjamuffin99.newgrounds.com/news/post/1090480)
+```
+haxelib run lime setup
+```
+
+It'll install lime as it's own separate command. You don't HAVE to do this, but it does make things easier in the long run. Now that that's out of the way, there's only a couple more libraries we need to install.
+
+```
+haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+```
+
+After this, you'll be ready to compile the game! In the root of the source code (where Project.xml and such are), you can test for HTML5 (web) or Linux.
+
+For Linux, all you have to do is run `lime test linux`. For HTML5, it's almost the same. `lime test html5`. Super easy stuff.
+
+(By the way, if you're having a(n) build error saying there's an error in Controls.hx, all you have to do is run `git apply webbuildfix.patch` in the root directory ;). Sometimes Haxe likes to break. If you would like to contribute towards the engine, please make sure you have unapplied this patch, all it changes is Controls.hx.)
+
+## Contributing
+
+If you would like to contribute, then please do not hesitate! Give pull requests and we'll look at them as soon as possible. If one doesn't get pulled in, we'll explain why.
+
+## Mods
+
+As per the original game's README, you may NOT be allowed to have mods close-sourced. You MUST open source any mods you create with this engine or the original.
+
+# Original README
+
+Check [here](OGREADME.md). 

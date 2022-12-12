@@ -1,0 +1,50 @@
+{
+	"Anims": [
+		{
+			"Offsets": [250, -23],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singLEFT",
+			"AnimIndices": [],
+			"AnimPrefix": "Mom Left Pose"
+		},
+		{
+			"Offsets": [20, -160],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singDOWN",
+			"AnimIndices": [],
+			"AnimPrefix": "MOM DOWN POSE"
+		},
+		{
+			"Offsets": [14, 71],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singUP",
+			"AnimIndices": [],
+			"AnimPrefix": "Mom Up Pose"
+		},
+		{
+			"Offsets": [10, -60],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "singRIGHT",
+			"AnimIndices": [],
+			"AnimPrefix": "Mom Pose Left"
+		},
+		{
+			"Offsets": [0, 0],
+			"AnimLOOP": false,
+			"AnimFPS": 24,
+			"Animation": "idle",
+			"AnimIndices": [],
+			"AnimPrefix": "Mom Idle"
+		}
+	],
+	"CharacterAntialiasing": true,
+	"CharacterImage": "characters/Mom_Assets",
+	"CharacterPositionOffsets": [0, 0],
+	"CharacterCameraOffsets": [0, 100],
+	"CharacterFlipX": false,
+	"CharacterScale": 1
+}
