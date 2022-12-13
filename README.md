@@ -8,7 +8,9 @@ Note: MODS MUST BE OPEN SOURCE WHEN USING THE ENGINE. NO EXCEPTIONS.
 
 - [pahaze (me)](https://github.com/pahaze) - Programmer
 - [CryptoCANINE](https://github.com/CryptoCANINE) - Programmer
-- [ShadowMario](https://github.com/ShadowMario) - creator of Pysch Engine (themes based off of engine in game, some code from engine used for accuracy, FlxDropDown menu borrowed, some higher FPS code (camera, zooms, icons, etc) borrowed (I plan to move to my own code later))
+- [Junimeek](https://github.com/Junimeek) - Wiki Maintainer
+- [AngelDTF](https://github.com/AngelDTF) - Creator of Newgrounds Port (Seriously, this saved me so much time instead of reversing more of 0.2.8 myself)
+- [ShadowMario](https://github.com/ShadowMario) - Creator of Pysch Engine (Themes based off of engine in game, some code from engine used for accuracy, FlxDropDown menu borrowed, some higher FPS code (camera, zooms, icons, etc) borrowed (I plan to move to my own code later))
 
 \- and any other contributors
 
