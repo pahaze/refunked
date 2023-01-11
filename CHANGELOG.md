@@ -7,19 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10-beta - ReFunked] - 2023-01-10 through ??? - Unfinished
 ### Added
 - `art/Concept` folder, concept art for characters, icons, etc will go in here
-- New Monster winning icon!
+- `CurrentVersion.txt` file, used for automatic builds and update checking (future)
 - New Monster Christmas icons! (by [Junimeek](https://github.com/Junimeek))
+- New Monster winning icon!
 ### Changed
 - Moved `art/flashFiles` to `art/Flash Files`
 ### Fixed
 - Boyfriend's voice is no longer off sync in the first 4 verses in Monster! (by [Junimeek](https://github.com/Junimeek))
+### Removed
+- Removed useless files from the `art` folder
 
 ## [0.10-alpha - ReFunked] - 2022-12-12
 ### Added
 - 0.2.8 assets! (Charts, loading screen, main menu, story menu characters)
 - BOTPLAY mode
 - Icon SVG (for web)
-- Lucky! Removed character from OG repo
+- Lucky! (Removed character from OG repo)
 - Options, minimal, but there (downscroll, middlescroll, FPS, Ghost Tapping, Discord Rich Presence, and keybinds)
 - Practice Mode
 - Unknown week image (for future (mods))
