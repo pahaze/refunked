@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved `art/flashFiles` to `art/Flash Files`
 ### Fixed
 - Boyfriend's voice is no longer off sync in the first 4 verses in Monster! (by [Junimeek](https://github.com/Junimeek))
+- Winning icons actually show in game now
 ### Removed
 - Removed useless files from the `art` folder
 
