@@ -4,6 +4,16 @@ All notable changes will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10-beta - ReFunked] - 2023-01-10 through ??? - Unfinished
+### Added
+- `art/Concept` folder, concept art for characters, icons, etc will go in here
+- New Monster winning icon!
+- New Monster Christmas icons! (by [Junimeek](https://github.com/Junimeek))
+### Changed
+- Moved `art/flashFiles` to `art/Flash Files`
+### Fixed
+- Boyfriend's voice is no longer off sync in the first 4 verses in Monster! (by [Junimeek](https://github.com/Junimeek))
+
 ## [0.10-alpha - ReFunked] - 2022-12-12
 ### Added
 - 0.2.8 assets! (Charts, loading screen, main menu, story menu characters)
