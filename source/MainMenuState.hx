@@ -19,6 +19,10 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
+import openfl.events.IOErrorEvent;
+import openfl.events.SecurityErrorEvent;
+import openfl.net.URLLoader;
+import openfl.net.URLRequest;
 import ui.AtlasMenuItem;
 import ui.MenuItem;
 import ui.MenuTypedList;
@@ -38,6 +42,13 @@ class MainMenuState extends MusicBeatState {
 	var camFollow:FlxObject;
 	var camFollowPoint:FlxObject;
 	// -- Camera Stuff
+
+	// Updating --
+	var refunkedVersion:FlxText;
+	var updateAvailabilityText:FlxText;
+	var updateChecker:URLLoader;
+	var vanillaVersion:FlxText;
+	// -- Updating
 
 	override function create() {
 		#if desktop
@@ -110,13 +121,29 @@ class MainMenuState extends MusicBeatState {
 			item.y = pos + (180 * i);
 		}
 
-
 		FlxG.camera.follow(camFollowPoint, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
+		vanillaVersion = new FlxText(5, FlxG.height - 54, 0, "Friday Night Funkin v0.2.8", 12);
+		vanillaVersion.scrollFactor.set();
+		vanillaVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(vanillaVersion);
+
+		refunkedVersion = new FlxText(5, FlxG.height - 36, 0, 'ReFunked v${Application.current.meta.get('version')}', 12);
+		refunkedVersion.scrollFactor.set();
+		refunkedVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(refunkedVersion);
+
+		updateAvailabilityText = new FlxText(5, FlxG.height - 18, 0, "Checking for updates...", 12);
+		updateAvailabilityText.scrollFactor.set();
+		updateAvailabilityText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(updateAvailabilityText);
+
+		updateChecker = new URLLoader();
+		updateChecker.dataFormat = TEXT;
+		updateChecker.load(new URLRequest("https://raw.githubusercontent.com/pahaze/refunked/rewrite/CurrentVersion.txt"));
+		updateChecker.addEventListener(openfl.events.Event.COMPLETE, checkUpdateAvailability);
+		updateChecker.addEventListener(IOErrorEvent.IO_ERROR, failedUpdateCheck);
+		updateChecker.addEventListener(SecurityErrorEvent.SECURITY_ERROR, failedUpdateCheck);
 
 		changeItem();
 
@@ -141,6 +168,18 @@ class MainMenuState extends MusicBeatState {
 
 			spr.updateHitbox();
 		});
+	}
+
+	function checkUpdateAvailability(event:openfl.events.Event) {
+		var gitVersion:String = Std.string(updateChecker.data);
+		if(gitVersion == Application.current.meta.get('version'))
+			updateAvailabilityText.text = "No updates available!";
+		else
+			updateAvailabilityText.text = 'Update available! New version: $gitVersion';
+	}
+
+	function failedUpdateCheck(event:openfl.events.Event) {
+		updateAvailabilityText.text = "Unable to check for updates!";
 	}
 
 	function onMenuItemChange(item:MenuItem) {
