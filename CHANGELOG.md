@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10-beta - ReFunked] - 2023-01-10 through ??? - Unfinished
 ### Added
 - `art/Concept` folder, concept art for characters, icons, etc will go in here
-- `CurrentVersion.txt` file, used for automatic builds and update checking (future)
+- `CurrentVersion.txt` file, used for automatic builds (future)
 - New Monster Christmas icons! (by [Junimeek](https://github.com/Junimeek))
 - New Monster winning icon!
+- Update checking
 ### Changed
 - Moved `art/flashFiles` to `art/Flash Files`
+- Hardcoded RFE's theme over Vanilla. Will move to themes again later on
+- Options menu now uses E/R to change tabs (so you can go back/forth) now
 ### Fixed
 - Boyfriend's voice is no longer off sync in the first 4 verses in Monster! (by [Junimeek](https://github.com/Junimeek))
+- Ratings now check the proper strum time
 - Winning icons actually show in game now
 ### Removed
 - Removed useless files from the `art` folder

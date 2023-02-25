@@ -33,10 +33,10 @@ class OptionsMenu extends MusicBeatState {
 	// -- Keybind Setting
 
 	// FPS --
-	var fpsExtraText:String = " - Press LEFT/RIGHT to change the value by 5 (hold SHIFT to change it by 1). Press T to change tabs. Press ENTER to change options.";
+	var fpsExtraText:String = "- Press LEFT/RIGHT to change the value by 5 (hold SHIFT to change it by 1). Press E/R to change tabs. Press ENTER to change options.";
 	var FpsThing:FlxText;
 	var FpsBGThing:FlxSprite;
-	var fpsWebExtraText:String = "Press T to change tabs. Press ENTER to change options.";
+	var fpsWebExtraText:String = "Press E/R to change tabs. Press ENTER to change options.";
 	// -- FPS
 
 	// Tabs and Settings --
@@ -134,7 +134,7 @@ class OptionsMenu extends MusicBeatState {
 		ThemeBGThing.scrollFactor.set();
 		add(ThemeBGThing);
 
-		ThemeThing = new FlxText(5, 1, 0, "Themes will be re-integrated later! For now, you can have the vanilla theme :)", 16);
+		ThemeThing = new FlxText(5, 1, 0, "Themes will be re-integrated later! For now, you can have the RFE theme :)", 16);
 		ThemeThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		ThemeThing.scrollFactor.set();
 		ThemeThing.screenCenter(X);
@@ -166,9 +166,12 @@ class OptionsMenu extends MusicBeatState {
 		grpControlsBools.members[curSelected].alpha = 1;
 	}
 
-	function changeTab() {
-		curTab += 1;
-		if(curTab > grpControlsTabs.length - 1)
+	function changeTab(tabChoice:Int) {
+		curTab += tabChoice;
+
+		if(curTab < 0)
+			curTab = grpControlsTabs.length - 1;
+		if(curTab >= grpControlsTabs.length)
 			curTab = 0;
 
 		for(i in 0...grpControlsTabs.length) {
@@ -435,9 +438,11 @@ class OptionsMenu extends MusicBeatState {
 				}
 			}
 
-			if(FlxG.keys.justPressed.T) {
-				changeTab();
-			}
+			if(FlxG.keys.justPressed.E)
+				changeTab(-1);
+
+			if(FlxG.keys.justPressed.R)
+				changeTab(1);
 
 			#if desktop
 				if(FlxG.keys.justPressed.LEFT) {
@@ -445,10 +450,12 @@ class OptionsMenu extends MusicBeatState {
 						Options.FPS -= 1;
 					else
 						Options.FPS -= 5;
+
 					if(Options.FPS < 60)
 						Options.FPS = 60;
+
 					Options.saveOptions();
-					FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+					FpsThing.text = 'FPS: ${Options.FPS} $fpsExtraText';
 					if(Options.FPS > FlxG.drawFramerate) {
 						FlxG.updateFramerate = Options.FPS;
 						FlxG.drawFramerate = Options.FPS;
@@ -462,10 +469,12 @@ class OptionsMenu extends MusicBeatState {
 						Options.FPS += 1;
 					else
 						Options.FPS += 5;
+
 					if(Options.FPS > 450)
 						Options.FPS = 450;
+
 					Options.saveOptions();
-					FpsThing.text = "FPS: " + Options.FPS + fpsExtraText;
+					FpsThing.text = 'FPS: ${Options.FPS} $fpsExtraText';
 					if(Options.FPS > FlxG.drawFramerate) {
 						FlxG.updateFramerate = Options.FPS;
 						FlxG.drawFramerate = Options.FPS;

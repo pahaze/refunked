@@ -1,11 +1,11 @@
 package;
 
+import customFlixel.openfl.display.FPS;
 #if desktop
 	import Discord.DiscordClient;
 #end
 import flixel.FlxGame;
 import lime.app.Application;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.Lib;

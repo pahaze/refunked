@@ -1,5 +1,6 @@
 package;
 
+import customFlixel.FlxMarqueeText;
 #if desktop
 	import Discord.DiscordClient;
 #end
@@ -40,9 +41,15 @@ class PlayState extends MusicBeatState {
 	/// BOTPLAY
 	public var botplayMode:Bool = false;
 
-	/// Current Score and Combo
-	var combo:Int = 0;
-	var songScore:Int = 0;
+	/// Current Scoring Information --
+	var accuracy:Float = 0; //// "Pretty" Accuracy (Calculated Automatically)
+	var accuracyData:Array<Int> = [0, 0]; //// 1st Entry - Hit Notes; 2nd Entry - Total Key Presses
+	var combo:Int = 0; //// Combo
+	var comboRating:String = ""; //// *FC Info
+	var misses:Int = 0; //// Misses
+	var ratings:Array<Int> = [0, 0, 0, 0]; //// [0] = Sicks, [1] = Goods, [2] = Bads, [3] = Awfuls
+	var songScore:Int = 0; //// Score
+	/// -- Current Scoring Information
 
 	/// Health
 	var health:Float = 1;
@@ -57,7 +64,7 @@ class PlayState extends MusicBeatState {
 	/// Practice Mode
 	public var practiceMode:Bool = false;
 
-	/// Scored?
+	/// Scored? (Have(n't) used Botplay/Practice Mode)
 	public var scored:Bool = true;
 	// -- Gameplay
 
@@ -118,6 +125,9 @@ class PlayState extends MusicBeatState {
 	/// Song Data
 	public static var SONG:SwagSong;
 
+	/// Song Information
+	var timeLeft:Array<String> = ["0", "0"];
+
 	/// Started Countdown?
 	var startedCountdown:Bool = false;
 
@@ -171,6 +181,9 @@ class PlayState extends MusicBeatState {
 
 	/// Score
 	var scoreTxt:FlxText;
+
+	/// Watermark
+	var refunkedWatermark:FlxMarqueeText;
 	// -- UI
 
 	// Weeks --
@@ -733,10 +746,14 @@ class PlayState extends MusicBeatState {
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
+		scoreTxt = new FlxText(0, (Options.downscroll ? healthBarBG.y + 42 : healthBarBG.y - 42), 0, "", 20);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
+
+		refunkedWatermark = new FlxMarqueeText(4, FlxG.height * 0.97, "", 16, 20, SONG.speed);
+		refunkedWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(refunkedWatermark);
 
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -745,6 +762,7 @@ class PlayState extends MusicBeatState {
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		refunkedWatermark.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		startingSong = true;
@@ -823,7 +841,7 @@ class PlayState extends MusicBeatState {
 			return;
 
 		if(generatedMusic)
-			notes.sort(FlxSort.byY, FlxSort.DESCENDING);
+			notes.sort(FlxSort.byY, (Options.downscroll ? FlxSort.ASCENDING : FlxSort.DESCENDING));
 
 		if(SONG.notes[Math.floor(curStep / 16)] != null) {
 			if(SONG.notes[Math.floor(curStep / 16)].changeBPM) {
@@ -1294,7 +1312,7 @@ class PlayState extends MusicBeatState {
 				if(botplayMode)
 					popUpScore(Conductor.songPosition);
 				else
-					popUpScore(note.strumTime);
+					popUpScore((note.strumTime + note.strumAdd));
 				combo += 1;
 			}
 
@@ -1302,6 +1320,9 @@ class PlayState extends MusicBeatState {
 				health += 0.023;
 			else
 				health += 0.004;
+
+			accuracyData[0] += 1;
+			accuracyData[1] += 1;
 
 			ActorSprites["boyfriend"].holdTimer = 0;
 
@@ -1427,7 +1448,7 @@ class PlayState extends MusicBeatState {
 					stupidBadNote.destroy();
 				}
 
-				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+				possibleNotes.sort((a, b) -> Std.int((a.strumTime + a.strumAdd) - (b.strumTime + b.strumAdd)));
 
 				if(perfectMode)
 					goodNoteHit(possibleNotes[0]);
@@ -1474,7 +1495,11 @@ class PlayState extends MusicBeatState {
 		health -= 0.0475;
 		vocals.volume = 0;
 		combo = 0;
+
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+		misses += 1;
+
+		accuracyData[1] += 1;
 
 		switch(Math.abs(daNote.noteData)) {
 			case 0:
@@ -1517,11 +1542,14 @@ class PlayState extends MusicBeatState {
 			health -= 0.04;
 			songScore -= 10;
 
-			if(combo > 5 && ActorSprites["girlfriend"].animOffsets.exists('sad'))
+			if(combo > 10 && ActorSprites["girlfriend"].animOffsets.exists('sad'))
 				ActorSprites["girlfriend"].playAnim('sad');
 			combo = 0;
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+			misses += 1;
+
+			accuracyData[1] += 1;
 
 			new FlxTimer().start(5 / 60, function(tmr:FlxTimer) {
 				ActorSprites["boyfriend"].stunned = false;
@@ -1652,13 +1680,18 @@ class PlayState extends MusicBeatState {
 
 		if(noteDiff > Conductor.safeZoneOffset * 0.8) {
 			daRating = 'shit';
+			ratings[3] += 1;
 			score = 50;
 		} else if(noteDiff > Conductor.safeZoneOffset * 0.65) {
 			daRating = 'bad';
+			ratings[2] += 1;
 			score = 100;
 		} else if(noteDiff > Conductor.safeZoneOffset * 0.45) {
 			daRating = 'good';
+			ratings[1] += 1;
 			score = 200;
+		} else if(daRating == "sick") {
+			ratings[0] += 1;
 		}
 
 		songScore += score;
@@ -2066,7 +2099,54 @@ class PlayState extends MusicBeatState {
 
 		handleStrumLighting();
 
-		scoreTxt.text = "Score:" + songScore;
+		// Current Scoring Information --
+			/// Accuracy
+			if(accuracyData[1] > 0) {
+				if(accuracyData[0] > 0)
+					accuracy = FlxMath.roundDecimal((accuracyData[0] / accuracyData[1]) * 100, 2);
+				else
+					accuracy = 0; //// I would hope 0 divided by anything is 0 :)
+			} else {
+				//// Default to 100 if both values are 0
+				accuracy = 100;
+			}
+
+			/// Combo Rating (*FC Info)
+			comboRating = Utilities.calculateComboRating(ratings, misses, accuracy);
+		// -- Current Scoring Information
+
+		// Song Info --
+			/// Time Left --
+			if(startingSong) {
+				//// TODO: Make this work before song start.
+				timeLeft[0] = "??";
+				timeLeft[1] = "??";
+			} else {
+				//// Minutes Left
+				var minLeft:String = Std.string(Math.floor(((FlxG.sound.music.length - Conductor.songPosition) % 3600000) / 60000)).lpad("0", 2);
+				if(Std.parseInt(minLeft) < 0)
+					minLeft = "00";
+
+				timeLeft[0] = minLeft;
+
+				//// Seconds Left
+				var secLeft:String = Std.string(Math.floor(((FlxG.sound.music.length - Conductor.songPosition) % 60000) / 1000)).lpad("0", 2);
+				if(Std.parseInt(secLeft) < 0)
+					secLeft = "00";
+
+				timeLeft[1] = secLeft;
+			}
+			/// -- Time Left
+		// -- Song Info
+
+		// UI --
+			/// RFE Watermark
+			refunkedWatermark.text = '${SONG.songName} ($storyDifficultyText) | ${timeLeft[0]}:${timeLeft[1]} left | FNF RFE';
+
+			/// Score Text
+			scoreTxt.text = 'Score: $songScore | Misses $misses | Accuracy: $accuracy% ($comboRating)';
+			scoreTxt.screenCenter(X);
+		// -- UI
 
 		if(FlxG.keys.justPressed.ENTER && startedCountdown && canPause) {
 			persistentUpdate = false;
@@ -2089,7 +2169,7 @@ class PlayState extends MusicBeatState {
 		}
 
 		// Borrowed from Psych Engine as I could not figure out how to get a tween to not be insanely fast despite using elapsed...
-		var iconScaleTiming:Float = FlxMath.bound(1 - (elapsed * 9), 0, 1);
+		var iconScaleTiming:Float = FlxMath.bound(1 - (elapsed * 10), 0, 1);
 		var iconP1Scale:Float = FlxMath.lerp(1, iconP1.scale.x, iconScaleTiming);
 		var iconP2Scale:Float = FlxMath.lerp(1, iconP2.scale.x, iconScaleTiming);
 

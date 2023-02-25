@@ -90,6 +90,42 @@ class Utilities {
 		}
 	#end
 
+	public static function calculateComboRating(ratings:Array<Int>, misses:Int, accuracy:Float):String {
+		var ratingToReturn = "???";
+
+		/**
+		 * Ratings:
+		 * ratings[0] - Sicks
+		 * ratings[1] - Goods
+		 * ratings[2] - Bads
+		 * ratings[3] - Awfuls
+		 */
+
+		if(ratings[0] > 0)
+			ratingToReturn = "SFC";
+
+		if(ratings[1] > 0)
+			ratingToReturn = "GFC";
+
+		if(ratings[2] > 0)
+			ratingToReturn = "FC";
+
+		if(ratings[3] > 0)
+			ratingToReturn = "AFC";
+
+		if(misses > 0) {
+			if(misses < 11)
+				ratingToReturn = "SDCB";
+			else
+				ratingToReturn = "Clear";
+		}
+
+		if(accuracy >= 69 && accuracy < 70)
+			ratingToReturn = "Nice";
+
+		return ratingToReturn;
+	}
+
 	public static function checkGf(stage:String):String {
 		switch(stage) {
 			case "limo":
