@@ -2141,7 +2141,7 @@ class PlayState extends MusicBeatState {
 
 		// UI --
 			/// RFE Watermark
-			refunkedWatermark.text = '${SONG.songName} ($storyDifficultyText) | ${timeLeft[0]}:${timeLeft[1]} left | FNF RFE';
+			refunkedWatermark.text = '${SONG.songName} (${CoolUtil.difficultyString()}) | ${timeLeft[0]}:${timeLeft[1]} left | FNF RFE';
 
 			/// Score Text
 			scoreTxt.text = 'Score: $songScore | Misses $misses | Accuracy: $accuracy% ($comboRating)';
